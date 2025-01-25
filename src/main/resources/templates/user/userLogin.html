@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>로그인 페이지</title>
+  <link href= "/css/user/login.css" type="text/css" rel="stylesheet"> <!-- css 링크 -->
+</head>
+<body>
+<!--header-->
+<main>
+  <div class="login-container">
+    <h1>로그인</h1>
+    <form name="frm" class="login-form">
+      <label>이름</label>
+      <input type="text" id="username" name="userid" placeholder="아이디를 입력하세요">
+
+      <label>비밀번호</label>
+      <input type="password" id="userpwd" name="userpwd" placeholder="비밀번호를 입력하세요">
+
+      <div class="sns-login">
+
+        <button type="submit" class="login-btn" onclick="check();">로그인하기</button>
+
+      <!-- SNS 로그인 추가 -->
+
+        <div class="sns-login-line"></div><span class = "sns-text">카카오 로그인하기</span><div class="sns-login-line"></div>
+        <button type="button" class="kakao-login-btn">카카오 로그인</button>
+      </div>
+
+      <div class="options">
+        <a href="#" class="find-pwd">비밀번호 찾기</a>
+        <a href="#" class="register">회원가입</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+<!-- footer -->
+
+</body>
+</html>

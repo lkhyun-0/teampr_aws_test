@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 상세정보 입력</title>
+    <link href= "" type="text/css" rel="stylesheet">
+
+</head>
+<body>
+<!-- header -->
+
+<main>
+    <div class="form-container">
+        <h2>상세 정보 입력 페이지</h2>
+        <form name = "frm">
+            <input type="text" name="user_pk" id="user_pk" value="<%= user_pk != null ? user_pk : "" %>">
+            <div class="form-group">
+                <label for="birthdate">생년월일</label>
+                <input type="date" id="userbirth" name="userbirth">
+            </div>
+
+            <div class="form-group">
+                <label for="weight">체중</label>
+                <input type="text" id="weight" name="weight" placeholder="kg 단위로 입력">
+            </div>
+
+            <div class="form-group">
+                <label for="height">키</label>
+                <input type="text" id="height" name="height" placeholder="cm 단위로 입력">
+            </div>
+
+            <div class="form-group">
+                <label for="disease">질병</label>
+                <select id="sicktype" name="sicktype">
+                    <option value="" class="select">선택하세요</option>
+                    <option value="당뇨">당뇨</option>
+                    <option value="고혈압">고혈압</option>
+                    <option value="비만">비만</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="exercise">운동 빈도</label>
+                <select id="exercise_cnt" name="exercise_cnt">
+                    <option value="" class="select" selected>선택하세요</option>
+                    <option value="운동 안 함">운동 안 함</option>
+                    <option value="주 1~2회">주 1~2회</option>
+                    <option value="주 3~4회">주 3~4회</option>
+                    <option value="주 5회 이상">주 5회 이상</option>
+                </select>
+            </div>
+            <div class="checkbox-main">흡연 음주 여부
+                <div class="checkbox-group">
+      <span>
+
+      	<input type="checkbox" id="smoke" name="smoke" value = "Y">흡연
+      </span>
+                    <span>
+
+      	<input type="checkbox" id="drink" name="drink" value = "Y">음주
+      </span>
+
+                </div>
+            </div>
+            <button type="button" onclick = "save();">저장하기</button>
+        </form>
+    </div>
+</main>
+<!-- footer -->
+
+</body>
+</html>
