@@ -1,0 +1,109 @@
+@charset "UTF-8";
+/* 기본 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* main 태그 스타일 설정 */
+main {
+    width : 100%;
+    max-width: 500px;
+    position: relative;
+    left : 37%;
+    margin-top:100px;
+    margin-bottom: 100px;
+}
+
+
+
+.registration-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex; /* 플렉스 박스 활성화 */
+    flex-direction: column; /* 세로 정렬 */
+}
+
+.registration-form h1 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* 버튼을 하단 중앙에 배치 */
+.registration-form form {
+    display: flex; /* 플렉스 박스 활성화 */
+    flex-direction: column; /* 세로 정렬 */
+    justify-content: space-between; /* 상단 입력 필드와 하단 버튼 간 공간 분배 */
+
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    color: #555;
+}
+
+.form-group input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-bottom: solid #ddd thin;
+    outline: none; /* 포커스 시 나타나는 외곽선 제거 */
+    caret-color: black; /* 커서 색상 설정 (원하는 색상으로 변경 가능) */
+    position: relative; /* 버튼 위치 조정을 위해 부모를 기준으로 설정 */
+}
+
+#userid, #usernick {
+    width: 440px;
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+button {
+    background-color:#4169E1 ;
+    color:white ;
+    padding :10px;
+    border-radius :5px ;
+    border:none ;
+    align-self: center; /* 버튼을 중앙 정렬 */
+    margin-top: auto; /* 위쪽 여백 자동 설정 */
+}
+
+
+/*중복확인 버튼 스타일*/
+.input-wrapper {
+    position: relative; /* 부모 요소를 기준으로 자식 요소의 위치 조정 */
+}
+
+.input-wrapper input {
+    width: 100%; /* 입력 필드가 부모 너비를 채우도록 설정 */
+    padding-right: 80px; /* 버튼 공간 확보 */
+}
+
+.input-wrapper button {
+    position: absolute; /* 부모 요소 기준 위치 고정 */
+    top: 50%; /* 세로 중앙 정렬 */
+    right: 20px; /* 오른쪽 여백 */
+    transform: translateY(-50%); /* 정확한 중앙 정렬을 위해 이동 */
+    background-color: #4169E1;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+button:hover {
+    background-color: #27408B; /* 배경색 변경 */
+}
