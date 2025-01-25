@@ -1,94 +1,127 @@
-main {
-    font-family: Arial, sans-serif;
+/* 전체 페이지 스타일 */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.form-container {
-padding: 30px;
-    border-radius: 8px;
+.container {
+    width: 360px;
+    padding: 20px;
+    border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 400px;
-    max-width: 500px;
-
+    background-color: #ffffff;
 }
 
-h2 {
+.title {
+    font-size: 24px;
+    font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
-.form-group {
+/* 입력 그룹 스타일 */
+.input-group {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 15px;
 }
 
-.form-group label {
-    font-size: 14px;
+.input-group label {
+    font-size: 12px;
+    color: #424242;
+}
+
+.inline-input {
+    display: flex;
+    align-items: center;
     width: 200px;
 }
 
-.form-group input,
-.form-group select {
-    width: 170px;
-    padding: 10px;
+.inline-input input {
+    width: 200px; /* 입력 필드 크기 조정 */
+    padding: 8px 10px;
     font-size: 14px;
-    border: none ;
-    border-radius: 4px;
-    border-bottom: solid 1px #dddddd;
-    text-align: right; /* 텍스트 오른쪽 정렬 */
-}
-
-.form-group span {
-    margin-left: 5px; /* 단위와 입력 필드 간격 조정 */
-    font-size: 14px;
-}
-
-.toggle-group {
-    display: flex; /* 버튼을 한 줄로 배치 */
-    justify-content: space-between;
-    gap: 10px; /* 버튼 간격 조정 */
-    margin-top: 10px;
-    font-size: 13px;
-
-}
-
-.toggle-btn {
-    flex-grow: 1; /* 버튼 크기 동일화 */
-    margin-left: 30px;
-    padding: 10px;
+    border: none;
+    border-bottom: solid #ddd thin;
     border-radius: 5px;
-    background-color: #f0f0f0;
-    border: solid #ddd thin;
-    text-align: center; /* 텍스트 중앙 정렬 */
-
 
 }
 
-.toggle-btn:hover {
-    background-color: #4169E1; /*호버시*/
-    color: white;
+.inline-input span {
+    margin-left: 8px; /* 단위와 입력 필드 간격 */
 }
 
-
-
-.toggle-btn .selected {
-    background-color: #4169E1; /* 선택된 버튼 색상 */
-    color: white;
-}
-
-
-
-button[type='submit'] {
-    margin-top: 15px;
-    width: 100%;
+/* 셀렉트 박스 스타일 */
+select {
+    width: 200px;
     padding: 10px;
-    background-color: #4169E1;
-    color: white;
-    border-radius: 4px;
-    border : none;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    cursor: pointer;
 }
+
+/* 라디오 버튼 그룹 */
+.radio-group {
+    display: flex;
+
+
+}
+.radio-group label {
+    font-size: 13px;
+    margin-right: 10px; /* 레이블과 버튼 사이 간격 */
+
+}
+
+.radio-btn {
+    flex: 1; /* 버튼 크기를 동일하게 설정 */
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #f9f9f9; /* 기본 배경색 */
+    border: none;
+    width: 93px;
+
+}
+
+
+.radio-btn:hover {
+    background-color: #4169E1; /* 활성화된 버튼 배경색 */
+    color: white; /* 활성화된 버튼 글자색 */
+}
+
+
+
+
+/* 제출 버튼 스타일 */
+.submit-btn {
+    width: 360px;
+    margin-top: 20px; /* 위쪽 여백 추가 */
+    padding: 12px; /* 버튼 높이 조정 */
+    border: none;
+    background-color: #4169E1; /* 활성화된 버튼 배경색 */
+    color:white;
+    border-radius: 4px;
+
+}
+
+.submit-btn:hover {
+    cursor: pointer;
+}
+
+.aa {
+    justify-content: center;
+    width: 200px;
+    gap:7px;
+
+}
+
