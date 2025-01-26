@@ -31,6 +31,7 @@ body {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 15px;
+
 }
 
 .input-group label {
@@ -42,6 +43,7 @@ body {
     display: flex;
     align-items: center;
     width: 200px;
+
 }
 
 .inline-input input {
@@ -51,7 +53,7 @@ body {
     border: none;
     border-bottom: solid #ddd thin;
     border-radius: 5px;
-
+    outline: none; /* 포커스 시 나타나는 외곽선 제거 */
 }
 
 .inline-input span {
@@ -71,13 +73,11 @@ select {
 /* 라디오 버튼 그룹 */
 .radio-group {
     display: flex;
-
-
 }
+
 .radio-group label {
     font-size: 13px;
     margin-right: 10px; /* 레이블과 버튼 사이 간격 */
-
 }
 
 .radio-btn {
@@ -90,17 +90,12 @@ select {
     background-color: #f9f9f9; /* 기본 배경색 */
     border: none;
     width: 93px;
-
 }
-
 
 .radio-btn:hover {
     background-color: #4169E1; /* 활성화된 버튼 배경색 */
     color: white; /* 활성화된 버튼 글자색 */
 }
-
-
-
 
 /* 제출 버튼 스타일 */
 .submit-btn {
@@ -109,19 +104,17 @@ select {
     padding: 12px; /* 버튼 높이 조정 */
     border: none;
     background-color: #4169E1; /* 활성화된 버튼 배경색 */
-    color:white;
+    color: white;
     border-radius: 4px;
-
 }
 
 .submit-btn:hover {
     cursor: pointer;
 }
 
-.aa {
+.aa {   /* 흡연음주 버튼 정렬클래스 */
     justify-content: center;
     width: 200px;
-    gap:7px;
-
+    gap: 7px;
 }
 

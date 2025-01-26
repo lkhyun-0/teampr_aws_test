@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class UserController {
 
+    @RequestMapping("/")
+    public String tset() {
+        return "test";
+    }
+
     @RequestMapping("/user/userLogin")
     public String userLogin() {
         return "user/userLogin";
