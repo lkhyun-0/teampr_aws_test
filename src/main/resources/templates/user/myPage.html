@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <link href="<%=request.getContextPath()%>/resources/css/user/mypage.css" type="text/css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+<!-- Header -->
+
+
+<div class="main-container">
+    <!-- 상단 섹션 -->
+    <div class="top-section">
+        <ul class="profile-card">
+            <li class="profile-photo">
+                <img src="/resources/image/도경수.jpg" alt="프로필 사진">
+            </li>
+
+            <li class="profile-contents">
+                <p>닉네임: ${usernick}</p>
+                <p>운동레벨: ${u_dv.e_level}</p>
+                <p>질병: ${u_dv.sicktype}</p>
+                <p>생년월일: ${u_dv.userbirth}</p>
+                <p>가입일: ${joindate}</p>
+            </li>
+        </ul>
+
+        <!-- 그래프 섹션 -->
+        <div class="graph-section">
+            <canvas id="progressChart"></canvas>
+        </div>
+    </div>
+
+    <!-- 추가 정보 섹션 -->
+    <div class="additional-info">
+        <!-- 수정하기 버튼 -->
+        <button class="edit-button" onclick="openEditModal()">수정하기</button>
+        <p>전화번호:${userphone}</p>
+        <p>이메일: ${useremail}</p>
+        <p>키: ${u_dv.height}cm</p>
+        <p>몸무게:${u_dv.weight}kg</p>
+        <p>흡연/음주: ${u_dv.smoke} / ${u_dv.drink}</p>
+    </div>
+
+    <!-- 수정 모달 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h3>추가 정보 수정</h3>
+            <form id="editForm">
+                <label for="phone">전화번호:</label>
+                <input type="text" id="userphone" name="userphone" value="${userphone}">
+
+                <label for="email">이메일:</label>
+                <input type="email" id="useremail" name="useremail" value="${useremail}">
+
+                <label for="height">키:</label>
+                <input type="text" id="height" name="height" value="${u_dv.height}cm">
+
+                <label for="weight">몸무게:</label>
+                <input type="text" id="weight" name="weight" value="${u_dv.weight}kg">
+
+                <label for="habits">흡연/음주 여부:</label>
+                <input type="checkbox" name="smoking" value="흡연"> 흡연
+                <input type="checkbox" name="drinking" value="음주"> 음주
+
+            </form>
+            <!-- 저장하기 버튼 -->
+            <button type="submit" class = "save-button">저장하기</button>
+            <button type="submit" class = "delete-button">회원탈퇴하기</button>
+        </div>
+    </div>
+
+    <!-- 게시글 목록 -->
+    <div class="post-container">
+        <!-- Q&A 목록 -->
+        <div class="post-list">
+            <h3><a href= "${pageContext.request.contextPath}/qnaBoard/qnaBoardList.aws" style="color: #6495ED;">내가 작성한 Q&A</a></h3>
+            <ul>
+                <c:forEach var="qna" items = "${mypageQnaList}">
+                    <li><a href="#">${qna.subject}	작성일 : ${qna.writedate}</a></li>
+                </c:forEach>
+            </ul>
+        </div>
+
+        <!-- 자유게시판 글 목록 -->
+        <div class="post-list">
+            <h3><a href= "${pageContext.request.contextPath}/freeBoard/freeBoardList.aws" style="color: #6495ED;">내가 작성한 자유게시판 글</a></h3>
+            <ul>
+                <c:forEach var="free" items = "${mypageFreeList}">
+                    <li><a href="#">${free.subject}  작성일:${free.writedate}</a></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer -->
+
+<!-- 그래프 스크립트 -->
+
+
+</body>
+</html>

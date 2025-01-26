@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입페이지</title>
+    <link href="/css/user/join.css" type="text/css" rel="stylesheet">
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<body>
+<!--header-->
+<div th:insert="/common/header.html" :: header></div>   <!-- 헤더 푸터 div로 감싸서 삽입하기 -->
+
+
+<!-- 약관 동의 모달 팝업 -->
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>약관 동의</h2>
+        </div>
+        <div class="modal-body">
+            <label>
+                <input type="checkbox" id="agreeAll" onclick="toggleAllCheckboxes()">
+                개인정보 수집 및 이용약관에 모두 동의
+            </label>
+            <br><br>
+
+            <label>
+                <input type="checkbox" id="agreeRequired">
+                개인정보 수집 및 이용약관 동의 (<span style="color: red;">필수</span>)
+            </label>
+            <div class="terms-box">
+                <p>개인정보 활용 동의 내용<br>1. 수집목적<br>2. 수집항목</p>
+            </div>
+            <br>
+
+            <label>
+                <input type="checkbox" id="agreeOptional">
+                마케팅 활용 및 광고 수신 동의 (<span style="color: blue;">선택</span>)
+            </label>
+            <div class="terms-box">
+                <p>개인정보 활용 동의 내용<br>1. 수집목적<br>2. 수집항목</p>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button onclick="declineTerms()">취소</button>
+            <button onclick="agreeTerms()">회원가입하기</button>
+        </div>
+    </div>
+</div>
+
+<main>
+
+    <section class="registration-form">
+        <h1>회원가입</h1>
+        <form name="frm" action="${pageContext.request.contextPath}/user/userJoinAction.aws" method="post">
+            <input type="hidden" id="grade" name="grade" value="U">
+
+            <div class="form-group">
+                <label for="name">이름</label>
+                <input type="text" id="username" name="username" placeholder="이름을 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nickname">닉네임</label>
+                <div class="input-wrapper">
+                    <input type="text" id="usernick" name="usernick" placeholder="닉네임을 입력하세요" required>
+                    <button type="button" id="nickcheck-btn" class="nickcheck-btn" onclick="checkNickname()" value="N">
+                        중복확인
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id">아이디</label>
+                <div class="input-wrapper">
+                    <input type="text" id="userid" name="userid" placeholder="아이디를 입력하세요" required>
+                    <button type="button" id="idcheck-btn" class="idcheck-btn" onclick="checkUserId()" value="N">중복확인
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="userpwd" name="userpwd" placeholder="비밀번호를 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">비밀번호 확인</label>
+                <input type="password" id="userpwd2" name="userpwd2" placeholder="비밀번호를 확인해주세요" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">전화번호</label>
+                <input type="tel" id="userphone" name="userphone" placeholder="전화번호를 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="email" id="useremail" name="useremail" placeholder="이메일을 입력하세요" required>
+            </div>
+
+            <button type="button" onclick="check();">회원가입하기</button>
+        </form>
+    </section>
+</main>
+
+<script>
+    // 모달 팝업 띄우기
+    window.onload = function () {
+        document.getElementById("termsModal").style.display = "block";
+    };
+
+    // 모달 닫기
+    function closeModal() {
+        document.getElementById("termsModal").style.display = "none";
+    }
+
+    // 약관 동의 시 회원가입 폼 보이기
+    function agreeTerms() {
+        closeModal();  // 모달 닫기
+        document.getElementById("signupForm").style.display = "block";  // 회원가입 폼 보이기
+    }
+
+    // 약관 동의 안 함
+    function declineTerms() {
+        alert("동의하지 않으면 회원가입을 할 수 없어용 ㅜㅜ")
+        window.location.href = "/user/userLogin";  // 약관동의 안하면 로그인페이지로 보내기
+    }
+</script>
+
+
+<!-- footer -->
+<!-- footer -->
+<div th:insert="/common/footer.html" :: footer></div>
+
+</body>
+</html>
