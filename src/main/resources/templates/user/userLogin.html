@@ -26,6 +26,8 @@
 </head>
 <body>
 <!--header-->
+<div th:insert="/common/header.html" :: header></div>   <!-- 헤더 푸터 div로 감싸서 삽입하기 -->
+
 <main>
     <div class="overlay"></div> <!-- 팝업 필름 -->
     <div class="find-pw-popup">
@@ -72,9 +74,6 @@
 </main>
 
 <!-- footer -->
-<!--
-<footer th:insert="/include/footer.html" :: footer>
--->
-</footer>
+<div th:insert="/common/footer.html" :: footer></div>
 </body>
 </html>

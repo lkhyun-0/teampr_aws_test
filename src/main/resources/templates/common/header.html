@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>header-footer</title>
+    <link href= "/css/common/header-footer.css" type="text/css" rel="stylesheet">
+    <!-- 폰트어썸 불러오기 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <!-- 제이쿼리 불러오기 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<!-- 헤더 -->
+<section class="top-bar">
+    <div class="header-container">
+        <div class="header-logo">
+            <!-- 로고 -->
+            <a href="/index.html">
+                <img src="/images/logo.jpg" class="logo-img">
+            </a>
+        </div>
+        <div class="header-menu">
+            <ul>
+                <li><a href="#">회원가입</a></li>
+                <li><a href="#">로그인</a></li>
+                <li>
+                    <button class="category-btn">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<div class="popup">
+    <div class="popup-content">
+        <div class="popup__head">
+            <div>CHAPTER</div>
+            <button class="popup-close-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="popup__body">
+            <ul>
+                <li><a href="#">운동</a></li>
+                <li><a href="#">식단</a></li>
+                <li><a href="#">병원/약 일정 관리</a></li>
+                <li><a href="#">질병 자가진단</a></li>
+                <li><a href="#">가까운 병원 찾기</a></li>
+                <li><a href="#">자유게시판</a></li>
+                <li><a href="#">Q&A</a></li>
+                <li><a href="#">공지사항</a></li>
+            </ul>
+        </div>
+        <div class="popup__foot">
+            <a href="#">로그인</a> / <a href="#">회원가입</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // 버튼 클릭 하면 팝업 보여줌
+        $('.category-btn').click(function () {
+            $('.popup').css('display', 'block');
+        });
+
+        // 버튼 클릭 하면 팝업 가림
+        $('.popup-close-btn').click(function () {
+            $('.popup').css('display', 'none');
+        });
+
+        // .popup을 클릭하면 닫히도록 설정
+        $(".popup").on("click", function () {
+            $(this).hide(); // .popup을 숨김
+        });
+
+        // .popup-content 내부를 클릭했을 때 이벤트 전파 방지
+        $(".popup-content").on("click", function (event) {
+            event.stopPropagation(); // 부모(.popup)로 이벤트가 전달되지 않도록 방지
+        });
+    });
+
+</script>
+</body>
+</html>

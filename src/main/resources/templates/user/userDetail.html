@@ -7,9 +7,10 @@
     <link href="/css/user/detail.css" type="text/css" rel="stylesheet">
 </head>
 <body>
+<!--header-->
+<div th:insert="/common/header.html" :: header></div>   <!-- 헤더 푸터 div로 감싸서 삽입하기 -->
 <div class="container">
     <h1 class="title">상세정보 입력</h1>
-
     <form class="form">
         <div class="input-group">
             <label for="age">나이를 알려주세요</label>
@@ -83,12 +84,12 @@
             </div>
         </div>
 
-        <!-- Submit button -->
         <button type="submit" class="submit-btn">상세정보 입력 완료</button>
     </form>
 </div>
 
-<!-- External CSS -->
-<!-- Add the CSS below in a separate file named "style.css" -->
+<!-- footer -->
+<!--<footer th:insert="/common/footer.html" :: footer></footer>-->
+
 </body>
 </html>
