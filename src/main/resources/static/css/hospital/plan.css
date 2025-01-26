@@ -1,0 +1,87 @@
+/*노멀라이즈*/
+body, ul, li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color : inherit;
+}
+
+/*커스텀*/
+#calendar {
+    max-width: 90%;    /* 캘린더 최대 넓이 */
+    min-width: 1200px;  /* 최소 넓이 설정 */
+    margin: 30px auto;   /* 가운데 정렬 */
+}
+
+.fc-col-header-cell-cushion, .fc-daygrid-day-number {
+    text-decoration: none;
+}
+
+.fc-scrollgrid-sync-inner > .fc-col-header-cell-cushion,
+.fc-day-mon .fc-daygrid-day-number,
+.fc-day-tue .fc-daygrid-day-number,
+.fc-day-wed .fc-daygrid-day-number,
+.fc-day-thu .fc-daygrid-day-number,
+.fc-day-fri .fc-daygrid-day-number {
+    color: black;
+}
+
+.fc-day-sun .fc-col-header-cell-cushion,
+.fc-day-sun a{
+    color : red;
+}
+
+.fc-day-sat .fc-col-header-cell-cushion,
+.fc-day-sat a {
+    color : blue;
+}
+
+.fc-prev-button, .fc-next-button {
+    width: 50px !important; /* 버튼 넓이 */
+    width: 50px !important; /* 버튼 넓이 */
+    height: 50px !important; /* 버튼 높이 */
+    background-color: white !important; /* 버튼 배경색 */
+    color: #2c3e50 !important; /* 버튼 텍스트 색상 */
+    border: 2px solid #ddd !important; /* 기본 테두리 */
+    border-radius: 5px !important; /* 버튼 모서리 둥글게 */
+}
+
+.fc-today-button, .fc-addEventButton-button {
+    height: 50px !important; /* 버튼 높이 */
+    background-color: white !important; /* 버튼 배경색 */
+    color: #2c3e50 !important; /* 버튼 텍스트 색상 */
+    border: 2px solid #ddd !important; /* 기본 테두리 */
+    border-radius: 5px !important; /* 버튼 모서리 둥글게 */
+}
+
+.fc-prev-button:hover, .fc-next-button:hover, .fc-today-button:hover, .fc-addEventButton-button:hover {
+    background-color: #5882FA !important; /* 버튼 호버 배경색 */
+    color: white !important; /* 버튼 호버 텍스트 색상 */
+}
+
+.fc-prev-button:focus, .fc-next-button:focus, .fc-today-button:focus, .fc-addEventButton-button:focus {
+    outline: none !important; /* 포커스 outline 제거 */
+    box-shadow: none !important; /* 그림자 제거 */
+}
+
+.calendar-title {
+    display: flex;
+    flex-direction: column; /* 세로로 배치 */
+    align-items: center;    /* 가운데 정렬 */
+}
+
+.calendar-year {
+    font-size: 18px;        /* 연도 글자 크기 */
+    color: #000;            /* 연도 색상 */
+}
+
+.calendar-month {
+    font-weight: bold;      /* 글씨 굵게 */
+    font-size: 45px;        /* 월 글자 크기 */
+    color: #000;            /* 월 색상 */
+}
+
