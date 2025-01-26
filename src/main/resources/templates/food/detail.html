@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상세내용</title>
+    <link rel="stylesheet" href="/css/food/detail.css">
+</head>
+<body>
+<!-- 팝업 -->
+<div id="dietPopup" class="popup">
+    <div class="icon-legend">
+        <span>
+            <img src="/images/수정.png" alt="수정 아이콘" class="legend-icon"> : 수정
+        </span>
+        <span>
+            <img src="/images/x.png" alt="삭제 아이콘" class="legend-icon"> : 삭제
+        </span>
+    </div>
+    <div class="popup-content">
+        <button type="button" class="close" onclick="history.back();">&times;</button>
+        <h1>12월 19일 식단 기록표</h1>
+        <div class="meal-section">
+            <div class="meal-time">
+                <div class="meal-img">
+                    <img src="/images/아침.png" alt="아침">
+                </div>
+                <div class="meal-content">
+                    <ul class="meal-list">
+                        <li class="meal-header">
+                            <h3>아침</h3>
+                            <a href="#" class="edit-icon">
+                                <img src="/images/수정.png" alt="수정">
+                            </a>
+                        </li>
+                        <li class="meal-menu">닭가슴살<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">고구마<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">사과<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">땅콩버터<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">빵<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="meal-time">
+                <div class="meal-img">
+                    <img src="/images/점심.png" alt="점심">
+                </div>
+                <div class="meal-content">
+                    <ul class="meal-list">
+                        <li class="meal-header">
+                            <h3>점심</h3>
+                            <a href="#" class="edit-icon">
+                                <img src="/images/수정.png" alt="수정">
+                            </a>
+                        </li>
+                        <li class="meal-menu">빵<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">닭가슴살<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">사과<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">땅콩버터<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">고구마<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="meal-time">
+                <div class="meal-img">
+                    <img src="/images/저녁.png" alt="저녁">
+                </div>
+                <div class="meal-content">
+                    <ul class="meal-list">
+                        <li class="meal-header">
+                            <h3>저녁</h3>
+                            <a href="#" class="edit-icon">
+                                <img src="/images/수정.png" alt="수정">
+                            </a>
+                        </li>
+                        <li class="meal-menu">빵<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">땅콩버터<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">닭가슴살<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">사과<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                        <li class="meal-menu">고구마<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="total-calories">이 날 먹은 총 칼로리는 __________kcal 입니다.</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

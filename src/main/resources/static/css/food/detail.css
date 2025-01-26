@@ -1,0 +1,167 @@
+body, ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+body {
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.popup {
+    width: 660px;
+    height: 830px;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative; /* 부모 요소 기준으로 위치 설정 */
+}
+
+.icon-legend {
+    position: absolute; /* 팝업의 상단 왼쪽에 고정 */
+    top: 10px;
+    left: 20px;
+    font-size: 12px;
+    color: #424242;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.legend-icon {
+    width: 14px; /* 아이콘 크기 */
+    height: 14px;
+    vertical-align: middle;
+    margin-right: 5px; /* 아이콘과 텍스트 간의 간격 */
+}
+
+
+.popup-content {
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: -40px;
+    right: -10px;
+    background: none;
+    border: none;
+    font-size: 50px;
+    cursor: pointer;
+}
+
+h1 {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.meal-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.meal-time {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.meal-img img {
+    width: 140px;
+    height: 140px;
+    transform: translate(40px, 45px); /* 오른쪽으로 10px, 아래로 10px 이동 */
+}
+
+
+.meal-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 중앙 정렬 */
+    transform: translateX(-10px); /* 왼쪽으로 10px 이동 */
+}
+
+
+.meal-header {
+    margin-top: 20px; /* 제목과 아침 사이 여백 추가 */
+    display: flex;
+    align-items: center; /* 수직 가운데 정렬 */
+    gap: 8px; /* 아침과 연필 사이의 간격 */
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 1px; /* 아래 간격 줄이기 */
+}
+
+.meal-header h3 {
+    margin: 0; /* 제목의 기본 여백 제거 */
+}
+
+.edit-icon img {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.meal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.meal-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    position: relative;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 1px;
+    width: 270px;
+}
+
+.meal-menu span {
+    margin-left: 10px;
+}
+
+.delete-icon {
+    position: absolute; /* X 버튼을 줄 바깥으로 이동 */
+    right: -20px; /* 줄 바깥 오른쪽으로 이동 */
+    cursor: pointer;
+}
+
+
+
+
+.meal-menu::after {
+    content: "";
+    position: absolute;
+    bottom: 0; /* 줄 위치를 정확히 하단에 고정 */
+    left: 0;
+    width: 270px;
+    height: 1px;
+    border-bottom: 1px dashed #424242; /* 줄 스타일을 점선으로 설정 */
+}
+
+
+.total-calories {
+    font-size: 20px;
+    text-align: center;
+    position: absolute; /* 절대 위치로 고정 */
+    bottom: -100px; /* 부모 요소의 하단에서 20px 위에 고정 */
+    left: 50%; /* 수평 중앙 정렬 */
+    transform: translateX(-50%); /* 수평 중앙 정렬 보정 */
+    width: 100%; /* 넓이를 부모 요소에 맞춤 */
+}
