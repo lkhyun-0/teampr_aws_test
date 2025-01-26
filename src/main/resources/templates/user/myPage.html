@@ -10,9 +10,35 @@
 <body>
 
 <!-- Header -->
-
+<div th:insert="/common/header.html" :: header></div>   <!-- 헤더 푸터 div로 감싸서 삽입하기 -->
 
 <div class="main-container">
+
+    <!-- 회원정보 나타는 부분 -->
+    <div class = "info-container">
+        <div class = "user-profile-photo">
+        </div>
+        <div class ="user-info">
+            <ul>
+                <li>수정하기버튼</li>
+                <li>닉네임 : </li>
+                <li>관리중인 질병</li>
+                <li>생년월일 : </li>
+                <li>가입일 : </li>
+                <li>전화번호 : </li>
+                <li>이메일 : </li>
+                <li>키 / 체중 : </li>
+                <li>흡연 / 음주 : 🚬 / 🍺</li>
+            </ul>
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
     <!-- 상단 섹션 -->
     <div class="top-section">
         <ul class="profile-card">
@@ -101,7 +127,7 @@
 </div>
 
 <!-- Footer -->
-
+<div th:insert="/common/footer.html" :: footer></div>
 <!-- 그래프 스크립트 -->
 
 

@@ -1,0 +1,29 @@
+/*노말라이즈*/
+body,
+ul,
+li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    color: #424242;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+img {
+    display: block;
+    max-width: 150px;
+}
+
+.content {
+    margin-top: 270px;
+}
