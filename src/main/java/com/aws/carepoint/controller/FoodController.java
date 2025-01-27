@@ -10,6 +10,7 @@ public class FoodController {
 
     @GetMapping("/record")
     public String showRecordPage() {
+
         return "food/foodRecord"; // templates/food/foodRecord.html
     }
 
@@ -29,6 +30,24 @@ public class FoodController {
     public String showDetailPage() {
 
         return "food/detail"; // templates/food/analysis.html
+    }
+
+    @GetMapping("/recom")
+    public String showRecomPage() {
+
+        return "food/recom"; // templates/food/analysis.html
+    }
+
+    @GetMapping("/recomResult")
+    public String showRecomResultPage() {
+
+        return "food/recomResult"; // templates/food/analysis.html
+    }
+
+    @GetMapping("/write")
+    public String showWritePage() {
+
+        return "food/write"; // templates/food/analysis.html
     }
 
 

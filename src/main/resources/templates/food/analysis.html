@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diet Tracker</title>
-    <link rel="stylesheet" href="/css/food/foodRecord.css">
+    <link rel="stylesheet" href="/css/food/analysis.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -16,11 +18,108 @@
         <a href="/food/analysis" class="tab-button active">내 식단 분석</a>
     </div>
 
-    <!-- 외곽 박스 -->
     <div class="outer-container">
+        <div class="inner-container">
+            <!-- WEEKLY CHECK -->
+<!--            <div class="weekly-check">
+                <p>2025.01.06-2025.01.12</p>
+            </div>-->
 
+            <!-- 상단 카드 섹션 -->
+            <div class="top-section">
+                <div class="card">
+                    <p class="card-value">
+                        <span class="number">227</span>
+                        <span class="unit">g</span>
+                    </p>
+                    <p class="card-title">PROTEIN</p>
+                    <div class="bar">
+                        <div class="bar-inner protein"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <p class="card-value">
+                        <span class="number">175</span>
+                        <span class="unit">g</span>
+                    </p>
+                    <p class="card-title">CARBOHYDRATES</p>
+                    <div class="bar">
+                        <div class="bar-inner carbs"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <p class="card-value">
+                        <span class="number">89</span>
+                        <span class="unit">g</span>
+                    </p>
+                    <p class="card-title">FAT</p>
+                    <div class="bar">
+                        <div class="bar-inner fat"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 하단 카드 섹션 -->
+            <div class="bottom-section">
+                <div class="card large">
+                    <p class="analysis-title">이번주 총 칼로리</p>
+                    <canvas id="caloriesChart"></canvas>
+                </div>
+                <div class="card large">
+                    <p class="analysis-title">Improvement Tips</p>
+                    <p>⚡  이번주는 20대 단백질 권장 섭취량보다 5% 더 섭취 했습니다. </p>
+                    <p>💪 Protein intake is ideal. Keep it up!</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+
+<script>
+    const ctx = document.getElementById('caloriesChart').getContext('2d');
+
+    // Linear Gradient 생성
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, '#8364DF');
+    gradient.addColorStop(1, '#C084FC');
+
+    // 도넛 그래프 생성
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            datasets: [
+                {
+                    data: [72, 28], // 목표 대비 비율
+                    backgroundColor: [gradient, '#E0E0E0'], // 색상 설정
+                    borderWidth: 0, // 외곽선 제거
+                    cutout: '75%', // 링 두께 조정
+                },
+            ],
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false, // 범례 숨김
+                },
+                tooltip: {
+                    enabled: false, // 툴팁 숨김
+                },
+            },
+            responsive: true,
+            maintainAspectRatio: false, // 비율 유지 해제
+        },
+    });
+
+    // 링 중앙에 텍스트 삽입
+    const textContainer = document.createElement('div');
+    textContainer.classList.add('chart-center-text');
+    textContainer.innerHTML = `
+    <p>2032 <span style="font-size: 14px; color: #999;">cal</span></p>`;
+    document.querySelector('#caloriesChart').parentElement.appendChild(textContainer);
+
+</script>
+
 
 </body>
 </html>

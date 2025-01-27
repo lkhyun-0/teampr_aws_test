@@ -1,0 +1,181 @@
+body, ul, li {
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+h1 {
+    font-size: 30px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 420px);
+    grid-gap: 25px;
+    justify-content: center;
+}
+
+.card {
+    width: 420px;
+    height: 270px;
+    background-color: #87B9F8;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.card img {
+    width: 270px;
+    height: 270px;
+    object-fit: contain;
+}
+
+.card-text {
+    font-size: 27px;
+    color: white;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.button {
+    margin-top: 30px;
+    padding: 10px 20px;
+    font-size: 20px;
+    background-color: #4169E1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #87B9F8;
+}
+
+
+
+
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8); /* 밝은 배경 */
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.spinner {
+    animation: rotator 1.4s linear infinite; /* 원 회전 애니메이션 */
+    margin-bottom: 20px; /* SVG와 텍스트 간격 */
+}
+
+#loading-screen p {
+    font-size: 18px;
+    margin: 0;
+    text-align: center;
+    color: #333;
+    font-weight: bold;
+}
+
+@keyframes rotator {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(270deg); }
+}
+
+.path {
+    stroke: #4285F4; /* 초기 색상 */
+    stroke-dasharray: 187; /* 원 둘레 값 */
+    stroke-dashoffset: 0; /* 초기 오프셋 값 */
+    transform-origin: center;
+    animation:
+            dash 1.4s ease-in-out infinite, /* 대시 애니메이션 */
+            colors 5.6s ease-in-out infinite; /* 색상 변경 애니메이션 */
+}
+
+@keyframes colors {
+    0% { stroke: #4285F4; }
+    25% { stroke: #DE3E35; }
+    50% { stroke: #F7C223; }
+    75% { stroke: #1B9A59; }
+    100% { stroke: #4285F4; }
+}
+
+@keyframes dash {
+    0% { stroke-dashoffset: 187; }
+    50% {
+        stroke-dashoffset: 47; /* 원의 1/4 길이 */
+        transform: rotate(135deg);
+    }
+    100% {
+        stroke-dashoffset: 187;
+        transform: rotate(450deg);
+    }
+}
+
+
+
+/*
+#loading-screen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); !* 반투명 검은 배경 *!
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    flex-direction: column; !* 텍스트와 스피너 세로 정렬 *!
+    font-family: Arial, sans-serif;
+}
+
+.spinner {
+    border: 6px solid rgba(255, 255, 255, 0.2); !* 연한 흰색 *!
+    border-top: 6px solid #fff; !* 진한 흰색 *!
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px; !* 텍스트와 간격 *!
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading-screen span {
+    font-size: 18px;
+    text-align: center;
+}*/
