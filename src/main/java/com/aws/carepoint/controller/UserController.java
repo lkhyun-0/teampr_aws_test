@@ -27,6 +27,11 @@ public class UserController {
     public String myPage() {
         return "user/myPage";
     }
+    @RequestMapping("/user/mainPage")
+    public String mainPage() {
+        return "user/mainPage";
+    }
+
 
 
 
