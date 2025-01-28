@@ -14,7 +14,7 @@
                 headerToolbar: {
                     left: 'prev',
                     center: 'title',
-                    right: 'today next' // 다양한 보기 옵션
+                    right: 'next' // 다양한 보기 옵션
                 },
                 views: {
                     dayGridMonth: {
@@ -24,7 +24,7 @@
                         }
                     }
                 },
-                datesSet: function(info) {
+                datesSet: function (info) {
                     setTimeout(() => {
                         var titleEl = document.querySelector('.fc-toolbar-title');
                         if (titleEl) {
@@ -81,9 +81,47 @@
 </head>
 <body>
 <!--header-->
+<div th:insert="/common/header.html"></div>
 
-<div id="calendar"></div>
+<section class="main">
+    <div id="calendar"></div>
+    <div class="plan">
+        <div class="hospital-plan">
+            <div class="hospital-title">🏥 병원 일정 입력하기</div>
+            <div class="hospital-content">
+                <div class="hospital-favorite">즐겨찾기</div>
+                <div class="favorite-list">
+                    <a href="#">대전우리병원</a>
+                    <a href="#">대전센텀병원</a>
+                    <a href="#">대전을지대학교병원</a>
+                </div>
+                <div class="hospital-input">
+                    <form action="">
 
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="medicine-plan">
+            <div class="medicine-title">약 일정 입력하기</div>
+            <div class="medicine-content">
+                <div class="medicine-favorite">즐겨찾기</div>
+                <div class="favorite-list">
+                    <a href="#">당뇨약</a>
+                    <a href="#">감기약</a>
+                </div>
+                <div class="medicine-input">
+                    <form action="">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--footer-->
+<div th:insert="/common/footer.html"></div>
 
 </body>
 </html>

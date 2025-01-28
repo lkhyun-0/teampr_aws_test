@@ -39,6 +39,7 @@ img {
     background-color: white;
     top: 0;
     left: 0;
+    z-index: 1000;
     border-bottom: 1px solid lightgray;
 }
 
