@@ -64,7 +64,7 @@
             </tr>
             </tbody>
         </table>
-        <button class="submit-button">당뇨 자가진단결과보기</button> <!--이거 클릭하면 결과 보여주기 팝업 사용-->
+        <button type="button" id="showResultButton1" class="submit-button">당뇨 자가진단결과보기</button> <!--이거 클릭하면 결과 보여주기 팝업 사용-->
     </div> <!-- 비만 체크리스트 -->
     <div class="tab-content" id="tab2">
         <div class="bmi-container">
@@ -231,7 +231,20 @@
 
             </tbody>
         </table>
-        <button class="submit-button">고혈압 자가진단결과보기</button> <!--이거 클릭하면 결과 보여주기 팝업 사용-->
+        <button type="button" id="showResultButton2" class="submit-button">고혈압 자가진단결과보기</button> <!--이거 클릭하면 결과 보여주기 팝업 사용-->
+    </div>
+
+    <!-- 팝업 모달 -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>당뇨자가진단결과</h2>
+            <p id="resultMessage">총 체크 항목 <span id="checkedCount">0</span>개<br>가까운 병원을 내원하셔서 검진을 받아보시길 추천드립니다.</p>
+            <div class="modal-buttons">
+                <button id="mainPageButton" class="modal-button">메인페이지</button>
+                <button id="hospitalButton" class="modal-button">내근처병원</button>
+            </div>
+        </div>
     </div>
 </div>
 </body>
@@ -299,6 +312,74 @@
         resultContainer.style.display = 'block';
     });
 
+    // 모달 요소 가져오기
+    const modal = document.getElementById("resultModal");
+    const closeModal = document.querySelector(".close");
+    const showResultButton1 = document.getElementById("showResultButton1");
+    const showResultButton2 = document.getElementById("showResultButton2");
+    const checkedCountElement = document.getElementById("checkedCount");
+
+    // 결과 보기 버튼 클릭 시 모달 열기
+    showResultButton1.addEventListener("click", function () {
+        // 체크박스 개수 계산
+        const checkboxes = document.querySelectorAll(".checklist-item");
+        let checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+        // 체크된 개수 업데이트
+        checkedCountElement.textContent = checkedCount;
+
+        // 결과 메시지 업데이트 (조건에 따라 변경 가능)
+        const resultMessage = document.getElementById("resultMessage");
+
+
+        if (checkedCount >= 3) {
+            resultMessage.innerHTML = `총 체크 항목 ${checkedCount}개<br>가까운 병원을 내원하셔서 검진을 받아보시길 추천드립니다.`;
+        } else if (checkedCount < 3) {
+            resultMessage.innerHTML = `총 체크 항목 ${checkedCount}개<br>잘 관리하고 계시군요! 꾸준한 관리를 통해 건강을 유지하세요!`;
+        } else if (checkedCount <= 0){
+            resultMessage.innerHTML = `아무 항목도 선택되지 않았습니다.<br>증상이 있는 경우 체크해주세요!`;
+        }
+
+        // 모달 표시
+        modal.style.display = "block";
+    });
+
+    // 결과 보기 버튼 클릭 시 모달 열기
+    showResultButton2.addEventListener("click", function () {
+        // 체크박스 개수 계산
+        const checkboxes = document.querySelectorAll(".checklist-item");
+        let checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+        // 체크된 개수 업데이트
+        checkedCountElement.textContent = checkedCount;
+
+        // 결과 메시지 업데이트 (조건에 따라 변경 가능)
+        const resultMessage = document.getElementById("resultMessage");
+
+        // 조건 설정 (예시로 당뇨는 >=5, 다른 체크리스트는 >=8로 구분)
+        if (checkedCount >= 8) {
+            resultMessage.innerHTML = `총 체크 항목 ${checkedCount}개<br>가까운 병원을 내원하셔서 검진을 받아보시길 추천드립니다.`;
+        } else if (checkedCount > 0) {
+            resultMessage.innerHTML = `총 체크 항목 ${checkedCount}개<br>잘 관리하고 계시군요! 꾸준한 관리를 통해 건강을 유지하세요!`;
+        } else {
+            resultMessage.innerHTML = `아무 항목도 선택되지 않았습니다.<br>증상이 있는 경우 체크해주세요!`;
+        }
+
+        // 모달 표시
+        modal.style.display = "block";
+    });
+
+    // 닫기 버튼 클릭 시 모달 닫기
+    closeModal.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    // 모달 외부 클릭 시 닫기
+    window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
 
 
 
