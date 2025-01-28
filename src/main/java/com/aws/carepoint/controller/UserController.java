@@ -31,6 +31,10 @@ public class UserController {
     public String mainPage() {
         return "user/mainPage";
     }
+    @RequestMapping("/user/selfCheckList")
+    public String selfCheckList() {
+        return "user/selfCheckList";
+    }
 
 
 

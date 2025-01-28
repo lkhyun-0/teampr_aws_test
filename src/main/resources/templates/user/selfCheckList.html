@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자가진단 체크리스트</title>
+    <link href="/css/user/self.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="tabs-container">
+    <!-- 탭 버튼 -->
+    <div class="tab-buttons">
+        <button class="tab-button active" data-tab="tab1">당뇨</button>
+        <button class="tab-button" data-tab="tab2">비만</button>
+        <button class="tab-button" data-tab="tab3">고혈압</button>
+    </div>
+
+    <!-- 탭 콘텐츠 -->
+    <div class="tab-content active" id="tab1">
+        <h2>자가진단체크리스트</h2>
+        <table class="table-container">
+            <thead>
+            <tr>
+                <th>증상</th>
+                <th>체크</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>목이 자주 마르고 침이 잘 안 나온다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>화장실 가는 횟수가 늘어났다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>아무리 먹어도 공복감이 생기고 식욕이 왕성하다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>점점 살이 빠지고 몸이 야위어 간다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>항상 나른하고 매사가 귀찮다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>부스럼이 잘 일어나고 습진, 무좀이 생긴다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>눈에 초첨이 잘 안잡히고 증상이 잦다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>잇몸 염증이 자주 발생하고 피가 난다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>가족중에 당뇨환자가 있다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="submit-button">당뇨 자가진단결과보기</button> <!--이거 클릭하면 결과 보여주기 팝업 사용-->
+    </div> <!-- 비만 체크리스트 -->
+    <div class="tab-content" id="tab2">
+        <div class="bmi-container">
+            <h1 class="bmi-title">나의 BMI 지수 알아보기</h1>
+
+                <p>간단하게 측정하는 방법으로 체질량지수(BMI)가 있습니다.</p>
+                <p>하단에 신장과 체중을 입력해주세요.</p>
+
+            <!-- 입력 폼 -->
+            <form id="bmiForm" class="bmi-form">
+                <div class="form-inline">
+                    <label for="height" style="width: 50px;">키:</label>
+                    <input type="number" id="height" placeholder="예) 170" required>
+                    <span>/</span>
+                    <label for="weight">몸무게:</label>
+                    <input type="number" id="weight" placeholder="예) 65" required>
+                    <button type="submit" class="bmi-button">계산하기</button>
+                </div>
+            </form>
+
+            <!-- BMI 결과 -->
+            <div id="bmiResult" class="result" style="display: none;">
+                <h2>결과</h2>
+                <p>BMI 지수는 <span id="bmiValue" class="bmi-value"></span>입니다.</p>
+                <p id="statusMessage"></p>
+                <p>표준 체중은 <span id="standardWeight" class="standard-weight"></span>kg입니다.</p>
+
+                <!-- BMI 바 -->
+                <div class="bmi-bar-container">
+                    <ul class="bmi-ul">
+                        <li>저체중</li>
+                        <li>정상</li>
+                        <li>과체중</li>
+                        <li>비만</li>
+                    </ul>
+                    <div class="bmi-bar">
+                        <div id="underweightBar" class="bar-section underweight"></div>
+                        <div id="normalBar" class="bar-section normal"></div>
+                        <div id="overweightBar" class="bar-section overweight"></div>
+                        <div id="obeseBar" class="bar-section obese"></div>
+                    </div>
+                    <ul class="bmi-numbers">
+                        <li>18.5</li>
+                        <li>23</li>
+                        <li>25</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="tab-content" id="tab3">
+        <h2>자가진단체크리스트</h2>
+        <table class="table-container">
+            <thead>
+            <tr>
+                <th>증상</th>
+                <th>체크</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>부모 중 고혈압을 앓고 있는 분이 계시다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>평소 음식을 짜고 맵게 먹는 편이다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>담배를 하루에 반 갑 이상 피운다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>술을 1주일에 3회 이상 마신다</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>체중이 많이 나가는 편이다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>나이가 45세 이상이다.(여자는 55세)</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>현재 당뇨병을 앓고 있다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>규칙적으로 하는 운동이 없다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>성격이 급하고 화를 잘 내는 편이다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>평소 튀김같은 기름기 많은 음식을 즐겨 먹는다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>뒷목이 자주 뻣뻣하다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>특별한 이유 없이 갑자기 어지러워지는 경우가 자주 있다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>조금만 움직이거나 계단을 한 층 정도만 올라가도 금방 숨이 찬다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>쉽게 피로해지고 늘 피곤한 느낌이 있다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>가끔 가슴이 울렁거리고 맥박이 고르지 않게 뛴다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>갑자기 가슴에 통증이 오고 이 통증이 어깨나 등으로 번진다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>잠을 자다 숨이 차 깨는 경우가 자주 있다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>귀속에서 윙 하는 소리가 들리는 경우가 자주 있다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>베개를 높여야 편안하게 잘 수 있다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>팔, 다리가 자주 저리다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>골치가 자주 아프고, 이때 거의 대부분 구역질이 같이 생긴다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>발이 자주 붓는다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>감기에 걸린 것도 아닌데 기침을 자주 한다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>소변을 볼 때마다 통증이 있다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+            <tr>
+                <td>눈이 침침하고 눈 앞에 실오라기 같은 것이 떠 다닌다.</td>
+                <td><input type="checkbox"></td>
+            </tr>
+
+            </tbody>
+        </table>
+        <button class="submit-button">고혈압 자가진단결과보기</button> <!--이거 클릭하면 결과 보여주기 팝업 사용-->
+    </div>
+</div>
+</body>
+<script>
+    // 모든 탭 버튼과 콘텐츠 가져오기
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    // 각 버튼에 클릭 이벤트 추가
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 모든 버튼과 콘텐츠 비활성화
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // 클릭된 버튼과 관련된 콘텐츠 활성화
+            button.classList.add('active');
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+
+    document.getElementById('bmiForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // 폼 제출 방지
+
+        // 입력 값 가져오기
+        const height = parseFloat(document.getElementById('height').value) / 100; // cm -> m 변환
+        const weight = parseFloat(document.getElementById('weight').value);
+
+        if (!height || !weight) {
+            alert("키와 몸무게를 올바르게 입력해주세요.");
+            return;
+        }
+
+        // BMI 계산
+        const bmi = (weight / (height * height)).toFixed(1);
+
+        // 표준 체중 계산 (예: BMI 22 기준)
+        const standardWeight = (22 * height * height).toFixed(1);
+
+        // 결과 표시
+        const resultContainer = document.getElementById('bmiResult');
+        const bmiValueElement = document.getElementById('bmiValue');
+        const standardWeightElement = document.getElementById('standardWeight');
+
+        bmiValueElement.textContent = bmi;
+        standardWeightElement.textContent = standardWeight;
+
+        // BMI 상태에 따른 메시지 추가
+        let statusMessage = "";
+        if (bmi < 18.5) {
+            statusMessage = "저체중입니다.";
+        } else if (bmi >= 18.5 && bmi < 24.9) {
+            statusMessage = "정상 체중입니다.";
+        } else if (bmi >= 25 && bmi < 29.9) {
+            statusMessage = "과체중입니다.";
+        } else {
+            statusMessage = "비만입니다.";
+        }
+
+        document.getElementById('statusMessage').textContent = statusMessage;
+
+        // 결과 컨테이너 표시
+        resultContainer.style.display = 'block';
+    });
+
+
+
+
+</script>
+
+</html>
