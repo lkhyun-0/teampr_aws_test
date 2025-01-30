@@ -1,5 +1,6 @@
 /*노멀라이즈*/
 body, ul, li {
+    font-family: 'Arial', sans-serif;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -20,6 +21,7 @@ a {
 }
 
 /* 캘린더 */
+
 #calendar {
     max-width: 100%;    /* 캘린더 최대 넓이 */
     min-width: 1200px;  /* 최소 넓이 설정 */
@@ -103,23 +105,30 @@ a {
     align-items: center;
 }
 
-.hospital-title, .medicine-title {
+.plan-title {
     text-align: center;
     padding: 10px;
     font-weight: bold;
 }
 
-.hospital-content, .medicine-content {
+.plan-content {
     border: 2px solid #ddd;
     min-width: 400px;
     padding: 15px 50px;
 }
 
 /*즐겨찾기*/
-.hospital-favorite, .medicine-favorite {
+.plan-favorite {
+    display: flex;
     padding: 5px;
     margin-bottom: 5px;
     font-weight: bold;
+}
+
+.plan-favorite > img {
+    width: 20px;
+    height: 20px;
+    padding: 0 5px;
 }
 
 .favorite-list > a{
