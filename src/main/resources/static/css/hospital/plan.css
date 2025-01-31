@@ -15,18 +15,19 @@ a {
 .main {
     display: flex;
     flex-direction: column;
-    align-content: center;
     margin: auto;
-    max-width: 60%;
+    min-width: 1100px;
+    width: 60%;
 }
 
 /* 캘린더 */
 
 #calendar {
-    max-width: 100%;    /* 캘린더 최대 넓이 */
-    min-width: 1200px;  /* 최소 넓이 설정 */
-    margin: 200px auto 50px;   /* 가운데 정렬 */
+    max-width: 100%; /* 부모 요소에 맞춤 */
+    width: 100%; /* 캘린더가 전체 차지하도록 설정 */
+    margin: 190px auto 50px; /* 상하 여백 및 가운데 정렬 유지 */
 }
+
 
 .fc-col-header-cell-cushion, .fc-daygrid-day-number {
     text-decoration: none;
@@ -99,7 +100,7 @@ a {
 .plan {
     display: flex;
     width: 100%;
-    min-width: 1200px;
+    min-width: 1000px;
     margin-bottom: 30px;
     justify-content: space-between;
     align-items: center;
