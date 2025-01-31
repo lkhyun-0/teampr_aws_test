@@ -23,6 +23,19 @@ public class UserController {
     public String userDetail() {
         return "user/userDetail";
     }
+    @RequestMapping("/user/myPage")
+    public String myPage() {
+        return "user/myPage";
+    }
+    @RequestMapping("/user/mainPage")
+    public String mainPage() {
+        return "user/mainPage";
+    }
+    @RequestMapping("/user/selfCheckList")
+    public String selfCheckList() {
+        return "user/selfCheckList";
+    }
+
 
 
 
