@@ -1,0 +1,161 @@
+.main {
+    margin: 190px auto 10px;
+    width: 70%;
+}
+
+.listDiv {
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+}
+
+.listTable {
+    width: 100%;
+    height: 700px;
+    border-spacing: 0; /* 셀 간 여백 제거 */
+    border-collapse: collapse; /* 테두리 겹치게 설정 */
+}
+
+.listTable th {
+    background-color: #87B9F8;
+    color: white;
+    height: 40px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.listTable td {
+    color: #424242;
+    height: 50px;
+}
+
+.listTable th, .listTable td {
+    text-align: center;
+    padding: 0; /* 기본 패딩 제거 */
+    border-bottom: 1px solid lightgray;
+
+}
+
+.listTable .subject {
+    padding-left: 20px;
+    text-align: left;
+}
+
+.listTable .writeday {
+    color: #A4A4A4;
+    font-size: 13px;
+}
+
+.listTable .No {
+    position: relative;
+    left: -10px; /* 원하는 만큼 왼쪽으로 이동 */
+    text-align: center; /* 여전히 텍스트를 중앙 정렬 */
+    width: 10%;
+}
+
+.listTable .writer, .listTable .writeday {
+    width: 10%;
+    text-align: center;
+}
+
+/* 검색창 */
+.searchDiv {
+    display: flex;
+    justify-content: right;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.searchDiv input {
+    margin-right: 5px;
+    border: 1px solid #87B9F8;
+    border-radius: 4px;
+    height: 2rem;
+    width: 200px;
+}
+
+.searchDiv button {
+    padding-top: 3px;
+    border: 1px solid #87B9F8;
+    color: white;
+    background-color: #87B9F8;
+    border-radius: 4px;
+    width: 40px;
+}
+
+.searchDiv svg {
+    width: 18px;
+    height: 18px;
+}
+
+.searchDiv input:focus {
+    outline: none;
+}
+
+.searchDiv button:hover {
+    background-color: #569ADE; /* 호버 시 색상 변경 */
+}
+
+/* 검색 기록 드롭다운 */
+.search-dropdown {
+    position: absolute;
+    top: 100%; /* 검색창 바로 아래 */
+    left: 0;
+    width: 200px; /* 검색창과 동일한 너비 */
+    background: white;
+    border: 1px solid lightgray;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 4px;
+}
+
+/*글작성버튼*/
+.write {
+    text-align: right;
+}
+
+.write-btn {
+    display: inline-block;
+    background-color: #87B9F8;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 20px;
+    margin: 25px 0;
+}
+
+/* paging */
+.page {
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+}
+
+.page ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.page li {
+    margin: 0 5px; /* 버튼 간격 */
+}
+
+.page a {
+    display: flex;
+    justify-content: center; /* 텍스트 중앙 정렬 */
+    align-items: center;     /* 텍스트 중앙 정렬 */
+    width: 20px;             /* 정사각형 크기 (크기 조금 늘림) */
+    height: 20px;            /* 정사각형 크기 (크기 조금 늘림) */
+    border-radius: 2px;      /* 모서리 살짝 둥글게 */
+    text-decoration: none;   /* 링크 밑줄 제거 */
+    font-size: 14px;         /* 글자 크기 */
+    line-height: 1;          /* 텍스트의 세로 정렬 */
+}
+
+.prev, .next {
+    color: white;            /* 텍스트 색상 */
+    background-color: #87B9F8; /* 배경 색상 */
+}
+
+.prev:hover, .next:hover {
+    background-color: #569ADE; /* 호버 시 색상 변경 */
+}
