@@ -58,25 +58,27 @@
                     // 예시 일정 데이터
                     {
                         title: '병원 방문',
-                        start: '2025-01-10',
-                        end: '2025-01-10'
+                        start: '2025-02-10'
+                    },
+                    {
+                        title: '병원 방문',
+                        start: '2025-02-15'
                     },
                     {
                         title: '약 복용',
-                        start: '2025-01-15T10:00:00',
-                        allDay: false
+                        start: '2025-02-15',
+                        end: '2025-02-20'
                     }
                 ],
                 selectable: true,
                 select: function (info) {
-                    // 일정 추가 폼 연결
-                    alert('선택한 날짜: ' + info.startStr);
+                    // 상세일정 모달팝업
+
                 },
             });
 
             calendar.render();
         });
-
     </script>
 </head>
 <body>
@@ -97,18 +99,27 @@
                     <a href="#">대전센텀병원</a>
                     <a href="#">대전을지대학교병원</a>
                 </div>
-                <div class="hospital-input">
-                    <form action="">
-                        <label>
-                            날짜 :
-                            <input type="date" id="select-date" name="select-date">
-                        </label>
+                <div class="plan-input">
+                    <form name="form1" action="">
+                        <div class="date-input">
+                            <label for="select-date">날짜 :</label>
+                            <input type="date" id="select-date" name="select-date" required>
+                        </div>
+                        <div class="time-input">
+                            <label for="select-time">시간 :</label>
+                            <input type="time" id="select-time" name="select-time" step="900" required>
+                        </div>
+                        <div class="info-input">
+                            <label for="hospital-info">병원정보 :</label>
+                            <input type="text" id="hospital-info" name="hospital-info" placeholder="병원 이름 입력" required>
+                        </div>
+                        <button class="btn" onclick="save();">저장</button>
                     </form>
                 </div>
             </div>
         </div>
         <div class="medicine-plan">
-            <div class="plan-title">약 일정 입력하기</div>
+            <div class="plan-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 약 일정 입력하기</div>
             <div class="plan-content">
                 <div class="plan-favorite">
                     즐겨찾기 <img src="/images/star.jpg" alt="">
@@ -117,9 +128,33 @@
                     <a href="#">당뇨약</a>
                     <a href="#">감기약</a>
                 </div>
-                <div class="medicine-input">
-                    <form action="">
-
+                <div class="plan-input">
+                    <form name="form2" action="">
+                        <div class="date-input">
+                            <label for="start-date">날짜 :</label>
+                            <input type="date" id="start-date" name="start-date" required>
+                            <label for="end-date"> - </label>
+                            <input type="date" id="end-date" name="end-date" required>
+                        </div>
+                        <div class="time-input">
+                            <label for="medicine-time">시간 :</label>
+                            <input type="time" id="medicine-time" name="medicine-time" step="900" required>
+                            <button type="button" class="add-time"><i class="fa-solid fa-circle-plus"></i></button>
+                            <div class="time-container"></div>
+                        </div>
+                        <div class="name-input">
+                            <label for="medicine-name">약이름 :</label>
+                            <input type="text" id="medicine-name" name="medicine-name" placeholder="약 이름 입력" required>
+                        </div>
+                        <div class="type-input">
+                            <label>약유형 :</label>
+                            <input type="hidden" id="medicineType" name="medicineType">
+                            <div class="medicine-types">
+                                <img src="/images/medicine.jpg" alt="약" class="medicine-type" data-type="medicine">
+                                <img src="/images/syringe.jpg" alt="주사기" class="medicine-type" data-type="syringe">
+                            </div>
+                        </div>
+                        <button class="btn" type="submit" onclick="save();">저장</button>
                     </form>
                 </div>
             </div>
@@ -130,5 +165,45 @@
 <!--footer-->
 <div th:insert="/common/footer.html"></div>
 
+<script>
+    $(".medicine-type").click(function () {
+        $(".medicine-type").removeClass("selected");
+        $(this).addClass("selected");
+        $("#medicineType").val($(this).data("type"));
+    });
+
+    // 폼 제출 시, 사용자가 선택하지 않았다면 경고 메시지
+    $("form[name='form2']").submit(function (e) {
+        if (!$("#medicineType").val()) {
+            alert("약 유형을 선택해주세요!");
+            e.preventDefault();
+        }
+    });
+
+    $(".add-time").click(function () {
+        let timeContainer = $(this).closest("form").find(".time-container");
+
+        if (timeContainer.find(".time-field").length >= 2) { // 최대 2개까지만 추가 가능
+            alert("최대 2개의 시간을 추가할 수 있습니다.");
+            return;
+        }
+
+        let newTimeInput = `
+        <div class="time-list">
+            <input type="time" class="time-field" name="select-time" step="900">
+            <button type="button" class="remove-time">🗑</button>
+        </div>
+        `;
+
+        timeContainer.append(newTimeInput);
+
+        // 새로 추가된 삭제 버튼에 이벤트 연결
+        timeContainer.find(".remove-time").off("click").on("click", function () {
+            $(this).closest(".time-list").remove();
+        });
+    });
+
+
+</script>
 </body>
 </html>

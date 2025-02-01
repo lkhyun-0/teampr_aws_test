@@ -112,10 +112,47 @@ a {
     font-weight: bold;
 }
 
+.plan-title > img {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
 .plan-content {
     border: 2px solid #ddd;
     min-width: 400px;
     padding: 15px 50px;
+}
+
+.plan-input > form > div {
+    padding: 20px 5px;
+}
+
+.type-input {
+    display: flex;
+    align-items: center;
+}
+
+.medicine-types > img {
+    display: inline-block;
+    background-color: #6495ED;
+    border-radius: 5px;
+    vertical-align: middle;
+    padding: 10px;
+    height: 40px;
+    width: 40px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.medicine-type.selected {
+    background-color: #4169E1;
+}
+
+.time-list {
+    margin-top: 5px;
+    margin-left: 45px;
 }
 
 /*즐겨찾기*/
@@ -132,7 +169,7 @@ a {
     padding: 0 5px;
 }
 
-.favorite-list > a{
+.favorite-list > a {
     display: inline-block;
     background-color: #6495ED;
     border-radius: 5px;
@@ -140,4 +177,14 @@ a {
     color: white;
     padding: 3px 10px;
     margin: 5px;
+}
+
+/*버튼*/
+.btn {
+    display: block;
+    background-color: #4169E1;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 20px;
+    margin-left: auto;
 }
