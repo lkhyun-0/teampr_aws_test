@@ -14,4 +14,7 @@ public class FreeController {
 
     @RequestMapping("/free/freeWrite")
     public String freeWrite() {return "free/freeWrite";}
+
+    @RequestMapping("/free/freeModify")
+    public String freeModify() {return "free/freeModify";}
 }
