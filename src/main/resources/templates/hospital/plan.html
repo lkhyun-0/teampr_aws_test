@@ -73,17 +73,84 @@
                 selectable: true,
                 select: function (info) {
                     // 상세일정 모달팝업
+                    let events = calendar.getEvents(); // 현재 달력의 모든 일정 가져오기
+                    let selectDate = info.startStr; // 사용자가 클릭한 날짜
 
+                    // 선택한 날짜에 일정이 있는지 확인
+                    let hasEvent = events.some(event => event.startStr === selectDate);
+
+                    if (hasEvent) {
+                        // 일정이 있으면 모달 표시
+                        $('.detail-popup').css({
+                            'opacity': '1',
+                            'visibility': 'visible'
+                        });
+                    } else {
+                        // 일정이 없으면 알림 (선택사항)
+                        alert("해당 날짜에는 일정이 없습니다.");
+                    }
                 },
             });
 
             calendar.render();
+
         });
     </script>
 </head>
 <body>
 <!--header-->
 <div th:insert="/common/header.html"></div>
+
+<div class="detail-popup">
+    <div class="tab-buttons">
+        <button class="tab active" data-tab="tab1">병원일정</button>
+        <button class="tab" data-tab="tab2">약일정</button>
+    </div>
+    <div class="detail-content active" id="tab1">
+        <button onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="content-title">🏥 2025-01-01 병원 일정</div>
+        <div class="content-info">
+            <table class="hospital-table">
+                <tr>
+                    <th>시간</th>
+                    <td>13시 00분</td>
+                </tr>
+                <tr>
+                    <th>병원 이름</th>
+                    <td>대전을지대학교병원</td>
+                </tr>
+                <tr>
+                    <th>병원 위치</th>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="detail-content" id="tab2">
+        <button onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="content-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 2025-01-01 약 일정</div>
+        <div class="content-info">
+            <table class="medicine-table">
+                <tr>
+                    <th>시간</th>
+                    <th>약 이름</th>
+                    <th>약 유형</th>
+                </tr>
+                <tr>
+                    <td>13시 00분</td>
+                    <td>당뇨약</td>
+                    <td><img src="/images/syringe.jpg" alt="주사기"></td>
+                </tr>
+                <tr>
+                    <td>19시 00분</td>
+                    <td>감기약</td>
+                    <td><img src="/images/medicine.jpg" alt="약"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
 
 <section class="main">
     <div id="calendar"></div>
@@ -203,6 +270,23 @@
         });
     });
 
+    // 모달 닫기 함수
+    window.closeModal = function () {
+        $('.detail-popup').css({
+            'opacity': '0',
+            'visibility': 'hidden'
+        });
+    };
+
+    $(".tab").click(function () {
+        // 모든 탭 버튼 비활성화 & 모든 콘텐츠 숨김
+        $(".tab").removeClass("active");
+        $(".detail-content").removeClass("active");
+
+        // 클릭한 버튼 활성화 & 해당 콘텐츠 표시
+        $(this).addClass("active");
+        $("#" + $(this).data("tab")).addClass("active");
+    });
 
 </script>
 </body>

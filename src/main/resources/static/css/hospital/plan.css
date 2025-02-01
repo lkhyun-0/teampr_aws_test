@@ -11,6 +11,12 @@ a {
     color : inherit;
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
 /*커스텀*/
 .main {
     display: flex;
@@ -112,13 +118,6 @@ a {
     font-weight: bold;
 }
 
-.plan-title > img {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    vertical-align: middle;
-}
-
 .plan-content {
     border: 2px solid #ddd;
     min-width: 400px;
@@ -136,8 +135,6 @@ a {
 
 .medicine-types > img {
     display: inline-block;
-    background-color: #6495ED;
-    border-radius: 5px;
     vertical-align: middle;
     padding: 10px;
     height: 40px;
@@ -179,6 +176,107 @@ a {
     margin: 5px;
 }
 
+/*상세페이지*/
+.detail-popup {
+    display: flex;
+    position: fixed;
+    background-color:rgba(0,0,0,0.5);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    align-items:center;
+    justify-content:center;
+    flex-direction: column;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.tab-buttons {
+
+}
+
+.tab {
+    background-color: #fff;
+    border-radius: 5px 5px 0 0;
+    padding: 5px 10px;
+}
+
+.tab.active {
+    background-color: #4169E1;
+    color: white;
+}
+
+.detail-content {
+    display: none;
+    width: 500px;
+    height: 500px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    position: relative;
+}
+
+.detail-content.active {
+    display: block;
+}
+
+.content-title {
+    text-align: center;
+    padding: 30px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.content-title > img {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.content-info {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.content-info > table th {
+    background-color: #6495ED;
+    color: white;
+}
+
+.content-info > table td {
+    padding: 0 5px;
+    font-weight: bold;
+}
+
+.medicine-table {
+    text-align: center;
+}
+
+.medicine-table td > img {
+    border-radius: 5px;
+    padding: 5px;
+    margin: 3px;
+}
+
+.content-info > table th, .content-info > table td {
+    border: 1px solid #ddd;
+}
+
+/*이미지*/
+.plan-title > img, .content-title > img, .medicine-table td > img {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.medicine-types > img, .medicine-table td > img {
+    background-color: #6495ED;
+    border-radius: 5px;
+}
+
 /*버튼*/
 .btn {
     display: block;
@@ -187,4 +285,15 @@ a {
     border-radius: 5px;
     padding: 5px 20px;
     margin-left: auto;
+}
+
+.detail-content > button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: red;
+    font-size: 1.5rem;
+    cursor: pointer;
 }
