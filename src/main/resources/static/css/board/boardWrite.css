@@ -1,0 +1,115 @@
+@charset "UTF-8";
+
+h2 {
+    text-align: center; /* 텍스트 가운데 정렬 */
+    margin-top: 70px; /* 위쪽 여백 추가 */
+    margin-bottom: 30px; /* 아래쪽 여백 추가 */
+    font-size: 32px; /* 글씨 크기 설정 */
+    font-weight: bold; /* 굵은 글씨체 */
+    color: #424242;
+}
+
+.main-title {
+    margin-bottom: 0px; /* 아래쪽 여백 추가 */
+}
+
+.sub-title {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+/* 글쓰기 화면 전체 컨테이너 스타일 */
+.edit-container {
+    margin: 0px auto;
+    width: 50%;
+    height: 800px; /* 세로 크기를 600px로 설정 */
+    border: 1px solid #BDBDBD;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 6px;
+}
+
+/* 폼 그룹 스타일 */
+.form-group {
+    margin-bottom: 20px; /* 아래 여백 추가 */
+}
+
+/* 라벨 스타일 */
+.form-group label {
+    display: block; /* 블록 형태로 변환 */
+    margin-bottom: 8px; /* 아래 여백 추가 */
+}
+
+/* 입력 필드와 텍스트박스 스타일 */
+.form-group input[type="text"],
+.form-group textarea,
+.form-group input[type="file"] {
+    width: 100%; /* 부모 컨테이너에 맞게 너비 조정 (패딩 고려) */
+    padding: 10px; /* 내부 여백 추가 */
+    border: 1px solid #BDBDBD; /* 테두리 스타일 설정 */
+    border-radius: 4px; /* 테두리 모서리를 둥글게 처리 */
+    box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 방식 적용 */
+    outline: none; /* 포커스 시 outline 제거 */
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+/* 제목 입력 필드 스타일 (높이 조정) */
+.form-group input[type="text"] {
+    height: 50px; /* 제목 필드의 높이를 키움 */
+}
+
+/* 내용 텍스트박스 스타일 (크기 조정) */
+.form-group textarea {
+    height: 500px; /* 높이를 컨테이너 크기에 맞춰 유동적으로 설정 */
+}
+
+/* 폼 액션 영역 스타일 (버튼 영역) */
+.form-actions {
+    text-align: center; /* 버튼을 가운데 정렬 */
+    display: flex; /* 버튼들을 가로로 배치 */
+    justify-content: center; /* 버튼들을 중앙 정렬 */
+    gap: 10px; /* 버튼 간의 간격 설정 */
+}
+
+/* 저장 버튼 스타일 */
+.form-actions .save-button {
+    background-color: #4166f7; /* 버튼 배경색 파란색으로 설정 */
+    color: #fff; /* 텍스트 색상 흰색으로 설정 */
+    padding: 10px 20px; /* 내부 여백 설정 (좌우/상하) */
+    border: none; /* 테두리 제거 */
+    border-radius: 4px; /* 모서리를 둥글게 처리 */
+    font-size: 16px; /* 글자 크기 설정 */
+    cursor: pointer; /* 클릭 가능한 커서 표시 */
+
+}
+
+/* 저장 버튼 호버 효과 (마우스 올릴 때 색상 변경) */
+.form-actions .save-button:hover {
+    background-color: #3655c7; /* 호버 시 배경색 어두운 파란색으로 변경 */
+}
+
+/* 취소 버튼 스타일 */
+.form-actions .cancle-button {
+    background-color: #4166f7; /* 버튼 배경색 파란색으로 설정 */
+    color: #fff; /* 텍스트 색상 흰색으로 설정 */
+    padding: 10px 20px; /* 내부 여백 설정 (좌우/상하) */
+    border: none; /* 테두리 제거 */
+    border-radius: 4px; /* 모서리를 둥글게 처리 */
+    font-size: 16px; /* 글자 크기 설정 */
+    cursor: pointer; /* 클릭 가능한 커서 표시 */
+}
+
+/* 저장하기 버튼 호버 효과 (마우스 올릴 때 색상 변경) */
+.form-actions .cancle-button:hover {
+    background-color: #3655c7; /* 호버 시 배경색 어두운 파란색으로 변경 */
+}
+
+
+/* 특정 색상을 강조하는 클래스 (파란색 강조 텍스트)*/
+.blue {
+    color: #4166f7;
+    font-weight: bold;
+}
