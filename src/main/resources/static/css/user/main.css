@@ -6,8 +6,11 @@ body {
 
 .main-container {
     max-width: 1500px;
-    margin:20px 70px 50px 70px ;
+    margin: 20px auto; /* 좌우 여백 자동 */
     padding-top: 20px; /* 헤더와의 간격 확보 */
+    display: flex;
+    justify-content: center; /* 가운데 정렬 */
+    align-items: center;
 
 }
 
@@ -16,10 +19,9 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개씩 배치 */
     gap: 30px; /* 카드 간 간격 */
-    justify-content: center; /* 가운데 정렬 */
-    grid-auto-rows: 300px; /* 아이템의 높이를 고정 */
-    padding-left: 20px; /* 왼쪽 여백 */
-    padding-right: 20px; /* 오른쪽 여백 */
+    width: 100%; /* 컨테이너 크기 조정 */
+    max-width: 1200px; /* 최대 너비 설정 */
+    grid-auto-rows: 300px; /* 아이템 높이 고정 */
 }
 
 /* 이미지 컨테이너 */
