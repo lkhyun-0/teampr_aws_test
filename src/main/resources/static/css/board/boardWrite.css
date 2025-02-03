@@ -9,6 +9,11 @@ h2 {
     color: #424242;
 }
 
+.main {
+    margin-top: 200px;
+    margin-bottom: 150px;
+}
+
 .main-title {
     margin-bottom: 0px; /* 아래쪽 여백 추가 */
 }

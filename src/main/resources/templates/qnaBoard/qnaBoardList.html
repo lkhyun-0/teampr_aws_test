@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Q&A 게시글 목록</title>
-    <link href="../../static/css/board/boardList.css" rel="stylesheet">
+    <link href="/css/board/boardList.css" rel="stylesheet">
 </head>
 <body>
+<div th:insert="/common/header.html"></div>
 <div class="qnaListDiv">
     <table class="listTable">
         <tr>
@@ -110,8 +111,6 @@
         </tr>
     </table>
 </div>
-
-
 <!--
 <div class="page">
     <ul>
@@ -136,6 +135,6 @@
     </ul>
 </div>
 -->
-
+<div th:insert="/common/footer.html"></div>
 </body>
 </html>

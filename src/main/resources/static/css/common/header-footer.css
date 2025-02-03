@@ -139,11 +139,12 @@ img {
     left: 90%;
     top: 5px;
     font-size: 2rem;
-    color: darkgray;
+    color: darkgray !important;
+    background-color: white !important;
 }
 
 .popup__head > button:hover {
-    color: lightcoral;
+    color: lightcoral !important;
 }
 
 .popup__body {

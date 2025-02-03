@@ -1,12 +1,6 @@
 @charset "UTF-8";
 
 /* 자유 게시판 List */
-a {
-    text-decoration: none; /* 밑줄 제거 */
-    cursor: pointer;
-    color: #424242;
-}
-
 .listDiv {
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
@@ -18,9 +12,6 @@ a {
 }
 
 .listTable {
-
-    width: 100%;
-    border-spacing: 0; /* 셀 간 여백 제거 */
     width: 100%;
     border-spacing: 0; /* 셀 간 여백 제거 */
     border-collapse: collapse; /* 테두리 겹치게 설정 */
@@ -36,8 +27,6 @@ a {
 }
 
 .listTable td {
-    color: #424242;
-    height: 50px;
     color: #424242;
     height: 50px;
     overflow: hidden;
@@ -64,9 +53,6 @@ a {
     position: relative;
     text-align: center; /* 여전히 텍스트를 중앙 정렬 */
     width: 10%;
-    position: relative;
-    text-align: center; /* 여전히 텍스트를 중앙 정렬 */
-    width: 10%;
 }
 
 .listTable .writer, .listTable .writeday {
@@ -77,7 +63,6 @@ a {
 
 
 /* 검색창 */
-
 .searchContainer {
     display: flex;
     justify-content: flex-end; /* 검색창을 오른쪽 정렬 */
@@ -88,12 +73,7 @@ a {
 .searchDiv {
     display: flex;
     justify-content: right; /* 수평 중앙 정렬 */
-    align-items: right;    /* 수직 중앙 정렬 */
-    margin-top: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: right; /* 수평 중앙 정렬 */
-    align-items: right;    /* 수직 중앙 정렬 */
+    align-items: flex-end;    /* 수직 중앙 정렬 */
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -137,7 +117,7 @@ a {
     width: 200px; /* 검색창과 동일한 너비 */
     background: white;
     border: 1px solid lightgray;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     border-radius: 4px;
 }
@@ -145,7 +125,7 @@ a {
 /* 글 작성 버튼 */
 
 .write-tr {
-    align-items: right;
+    align-items: flex-end;
 }
 
 .write-td {
@@ -222,20 +202,17 @@ a {
 
 
 /* Q&A 게시판 List */
-
 .qnaListDiv {
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center;     /* 수직 정렬 */
     height: 1000px;          /* 높이 설정 */
     width: 55%;
-    margin: 0 auto;
+    margin: 20px auto 0 auto;
 }
 
 
-
 /* 공지사항 게시판 List */
-
 .noticeListDiv {
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
