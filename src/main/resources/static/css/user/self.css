@@ -4,9 +4,6 @@ body {
     margin: 0;
     padding: 0;
     background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
 }
 
@@ -15,8 +12,10 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 800px;
-    margin-top: 200px;
-    margin-bottom: 50px;
+    margin-top: 250px;
+    margin-bottom: 100px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* 탭 버튼 스타일 */
