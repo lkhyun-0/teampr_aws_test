@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <link href="/css/user/mypage.css" type="text/css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+
+<body>
+
+<div th:insert="/common/header.html"></div>
+
+<div class="main-container">
+    <div class="top-section">
+        <!-- 회원정보 + 그래프 나타는 부분 -->
+        <div class="info-container">
+            <div class="user-profile-photo"><img src="/images/필릭스.png" alt="user-profile-photo"></div>
+            <div class="user-info">
+                <button id="openModal" class="modify-btn">수정하기</button>
+                <ul>
+                    <li>닉네임 : 필릭스</li>
+                    <li>관리중인 질병 : 없음 건강함</li>
+                    <li>생년월일 :</li>
+                    <li>가입일 :</li>
+                    <li>전화번호 :</li>
+                    <li>이메일 :</li>
+                    <li>키 / 체중 :</li>
+                    <li>흡연 / 음주 : 🚬 / 🍺</li>
+                </ul>
+
+            </div>
+        </div>
+
+        <!-- 그래프 섹션 -->
+        <div class="graph-info">
+            <canvas id="progressChart"></canvas>
+        </div>
+    </div>
+    <div class="post-container">
+        <ul class="tab-bar">
+            <li><a href="#free-list">자유</a></li>
+            <li><a href="#qna-list">Q&A</a></li>
+        </ul>
+        <div class="tabcontent">
+            <!-- 자유 글 목록 -->
+            <div id="free-list" class="tab-pane active">
+                <table class="table-style">
+                    <thead>
+                    <tr>
+                        <th>작성일</th>
+                        <th>제목</th>
+                        <th>조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>2025.01.05</td>
+                        <td>내가 작성한 자유글1</td>
+                        <td>3</td>
+                    </tr>
+                    <!-- 반복 데이터 -->
+                    <tr>
+                        <td>2025.01.05</td>
+                        <td>내가 작성한 자유글 2</td>
+                        <td>3</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Q&A 글 목록 -->
+            <div id="qna-list" class="tab-pane">
+                <table class="table-style">
+                    <thead>
+                    <tr>
+                        <th>작성일</th>
+                        <th>제목</th>
+                        <th>조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>2025.01.05</td>
+                        <td>문의합니다~ 1</td>
+                        <td>3</td>
+                    </tr>
+                    <!-- 반복 데이터 -->
+
+                    </tbody>
+                </table>
+            </div><!-- tabcontent -->
+        </div><!-- post-container -->
+
+    </div>
+
+    <!-- 수정하기 버튼 클릭시 -->
+
+
+    <!-- 모달 창 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>회원정보 수정하기</h2>
+            <div class="modal-body">
+                <ul>
+                    <li>
+                        <label for="phone">전화번호:</label>
+                        <input type="text" id="phone" value="010-1111-1111">
+                    </li>
+                    <li>
+                        <label for="email">이메일:</label>
+                        <input type="email" id="email" value="hi@gmail.com">
+                    </li>
+                    <li>
+                        <label for="password">비밀번호: </label>
+                        <input type="password" id="password" value="******">
+
+                    </li>
+                    <li>
+                        <label for="height">신장(cm):</label>
+                        <input type="number" id="height" value="165">
+                    </li>
+                    <li>
+                        <label for="weight">체중(kg):</label>
+                        <input type="number" id="weight" value="58">
+                    </li>
+                    <li>
+                        <label>흡연:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="smoke-yes" name="smoke" value="yes">
+                            <label for="smoke-yes" class="radio-label">Yes</label>
+                            <input type="radio" id="smoke-no" name="smoke" value="no" checked>
+                            <label for="smoke-no" class="radio-label">No</label>
+                        </div>
+                    </li>
+                    <li>
+                        <label>음주:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="drink-yes" name="drink" value="yes">
+                            <label for="drink-yes" class="radio-label">Yes</label>
+                            <input type="radio" id="drink-no" name="drink" value="no" checked>
+                            <label for="drink-no" class="radio-label">No</label>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn delete-btn">탈퇴하기</button>
+                <button class="modal-btn save-btn">수정하기</button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div th:insert="/common/footer.html"></div>
+
+</body>
+
+<!-- 그래프 스크립트 -->
+<script>
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    const progressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['12월 14일', '12월 21일', '12월 28일', '12월 31일', '1월 2일', '1월 3일', '1월 4일'], // X축 레이블
+            datasets: [{
+                label: '몸무게,혈당,혈압 등',
+                data: [80, 79, 78, 76, 76.1, 75.2, 75.1,], // 데이터 값
+                borderColor: '#6495ED', // 선 색상
+                backgroundColor: 'rgba(100,149,237,0.2)', // 배경색
+                tension: 0.1, // 곡선 정도
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {display: true},
+                tooltip: {enabled: true}
+            },
+            scales: {
+                x: {title: {display: true, text: '날짜'}},
+                y: {title: {display: true, text: '수치'}, min: 0, max: 150}
+            }
+        }
+    });
+</script>
+<script>
+    $(function () {
+        // 모든 탭 콘텐츠 숨기기
+        $('.tabcontent > div').removeClass('active');
+
+        // 탭 클릭 이벤트 처리
+        $('.tab-bar a').click(function (e) {
+            e.preventDefault(); // 기본 동작 방지
+
+            // 모든 콘텐츠 숨기고 선택된 콘텐츠만 표시
+            $('.tabcontent > div').removeClass('active');
+            $($(this).attr('href')).addClass('active');
+
+            // 활성화 클래스 처리
+            $('.tab-bar a').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        // 첫 번째 탭 자동 활성화
+        $('.tab-bar a').first().click();
+    });
+
+
+</script>
+
+<script>
+    // 모달 열기/닫기 기능
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // 버튼과 모달 요소 가져오기
+        const openModalBtn = document.getElementById("openModal");
+        const modal = document.getElementById("modal");
+
+        const closeModalBtn = document.querySelector(".close");
+
+        // 모달 열기
+        openModalBtn.addEventListener("click", function () {
+            modal.style.display = "block";
+        });
+
+        // 모달 닫기 (X 버튼)
+        closeModalBtn.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+
+        // 모달 닫기 (배경 클릭)
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    });
+
+
+</script>
+</html>

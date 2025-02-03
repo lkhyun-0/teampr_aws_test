@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 상세정보 입력</title>
+    <link href="/css/user/detail.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+
+<div th:insert="/common/header.html"></div>
+
+<main class="container">
+    <h1 class="title">상세정보 입력</h1>
+    <form class="form">
+        <div class="input-group">
+            <label for="age">나이를 알려주세요</label>
+            <div class="inline-input">
+                <input type="text" id="age" placeholder="">
+                <span> 세</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="height">키를 알려주세요</label>
+            <div class="inline-input">
+                <input type="text" id="height" placeholder="">
+                <span>cm</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="weight">체중을 알려주세요</label>
+            <div class="inline-input">
+                <input type="text" id="weight" placeholder="">
+                <span>kg</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="disease-type">질병의 종류</label>
+            <select id="disease-type">
+                <option value="" selected>선택해주세요</option>
+                <option value="당뇨">당뇨</option>
+                <option value="비만">비만</option>
+                <option value="고혈압">고혈압</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="disease-level">질병의 정도</label>
+            <select id="disease-level">
+                <option value="" selected>선택해주세요</option>
+                <option value="경도">경도</option>
+                <option value="중도">중도</option>
+                <option value="고도">고도</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="exercise-frequency">주 몇회 정도 운동하시나요?</label>
+            <select id="exercise-frequency">
+                <option value="" selected>선택해주세요</option>
+                <option value="운동안함">운동안함</option>
+                <option value="1~2회">주 1회 ~ 2회</option>
+                <option value="2~3회">주 2 ~ 3회</option>
+                <option value="4~5회">주 4 ~ 5회</option>
+                <option value="6회 이상">주 6회 이상</option>
+            </select>
+        </div>
+
+        <div class="input-group radio-group">
+            <label>흡연 하시나요?</label>
+            <div class="aa">
+                <button type="button" class="radio-btn active">비흡연</button>
+                <button type="button" class="radio-btn">흡연</button>
+            </div>
+        </div>
+
+        <div class="input-group radio-group">
+            <label>음주 하시나요?</label>
+            <div class="aa">
+                <button type="button" class="radio-btn active">음주안함</button>
+                <button type="button" class="radio-btn">음주</button>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">상세정보 입력 완료</button>
+    </form>
+
+</main>
+
+<div th:insert="/common/footer.html"></div>
+
+</body>
+</html>

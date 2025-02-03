@@ -1,0 +1,758 @@
+@charset "UTF-8";
+
+.main {
+    margin: 220px auto;
+}
+
+/* 운동 페이지 */
+.top-service {
+    display: flex;
+    justify-content: space-between; /* 양쪽 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    width: 1200px; /* 전체 너비 설정 */
+    margin: 0 auto; /* 부모 컨테이너에서 가운데 정렬 */
+    height: 545px; /* 뷰포트 전체 높이 */
+    gap: 40px; /* 요소 간 여백 추가 */
+    color: #424242;
+}
+
+.left-service {
+    width: 610px; /* 프로필 영역 너비 */
+    height: 100%; /* 프로필 높이 */
+    box-sizing: border-box;
+}
+
+.left-service > h2 {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 24px;
+}
+
+.left-service > h2 > i {
+    color: gold;
+}
+
+.left-service > .target-box {
+    border: 1px solid lightgray;
+    width: 610px; /* 프로필 영역 너비 */
+    height: 500px; /* 프로필 높이 */
+    box-sizing: border-box;
+}
+
+.right-service {
+    display: flex;
+    flex-direction: column;
+    width: 550px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.right-service > h2 {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 24px;
+}
+
+.right-service > h2 > i {
+    color: gold;
+}
+
+/*목표 게이지바 box*/
+.target-box {
+    position: relative;
+}
+
+.target-box > div {
+    width: 500px;
+    height: 110px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.target-box > div > div:first-child {
+    display: flex;
+    width: 170px;
+    height: 30px;
+    background-color: #6495ED;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px 5px 0 0 ;
+    justify-content: center;
+    align-items: center;
+}
+
+.target-box > div > div:last-child {
+    border: 1px solid lightgray;
+    width: 500px;
+    height: 80px;
+}
+
+.target-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 10px auto 5px auto;
+    width: 450px;
+}
+
+.target-bar {
+    width: 450px;
+    height: 30px;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.target-progress {
+    width: 33%;
+    height: 30px;
+    background-color: rgba(129, 199, 132, 0.8); /* 연한 핑크색 */
+}
+
+.target-box > button {
+    position: absolute;
+    width: 100px;
+    height: 35px;
+    bottom: 10px; /* 아래쪽으로부터 10px */
+    right: 10px; /* 오른쪽으로부터 10px */
+    font-size: 14px;
+}
+
+/*그래프 수치 입력 폼*/
+.graph {
+    position: relative;
+    height: 320px;
+    width: 100%;
+    border: 1px solid lightgray;
+    text-align: center;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+}
+
+.graph ul {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 60px;
+}
+
+.graph li {
+    margin-top: 35px;
+    margin-left: 100px;
+    text-align: left;
+}
+
+.graph input {
+    width: 165px;
+    height: 25px;
+    margin-left: 60px; /* 텍스트와 입력 필드 사이 간격 */
+    border: 1px solid lightgray; /* 기본 테두리 색상 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    padding: 5px;
+    outline: none; /* 기본 outline 제거 */
+}
+
+.graph input:focus {
+    border: 2px solid #A4A4A4; /* 포커스 시 테두리 색상 변경 */
+    outline: none; /* 기본 포커스 라인 제거 */
+}
+
+.graph .weight {
+    margin-left: 40px; /* 텍스트와 입력 필드 사이 간격 추가 */
+}
+
+.graph button {
+    position: absolute;
+    bottom: 10px; /* 아래쪽으로부터 10px */
+    right: 10px; /* 오른쪽으로부터 10px */
+    height: 35px;
+    width: 100px;
+    font-size: 14px;
+}
+
+/*누적 횟수 표시 폼*/
+.cumulative-count {
+    height: 155px;
+    width: 550px;
+    border: 1px solid lightgray;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.cumulative-count i {
+    color: gold;
+}
+
+.cumulative-title {
+    display: flex;
+    background-color: #4169E1;
+    color: white;
+    width: 550px;
+    height: 50px;
+    font-weight: bold;
+}
+
+.cumulative-title span {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    border-right: 1px solid lightgray; /* 구분선 */
+    font-size: 20px;
+}
+
+.cumulative-title span:last-child {
+    border-right: none; /* 마지막 요소의 구분선 제거 */
+}
+
+.cumulative-total {
+    display: flex;
+    border-top: none;
+    height: 105px;
+}
+
+.cumulative-total span {
+    flex: 1;
+    font-weight: bold;
+    border-right: 1px solid lightgray;
+    font-size: 36px;
+    padding: 25px 0;
+}
+
+.cumulative-total span:last-child {
+    border-right: none;
+}
+
+/*목표 작성 팝업*/
+.target-popup {
+    position: fixed;
+    background-color: #000000AA;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* 다른 요소들 위에 표시 */
+}
+
+.target-popup-content {
+    border: 1px solid lightgray;
+    background-color: #ffffff;
+    width: 450px;
+    height: 400px;
+}
+
+.target-popup__head {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 100px;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.target-popup__head > div {
+    margin-top: 40px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.target-popup__head > div > i {
+    color: gold;
+}
+
+.target-popup__head > button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 30px;
+    color: darkgray !important;
+    background-color: white !important;
+}
+
+.target-popup__head > button:hover {
+    color: lightcoral !important;
+    background-color: white !important;
+}
+
+.target-popup__body {
+    font-size: 16px;
+    text-align: center;
+}
+
+.target-popup__body > ul {
+    text-align: left;
+}
+
+.target-popup__body > ul > li {
+    margin-bottom: 50px;
+    margin-left: 30px;
+}
+
+.target-popup__body > ul > li > input {
+    width: 100px;
+    height: 15px;
+    margin-left: 30px; /* 텍스트와 입력 필드 사이 간격 */
+    border: 1px solid lightgray; /* 기본 테두리 색상 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    padding: 5px;
+    outline: none; /* 기본 outline 제거 */
+}
+
+.target-popup__body > ul > li:nth-child(1) > input {
+    margin-left: 65px;
+}
+
+.target-popup__body > ul > li:nth-child(3) > input {
+    margin-left: 50px;
+}
+
+.target-popup__body > ul > li > input:focus {
+    border: 2px solid #A4A4A4; /* 포커스 시 테두리 색상 변경 */
+    outline: none; /* 기본 포커스 라인 제거 */
+}
+
+.target-popup__body > .target-save-btn {
+    width: 100px;
+    height: 30px;
+}
+
+/* 운동 시간 적는 폼 */
+.exercise-entry {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    width: 1200px; /* 부모 컨테이너 전체 너비 */
+    height: 120px;
+    margin: 0 auto; /* 완벽한 중앙 정렬 */
+    margin-top: 50px; /* 폼 위쪽 간격 */
+    text-align: center; /* 내부 텍스트 중앙 정렬 */
+    border: 1px solid lightgray;
+}
+
+.exercise-entry form {
+    width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    margin: 0 30px; /* 부모 기준 중앙 정렬 */
+}
+
+.exercise-type {
+    display: flex;
+    align-items: center;
+}
+
+.exercise-type > i {
+    width: 30px;
+    margin-left: 40px;
+    font-size: 30px;
+    border: 3px solid #424242AA;
+    color: #424242AA;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: lighter;
+}
+
+.exercise-time {
+    display: flex;
+    align-items: center;
+}
+
+.exercise-time > select {
+    width: 150px;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 14px;
+    margin: 0 10px;
+}
+
+#hour {
+    margin-left: 50px;
+}
+
+.exercise-entry button {
+    width: 100px;
+    height: 40px;
+    font-size: 14px;
+}
+
+/*운동 종류 선택 팝업*/
+.exercise-type-popup {
+    position: fixed;
+    background-color: #000000AA;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* 다른 요소들 위에 표시 */
+}
+
+.exercise-type-popup-content {
+    border: 1px solid lightgray;
+    background-color: #ffffff;
+    width: 350px;
+    height: 500px;
+}
+
+.exercise-type-popup__head {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 100px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.exercise-type-popup__head > div {
+    margin-top: 40px;
+    width: 250px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.exercise-type-popup__head > div > button {
+    background-color: white !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #6495ED !important;
+    margin-left: 5px;
+    border: 2px solid lightgray !important;
+    border-radius: 5px !important;
+    height: 36px;
+    width: 36px;
+}
+
+.exercise-type-popup__head > div > button:hover {
+    background-color: #6495ED !important;
+    color: white !important;
+}
+
+.exercise-type-popup__head > div > button > i {
+    font-size: 16px;
+}
+
+.exercise-type-popup__head > div > input {
+    border: 2px solid lightgray;
+    height: 30px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.exercise-type-popup__head > div > input:focus {
+    border: 2px solid #6495ED; /* 포커스 시 테두리 색상 변경 */
+    outline: none; /* 기본 포커스 라인 제거 */
+}
+
+.exercise-type-popup__head > button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 30px;
+    color: darkgray !important;
+    background-color: white !important;
+}
+
+.exercise-type-popup__head > button:hover {
+    color: lightcoral !important;
+    background-color: white !important;
+}
+
+.exercise-type-popup__body {
+    text-align: center;
+}
+
+.exercise-container {
+    border: 1px solid lightgray;
+    width: 250px;
+    margin: 0 auto;
+}
+
+.exercise-container > div {
+    border: 1px solid lightgray;
+    display: flex;
+    height: 50px;
+}
+
+.exercise-container > div > div:last-child {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.exercise-container > div > div {
+    cursor: pointer;
+}
+
+.exercise-container > div > div > img {
+    height: 50px;
+    width: 50px;
+    margin: 0;
+    padding: 0;
+    border-right: 2px solid lightgray;
+}
+
+.exercise-type-popup__body > button {
+    margin-top: 25px;
+    width: 100px;
+    height: 30px;
+}
+
+/* 캘린더 */
+.calendar {
+    margin-top: 100px;
+    width: 1300px;
+    margin-left: auto;  /* 왼쪽 여백 자동 */
+    margin-right: auto; /* 오른쪽 여백 자동 */
+    height: 230px;
+}
+
+/* 날짜에 마우스 올렸을 때 커서 변경 */
+.fc .fc-daygrid-day-frame {
+    height: 100px;
+    cursor: pointer;
+}
+
+/* 일요일 (red 계열) */
+.fc-day-sun {
+    color: #FA5858; /* 텍스트 색상 (좀 더 어두운 톤) */
+}
+
+/* 토요일 (blue 계열) */
+.fc-day-sat {
+    color: #5882FA; /* 텍스트 색상 (좀 더 어두운 톤) */
+}
+
+/* 캘린더 next, prev 버튼 조정 */
+.fc-toolbar {
+    display: flex;
+    justify-content: center; /* 전체 콘텐츠를 가운데 정렬 */
+    align-items: center; /* 수직 정렬 */
+    position: relative; /* 버튼과 제목의 절대 위치 기준 */
+    height: 100px; /* 툴바 높이 고정 */
+    margin-bottom: 20px; /* 툴바 아래 간격 추가 */
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.fc-prev-button {
+    position: absolute; /* 부모를 기준으로 위치 설정 */
+    left: 0; /* 왼쪽 끝 */
+    top: 50%; /* 버튼 중앙 정렬 */
+    transform: translateY(-50%); /* 수직 정렬 */
+    z-index: 5; /* 제목보다 낮은 우선순위 */
+}
+
+.fc-next-button {
+    position: absolute; /* 부모를 기준으로 위치 설정 */
+    right: 0; /* 오른쪽 끝 */
+    top: 50%; /* 버튼 중앙 정렬 */
+    transform: translateY(-50%); /* 수직 정렬 */
+    z-index: 5; /* 제목보다 낮은 우선순위 */
+}
+
+.fc-prev-button, .fc-next-button {
+    width: 50px !important; /* 버튼 너비 */
+    height: 50px !important; /* 버튼 높이 */
+    background-color: white !important; /* 버튼 배경색 */
+    color: #2c3e50 !important; /* 버튼 텍스트 색상 */
+    border: 2px solid #ddd !important; /* 기본 테두리 */
+    border-radius: 5px !important; /* 버튼 모서리 둥글게 */
+    display: flex !important; /* 버튼 내부 텍스트 중앙 정렬 */
+    justify-content: center !important;
+    align-items: center !important;
+    cursor: pointer !important;
+}
+
+.fc-prev-button:hover, .fc-next-button:hover {
+    background-color: #5882FA !important; /* 버튼 호버 배경색 */
+    color: white !important; /* 버튼 호버 텍스트 색상 */
+}
+
+.fc-prev-button:focus, .fc-next-button:focus {
+    outline: none !important; /* 포커스 outline 제거 */
+    box-shadow: 0 0 5px rgba(49, 90, 176, 0.5) !important; /* 포커스 시 그림자 */
+}
+
+.fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
+    margin-left: 0; /* 기존 버튼 간격 문제 해결 */
+}
+
+/* 제목 스타일 (2025 01) */
+.fc-toolbar-title {
+    color: #424242;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 날짜 스타일 */
+.calendar-year {
+    font-size: 18px;
+}
+
+.calendar-month {
+    font-size: 45px;
+}
+
+.fc-daygrid-day {
+    position: relative; /* 날짜 위치 기준을 이 요소로 설정 */
+}
+
+.fc-daygrid-day-number {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 14px;
+    color: #424242AA !important;
+    display: block !important;
+    visibility: visible !important;
+    z-index: 10;
+}
+
+/* 요일 헤더 색상 */
+.fc-col-header-cell.fc-day-sun {
+    color: #FA5858 !important;
+}
+
+.fc-col-header-cell.fc-day-sat {
+    color: #5882FA !important;
+}
+
+/* 날짜(숫자) 색상 */
+.fc-daygrid-day.fc-day-sun .fc-daygrid-day-number {
+    color: #FA5858 !important;
+}
+
+.fc-daygrid-day.fc-day-sat .fc-daygrid-day-number {
+    color: #5882FA !important;
+}
+
+/* 이벤트 스타일 */
+.custom-event {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center;
+    margin-top: 25px;
+    padding: 5px;
+    font-size: 14px;
+    border: none;
+}
+
+.event-top {
+    display: flex;
+    align-items: center;
+}
+
+.event-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+
+.event-text {
+    line-height: 1.4;
+    color: #424242;
+    text-align: left;
+    margin-top: 5px; /* 간격 추가 */
+}
+
+.custom-event img {
+    width: 60px;
+    height: 60px;
+    margin-right: 5px;
+}
+
+.fc-daygrid-event {
+    border: none;
+    background: none;
+    color: #424242;
+    font-weight: bold;
+    white-space: break-spaces !important;
+}
+
+.fc-h-event {
+    border: none !important;
+    background-color: white !important;
+}
+
+.fc .fc-daygrid-day-frame {
+    position: relative;
+    height: 170px;
+}
+
+/* 오늘 날짜 셀 배경을 노란색으로 지정 */
+.fc-day-today .fc-daygrid-day-frame {
+    background-color: #e3f0ff !important;
+}
+
+/* 오늘 날짜 셀 위의 이벤트 배경은 투명 처리 */
+.fc-day-today .fc-daygrid-event {
+    background-color: transparent !important;
+    border: none !important; /* 테두리까지 없애고 싶다면 */
+}
+
+/* (선택) 다른 날의 이벤트는 흰 배경으로 표시하고 싶다면 */
+.fc-daygrid-event {
+    background-color: #ffffff;
+    /* 필요에 따라 다른 스타일 적용 */
+}
+
+/* 운동시간 이벤트 추가 */
+.fc-h-event .fc-event-main {
+    color: #424242;
+    text-align: center;
+}
+
+.fc-event-title {
+    color: black; /* 텍스트 색상 설정 */
+    font-size: 14px; /* 글꼴 크기 설정 */
+    visibility: visible; /* 텍스트가 보이도록 설정 */
+}
+
+.exercise-event {
+    margin-top: 5px;
+    background-color: #6495ED;
+    color: #E6E6E6;
+    height: 25px;
+    align-items: center;
+    align-content: center;
+    border-radius: 4px;
+}
+
+/*소모 칼로리 폰트 키우기*/
+.highlight-kcal {
+    font-size: 20px;
+}
+
+
+
+button {
+    background-color: #4169E1 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
+}
+
+select:focus,
+button:focus {
+    outline: none !important;
+    box-shadow: none !important; /* 필요시 */
+}
+
+button:hover {
+    background-color: #315AB0 !important; /* 호버 효과 */
+}

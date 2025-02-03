@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>식단 기록</title>
+  <link rel="stylesheet" href="/css/common/header-footer.css"> <!-- 헤더/푸터 CSS -->
+  <link rel="stylesheet" href="/css/food/foodRecord.css">
+  <!-- 제이쿼리 불러오기 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div th:insert="/common/header.html"></div>
+
+<div class="container">
+  <!-- 상단 탭 -->
+  <div class="tabs">
+    <a href="/food/foodRecord" class="tab-button active">기록</a>
+    <a href="/food/foodList" class="tab-button">목록</a>
+    <a href="/food/analysis" class="tab-button">내 식단 분석</a>
+  </div>
+
+  <!-- 외곽 박스 -->
+  <div class="outer-container">
+    <div class="content-wrapper">
+      <div class="card morning">
+        <button class="plus-button">+</button>
+        <div class="icon"><img src="/images/아침.png" alt="아침"></div>
+        <div class="title">아침</div>
+      </div>
+      <div class="card lunch">
+        <button class="plus-button">+</button>
+        <div class="icon"><img src="/images/점심.png" alt="점심"></div>
+        <div class="title">점심</div>
+      </div>
+      <div class="card dinner">
+        <button class="plus-button">+</button>
+        <div class="icon"><img src="/images/저녁.png" alt="저녁"></div>
+        <div class="title">저녁</div>
+      </div>
+      <div class="card idea">
+        <div class="icon idea"><img src="/images/전구.png" alt="전구"></div>
+        <p class="description">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="popup-overlay">
+  <div class="popup1">
+    <!-- 상단에 닫기 버튼 추가 -->
+    <button class="popup-close-btn">x</button>
+    <div class="search-section">
+      <input type="text" class="search-bar" placeholder="무슨 음식을 드셨나요?">
+      <button class="search-button">검색</button>
+    </div>
+    <div class="search-results">
+      <table>
+        <thead>
+        <tr>
+          <th>음식명</th>
+          <th>칼로리</th>
+          <th>영양정보</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>닭가슴살</td>
+          <td>106kcal</td>
+          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
+        </tr>
+        <tr>
+          <td>닭가슴살닭가슴살닭가슴살</td>
+          <td>106kcal</td>
+          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
+        </tr>
+        <tr>
+          <td>닭가슴살</td>
+          <td>106kcal</td>
+          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
+        </tr>
+        <tr>
+          <td>닭</td>
+          <td>106kcal</td>
+          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
+        </tr>
+        <tr>
+          <td>닭가슴살닭가슴살</td>
+          <td>106kcal</td>
+          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="selected-menu">
+      <img src="/images/연필.png" alt="연필 아이콘" class="large-pencil-icon">
+      <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+    <button class="record-button">기록하기</button>
+  </div>
+</div>
+
+
+<!--footer-->
+<div th:insert="/common/footer.html"></div>
+
+<script>
+  $(document).ready(function () {
+    let activeSlot = null; // 현재 활성화된 슬롯
+
+    // 팝업 열기
+    $('.plus-button').click(function () {
+      $('.popup-overlay').fadeIn(); // 배경 투명도 나타남
+      $('.popup1').fadeIn(); // 팝업 나타남
+    });
+
+    // 팝업 닫기 (오버레이 또는 닫기 버튼 클릭)
+    $('.popup-overlay, .popup-close-btn').click(function () {
+      $('.popup-overlay').fadeOut(); // 배경 투명도 사라짐
+      $('.popup1').fadeOut(); // 팝업 사라짐
+    });
+
+    // 팝업 내부 클릭 시 닫히지 않도록 방지
+    $('.popup1').on('click', function (event) {
+      event.stopPropagation(); // 부모(오버레이)로 이벤트 전파 방지
+    });
+
+    // 검색 결과 표시
+    $('.search-bar').on('input', function () {
+      if ($(this).val().trim() !== '') {
+        $('.search-results').fadeIn(); // 검색 결과 표시
+      } else {
+        $('.search-results').fadeOut(); // 검색 결과 숨기기
+      }
+    });
+
+    // 선택된 슬롯 클릭 시 활성화
+    $('.selected-menu li').click(function () {
+      $('.selected-menu li').removeClass('selected'); // 기존 선택 해제
+      $(this).addClass('selected'); // 현재 슬롯에 클래스 추가
+      activeSlot = $(this); // 현재 활성화된 슬롯 설정
+    });
+
+    // 메뉴 선택 시 추가 (음식명, 칼로리, 영양정보 모두 추가)
+    $('.search-results table tbody tr').click(function () {
+      const selectedFood = $(this).children('td').eq(0).text(); // 음식명
+      const selectedCalories = $(this).children('td').eq(1).text(); // 칼로리
+      const selectedNutrients = $(this).children('td').eq(2).text(); // 영양정보
+
+      // HTML 구조로 추가 (영양정보에 별도 스타일)
+      const selectedText = `
+      <span>${selectedFood}</span>
+      <span>${selectedCalories}</span>
+      <span class="small-text">${selectedNutrients}</span>
+    `;
+
+      if (activeSlot) {
+        // 활성화된 슬롯에 덮어쓰기
+        activeSlot.html(selectedText);
+        activeSlot = null; // 덮어씌운 후 활성화된 슬롯 초기화
+      } else {
+        // 빈 슬롯에 추가
+        const emptySlot = $('.selected-menu li:empty').first();
+        if (emptySlot.length > 0) {
+          emptySlot.html(selectedText); // 선택된 HTML을 슬롯에 추가
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
