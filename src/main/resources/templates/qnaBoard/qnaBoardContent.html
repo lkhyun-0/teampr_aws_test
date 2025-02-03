@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Q&A 게시글 상세보기</title>
-    <link href="../../static/css/board/boardContent.css" rel="stylesheet">
+    <link href="/css/board/boardContent.css" rel="stylesheet">
 </head>
 <body>
+<div th:insert="/common/header.html"></div>
 <div class="container">
   <div class="title">목표 설정 어떻게 하나요?</div>
   <div class="info-bar">
@@ -14,7 +15,7 @@
       <span>2025-01-31</span>
     </div>
   </div>
-  <div class="content">
+  <div class="board-content">
     설정 어떻게 하는지 알려주세요
   </div>
   <div class="actions">
@@ -30,5 +31,6 @@
     </div>
   </div>
 </div>
+<div th:insert="/common/footer.html"></div>
 </body>
 </html>

@@ -3,56 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>운동 페이지</title>
-    <!-- 폰트어썸 불러오기 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link href="/css/exercise/exerciseMain.css" rel="stylesheet">
     <!-- 제이쿼리 불러오기 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link href="../../static/css/exercise/exerciseMain.css" rel="stylesheet">
     <script>
-  $(document).ready(function () {
-    // 버튼 클릭 하면 팝업 보여줌
-    $('.target-write-btn').click(function () {
-      $('.target-popup').css('display', 'flex');
+    $(document).ready(function () {
+      // 버튼 클릭 하면 팝업 보여줌
+      $('.target-write-btn').click(function () {
+        console.log("target-write-btn 들어옴");
+        $('.target-popup').css('display', 'flex');
+      });
+
+      // 버튼 클릭 하면 팝업 가림
+      $('.target-popup-close-btn').click(function () {
+        $('.target-popup').css('display', 'none');
+      });
+
+      // .popup을 클릭하면 닫히도록 설정
+      $(".target-popup").on("click", function () {
+        $(this).hide(); // .popup을 숨김
+      });
+
+      // .popup-content 내부를 클릭했을 때 이벤트 전파 방지
+      $(".target-popup-content").on("click", function (event) {
+        event.stopPropagation(); // 부모(.popup)로 이벤트가 전달되지 않도록 방지
+      });
+
+      // 버튼 클릭 하면 팝업 보여줌
+      $('.exercise-type-popup-btn').click(function () {
+        $('.exercise-type-popup').css('display', 'flex');
+      });
+
+      // 버튼 클릭 하면 팝업 가림
+      $('.exercise-type-popup-close-btn').click(function () {
+        $('.exercise-type-popup').css('display', 'none');
+      });
+
+      // .popup을 클릭하면 닫히도록 설정
+      $(".exercise-type-popup").on("click", function () {
+        $(this).hide(); // .popup을 숨김
+      });
+
+      // .popup-content 내부를 클릭했을 때 이벤트 전파 방지
+      $(".exercise-type-popup-content").on("click", function (event) {
+        event.stopPropagation(); // 부모(.popup)로 이벤트가 전달되지 않도록 방지
+      });
+
     });
 
-    // 버튼 클릭 하면 팝업 가림
-    $('.target-popup-close-btn').click(function () {
-      $('.target-popup').css('display', 'none');
-    });
-
-    // .popup을 클릭하면 닫히도록 설정
-    $(".target-popup").on("click", function () {
-      $(this).hide(); // .popup을 숨김
-    });
-
-    // .popup-content 내부를 클릭했을 때 이벤트 전파 방지
-    $(".target-popup-content").on("click", function (event) {
-      event.stopPropagation(); // 부모(.popup)로 이벤트가 전달되지 않도록 방지
-    });
-
-    // 버튼 클릭 하면 팝업 보여줌
-    $('.exercise-type-popup-btn').click(function () {
-      $('.exercise-type-popup').css('display', 'flex');
-    });
-
-    // 버튼 클릭 하면 팝업 가림
-    $('.exercise-type-popup-close-btn').click(function () {
-      $('.exercise-type-popup').css('display', 'none');
-    });
-
-    // .popup을 클릭하면 닫히도록 설정
-    $(".exercise-type-popup").on("click", function () {
-      $(this).hide(); // .popup을 숨김
-    });
-
-    // .popup-content 내부를 클릭했을 때 이벤트 전파 방지
-    $(".exercise-type-popup-content").on("click", function (event) {
-      event.stopPropagation(); // 부모(.popup)로 이벤트가 전달되지 않도록 방지
-    });
-
-  });
-
-</script>
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/ko.js"></script>
@@ -109,38 +108,29 @@
           },
           dayHeaderFormat: { weekday: 'short' }, // 요일만 표시
           datesSet: function(info) {
-            setTimeout(() => {
-              var titleEl = document.querySelector('.fc-toolbar-title');
-              if (titleEl) {
-                var existingTitle = titleEl.querySelector('.calendar-title');
-                if (existingTitle) {
-                  existingTitle.remove(); // 기존 요소 제거
-                }
+            // FullCalendar가 계산한 타이틀 문자열
+            const rawTitle = info.view.title; // 예: "2025/02"
 
-                var parts = titleEl.innerText.split('/');
-                var month = parts[0] ? parts[0].trim() : 'Unknown Month';
-                var year = parts[1] ? parts[1].trim() : 'Unknown Year';
+            // 여기서 직접 split 처리
+            const parts = rawTitle.split('/');
+            let year = 'Unknown Year';
+            let month = 'Unknown Month';
 
-                // 새로운 제목 요소 생성
-                var calendarTitle = document.createElement('div');
-                calendarTitle.className = 'calendar-title';
+            if (parts.length === 2) {
+              year = parts[1].trim();
+              month = parts[0].trim();
+            }
 
-                var calendarYear = document.createElement('div');
-                calendarYear.className = 'calendar-year';
-                calendarYear.textContent = year; // 연도 삽입
-
-                var calendarMonth = document.createElement('div');
-                calendarMonth.className = 'calendar-month';
-                calendarMonth.textContent = month; // 월 삽입
-
-                calendarTitle.appendChild(calendarYear);
-                calendarTitle.appendChild(calendarMonth);
-
-                // 기존 제목 삭제 및 새 제목 삽입
-                titleEl.innerHTML = ''; // 기존 텍스트 삭제
-                titleEl.appendChild(calendarTitle);
-              }
-            }, 0);
+            // 그다음 DOM 조작 (titleEl 제거/추가 등)
+            const titleEl = document.querySelector('.fc-toolbar-title');
+            if (titleEl) {
+                        titleEl.innerHTML = `
+                            <div class="calendar-title">
+                              <div class="calendar-year">${year}</div>
+                              <div class="calendar-month">${month}</div>
+                            </div>
+                          `;
+            }
             setTimeout(() => {
               document.querySelectorAll('.fc-daygrid-day').forEach(cell => {
                 let existingDateEl = cell.querySelector('.fc-daygrid-day-number');
@@ -174,34 +164,40 @@
           },
           events: [
             {
-              title: '운동 종목: 줄넘기\n운동 시간: 1시간',
+              title: '운동 종목: 줄넘기<br>운동 시간: 1시간<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal',
+              start: '2025-02-03',
+              extendedProps: {
+                icon: '/images/줄넘기.jpg',
+              }
+            },
+            {
+              title: '운동 종목: 줄넘기<br>운동 시간: 1시간<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal',
               start: '2025-02-05',
               extendedProps: {
-                icon: '../../static/images/줄넘기.jpg',
-                calories: '총 소모 칼로리: <b>742</b>kcal'
+                icon: '/images/줄넘기.jpg',
               }
             }
           ],
           eventContent: function(info) {
             let iconUrl = info.event.extendedProps.icon;
-            let calories = info.event.extendedProps.calories;
             return {
               html: `<div class="custom-event">
                         <div class="event-top">
                             <img src="${iconUrl}" alt="운동 아이콘" class="event-icon">
-                            <div class="event-text">${info.event.title.replace(/\n/g, '<br>')}</div>
                         </div>
-                        <div class="event-calories">${calories}</div>
+                        <div class="event-text">${info.event.title}</div>
                      </div>`
             };
           }
         });
         calendar.render();
-      });
-    </script>
+    });
+  </script>
 
 </head>
 <body>
+
+<div th:insert="/common/header.html"></div>
 
 <div class="target-popup">
   <div class="target-popup-content">
@@ -221,75 +217,6 @@
     </div>
   </div>
 </div>
-
-<div class="top-service">
-  <div class="left-service">
-    <h2>주간 목표 <i class="fa-solid fa-trophy"></i></h2>
-    <div class="target-box">
-      <div class="target-1">
-        <div><span>이번 주 운동 횟수</span></div>
-        <div>
-          <div class="target-values">
-            <span class="current">1회</span>
-            <span class="goal">3회</span>
-          </div>
-          <div class="target-bar">
-            <div class="target-progress"></div>
-          </div>
-        </div>
-      </div>
-      <div class="target-2">
-        <div><span>이번 주 수치 기록 횟수</span></div>
-        <div>
-          <div class="target-values">
-            <span class="current">1회</span>
-            <span class="goal">3회</span>
-          </div>
-          <div class="target-bar">
-            <div class="target-progress"></div>
-          </div>
-        </div>
-      </div>
-      <div class="target-3">
-        <div><span>이번 주 칼로리 소모량</span></div>
-        <div>
-          <div class="target-values">
-            <span class="current">742kcal</span>
-            <span class="goal">2,000kcal</span>
-          </div>
-          <div class="target-bar">
-            <div class="target-progress"></div>
-          </div>
-        </div>
-      </div>
-      <button type="button" class="target-write-btn">목표 작성</button>
-    </div>
-  </div>
-  <div class="right-service">
-    <h2>오늘의 수치 기록하기 <i class="fa-solid fa-pencil"></i></h2>
-    <div class="graph">
-      <form name="graph-frm">
-        <ul>
-          <li>혈당 <input type="text" id="blood_sugar" name="blood_sugar" required> mg/dL</li>
-          <li>혈압 <input type="text" id="blood_press" name="blood_press" required> mmHg</li>
-          <li>몸무게 <input type="text" id="weight" name="weight" class="weight" required> kg</li>
-        </ul>
-        <button type="button" class="save-button" onclick="saveCheck();">저 장</button>
-      </form>
-    </div>
-    <div class="cumulative-count">
-      <div class="cumulative-title">
-        <span>내가 달성한 주간 목표 수 <i class="fa-solid fa-medal"></i> </span>
-        <span>내가 운동 기록한 횟수 <i class="fa-solid fa-medal"></i> </span>
-      </div>
-      <div class="cumulative-total">
-        <span>32회</span>
-        <span>151회</span>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="exercise-type-popup">
   <div class="exercise-type-popup-content">
     <div class="exercise-type-popup__head">
@@ -304,27 +231,27 @@
     <div class="exercise-type-popup__body">
       <div class="exercise-container">
         <div>
-          <div><img src="../../static/images/줄넘기.jpg" alt="줄넘기"></div>
+          <div><img src="/images/줄넘기.jpg" alt="줄넘기"></div>
           <div>줄넘기</div>
         </div>
         <div>
-          <div><img src="../../static/images/체조.jpg" alt="체조"></div>
+          <div><img src="/images/체조.jpg" alt="체조"></div>
           <div>체조</div>
         </div>
         <div>
-          <div><img src="../../static/images/농구.jpg" alt="농구"></div>
+          <div><img src="/images/농구.jpg" alt="농구"></div>
           <div>농구</div>
         </div>
         <div>
-          <div><img src="../../static/images/자전거.jpg" alt="자전거"></div>
+          <div><img src="/images/자전거.jpg" alt="자전거"></div>
           <div>자전거</div>
         </div>
         <div>
-          <div><img src="../../static/images/데드리프트.jpg" alt="데드리프트"></div>
+          <div><img src="/images/데드리프트.jpg" alt="데드리프트"></div>
           <div>데드리프트</div>
         </div>
         <div>
-          <div><img src="../../static/images/사이클.jpg" alt="사이클"></div>
+          <div><img src="/images/사이클.jpg" alt="사이클"></div>
           <div>사이클</div>
         </div>
       </div>
@@ -333,34 +260,107 @@
   </div>
 </div>
 
-<div class="exercise-entry">
-  <form>
-    <div class="exercise-type">
-      운동 종류 : <i class="exercise-type-popup-btn fa-solid fa-plus"></i>
-    </div>
-    <div class="exercise-time">
-      <input type="hidden" id="selected-date" name="selectdate">
-      운동 시간 :
-      <select id="hour" name="hour">
-        <option value="00" selected>0시간</option>
-        <option value="01">1시간</option>
-        <option value="02">2시간</option>
-        <option value="03">3시간</option>
-        <option value="04">4시간</option>
-        <option value="05">5시간</option>
-      </select> :
-      <select id="minute" name="minute">
-        <option value="00" selected>0분</option>
-        <option value="15">15분</option>
-        <option value="30">30분</option>
-        <option value="45">45분</option>
-      </select>
-    </div>
-    <button type="submit">저 장</button>
-  </form>
-</div>
+<section class="main">
 
-<div class="calendar" id="calendar"></div>
-<div style="height: 400px"></div>
+  <div class="top-service">
+    <div class="left-service">
+      <h2>주간 목표 <i class="fa-solid fa-trophy"></i></h2>
+      <div class="target-box">
+        <div class="target-1">
+          <div><span>이번 주 운동 횟수</span></div>
+          <div>
+            <div class="target-values">
+              <span class="current">1회</span>
+              <span class="goal">3회</span>
+            </div>
+            <div class="target-bar">
+              <div class="target-progress"></div>
+            </div>
+          </div>
+        </div>
+        <div class="target-2">
+          <div><span>이번 주 수치 기록 횟수</span></div>
+          <div>
+            <div class="target-values">
+              <span class="current">1회</span>
+              <span class="goal">3회</span>
+            </div>
+            <div class="target-bar">
+              <div class="target-progress"></div>
+            </div>
+          </div>
+        </div>
+        <div class="target-3">
+          <div><span>이번 주 칼로리 소모량</span></div>
+          <div>
+            <div class="target-values">
+              <span class="current">742kcal</span>
+              <span class="goal">2,000kcal</span>
+            </div>
+            <div class="target-bar">
+              <div class="target-progress"></div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="target-write-btn">목표 작성</button>
+      </div>
+    </div>
+    <div class="right-service">
+      <h2>오늘의 수치 기록하기 <i class="fa-solid fa-pencil"></i></h2>
+      <div class="graph">
+        <form name="graph-frm">
+          <ul>
+            <li>혈당 <input type="text" id="blood_sugar" name="blood_sugar" required> mg/dL</li>
+            <li>혈압 <input type="text" id="blood_press" name="blood_press" required> mmHg</li>
+            <li>몸무게 <input type="text" id="weight" name="weight" class="weight" required> kg</li>
+          </ul>
+          <button type="button" class="save-button" onclick="saveCheck();">저 장</button>
+        </form>
+      </div>
+      <div class="cumulative-count">
+        <div class="cumulative-title">
+          <span>내가 달성한 주간 목표 수 <i class="fa-solid fa-medal"></i> </span>
+          <span>내가 운동 기록한 횟수 <i class="fa-solid fa-medal"></i> </span>
+        </div>
+        <div class="cumulative-total">
+          <span>32회</span>
+          <span>151회</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-entry">
+    <form>
+      <div class="exercise-type">
+        운동 종류 : <i class="exercise-type-popup-btn fa-solid fa-plus"></i>
+      </div>
+      <div class="exercise-time">
+        <input type="hidden" id="selected-date" name="selectdate">
+        운동 시간 :
+        <select id="hour" name="hour">
+          <option value="00" selected>0시간</option>
+          <option value="01">1시간</option>
+          <option value="02">2시간</option>
+          <option value="03">3시간</option>
+          <option value="04">4시간</option>
+          <option value="05">5시간</option>
+        </select> :
+        <select id="minute" name="minute">
+          <option value="00" selected>0분</option>
+          <option value="15">15분</option>
+          <option value="30">30분</option>
+          <option value="45">45분</option>
+        </select>
+      </div>
+      <button type="submit">저 장</button>
+    </form>
+  </div>
+
+  <div class="calendar" id="calendar"></div>
+</section>
+
+<div th:insert="/common/footer.html"></div>
+
 </body>
 </html>
