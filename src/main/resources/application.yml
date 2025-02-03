@@ -7,3 +7,7 @@ spring:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
       - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
       - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+api:
+  key: S15Q20%2BeKCS9XCxG%2BBSU%2FyMA3XAfmRYgzURInD%2BA5qWVaViHx2JBGK2G8g7S8F2cipeL1lLYJoFto1DX2FxpNw%3D%3D
+  url: https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo01/getFoodNtrCpntDbInq01
+
