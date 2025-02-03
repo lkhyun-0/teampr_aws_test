@@ -108,7 +108,7 @@ table {
     width: 100%;
     min-width: 1000px;
     margin-bottom: 30px;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 
