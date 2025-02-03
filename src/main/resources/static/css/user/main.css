@@ -6,12 +6,14 @@ body {
 
 .main-container {
     max-width: 1500px;
-    margin: 20px auto; /* 좌우 여백 자동 */
+    margin-bottom: 200px; /* 좌우 여백 자동 */
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 230px;
     padding-top: 20px; /* 헤더와의 간격 확보 */
     display: flex;
     justify-content: center; /* 가운데 정렬 */
     align-items: center;
-
 }
 
 /* 그리드 컨테이너 */
