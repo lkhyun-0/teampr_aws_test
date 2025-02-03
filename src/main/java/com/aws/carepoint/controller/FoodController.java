@@ -44,12 +44,6 @@ public class FoodController {
         return "food/recomResult"; // templates/food/analysis.html
     }
 
-    @GetMapping("/write")
-    public String showWritePage() {
-
-        return "food/write"; // templates/food/analysis.html
-    }
-
 
     }
 
