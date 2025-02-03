@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Tracker</title>
+    <link rel="stylesheet" href="/css/food/foodrecom.css">
+    <!-- 제이쿼리 불러오기 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div th:insert="/common/header.html"></div>
+
+<div class="wrapper">
+    <h1>식단 목표가 무엇인가요?</h1>
+    <div class="container">
+        <button class="card">
+            <img src="/images/다이어트.png" alt="다이어트">
+            <div class="card-text">다이어트</div>
+        </button>
+        <a href="/reduce-sugar" class="card">
+            <img src="/images/당제한.png" alt="당 줄이기">
+            <div class="card-text">당 줄이기</div>
+        </a>
+        <a href="/muscle-gain" class="card">
+            <img src="/images/근육.png" alt="근육량 증가">
+            <div class="card-text">근육량<br>증가</div>
+        </a>
+        <a href="/reduce-sodium" class="card">
+            <img src="/images/나트륨.png" alt="나트륨 줄이기">
+            <div class="card-text">나트륨<br>줄이기</div>
+        </a>
+    </div>
+    <button class="button" id="next-button">다음으로</button>
+</div>
+
+
+
+<!--<div id="loading-screen" style="display: none;">
+    <div class="spinner"></div>
+    <span>추천 중입니다...</span>
+</div>-->
+
+<div id="loading-screen" style="display: none;">
+    <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+        <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+    </svg>
+    <p>AI가 식단을 추천 중입니다...</p>
+</div>
+
+<!--footer-->
+<div th:insert="/common/footer.html"></div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#next-button").on("click", function () {
+            // 로딩 화면 표시
+            $("#loading-screen").fadeIn();
+
+            // 2초 후 결과 페이지로 이동
+            setTimeout(function () {
+                window.location.href = "/result"; // 결과 페이지 URL
+            }, 5000); // 2초
+        });
+    });
+</script>
+
+</body>
+</html>

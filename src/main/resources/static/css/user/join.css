@@ -1,0 +1,196 @@
+
+
+/*노말라이즈*/
+body,
+ul,
+li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    color: #424242;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+img {
+    display: block;
+    max-width: 150px;
+}
+
+.content {
+    margin-top: 270px;
+}
+
+
+
+/* main 태그 스타일 설정 */
+main {
+    margin-top: 200px; /* 헤더 높이만큼 여백 추가 */
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px; /* 내부 여백 추가 */
+    background-color: #fff; /* 배경색 추가 (선택 사항) */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 (선택 사항) */
+    border-radius: 8px; /* 모서리를 둥글게 처리 (선택 사항) */
+}
+
+
+
+.registration-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex; /* 플렉스 박스 활성화 */
+    flex-direction: column; /* 세로 정렬 */
+}
+
+.registration-form h1 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+
+.registration-form form {
+    display: flex; /* 플렉스 박스 활성화 */
+    flex-direction: column; /* 세로 정렬 */
+    justify-content: space-between; /* 상단 입력 필드와 하단 버튼 간 공간 분배 */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    color: #555;
+}
+
+.form-group input {
+    width: 380px;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-bottom: solid #ddd thin;
+    outline: none; /* 포커스 시 나타나는 외곽선 제거 */
+    caret-color: black; /* 커서 색상 설정 (원하는 색상으로 변경 가능) */
+}
+
+/*-------------중복 확인 버튼 스타일--------------*/
+
+.form-group .check > input {/*todo*/
+
+ }
+.check {
+    position: relative; /* 부모 요소를 기준으로 자식 요소의 위치 조정 */
+
+}
+
+.check button {
+    position: absolute;
+    top: 50%; /* 세로 중앙 정렬 */
+    right: 20px; /* 오른쪽 여백 */
+    transform: translateY(-50%); /* 정확한 중앙 정렬을 위해 이동 */
+    background-color: #4169E1;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+
+
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+button {
+    color:white ;
+    padding :10px;
+    border-radius :5px ;
+    border:none ;
+    align-self: center; /* 버튼을 중앙 정렬 */
+    margin-top: auto; /* 위쪽 여백 자동 설정 */
+}
+
+
+
+
+/*----------------팝업스타일-----------------------*/
+/* 모달 팝업 스타일 */
+.modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* 배경 어두운 반투명 */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal-header h2 {
+    text-align: center;
+}
+
+.modal-body {
+    margin-top: 10px;
+}
+
+.terms-box {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 14px;
+    height: 80px;
+    overflow-y: auto; /* 스크롤 가능 */
+}
+
+.modal-footer {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    border: none;
+
+}
+
+button:first-of-type {
+    background-color: #ccc; /* 취소 버튼 */
+}
+
+button:last-of-type {
+    background-color: #4169E1; /* 회원가입 버튼 */
+    color: white;
+}
+
+

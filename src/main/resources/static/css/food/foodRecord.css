@@ -1,0 +1,408 @@
+/* 노멀라이즈 */
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* 컨테이너 스타일 */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin-top: 250px; /* 위쪽 여백 추가 */
+    margin-bottom: 100px;
+}
+
+/* 상단 탭 */
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    width: 1200px; /* 외곽 박스와 동일 크기 */
+    margin-bottom: 0;
+}
+
+.tab-button {
+    display: inline-flex; /* 버튼처럼 요소 크기 지정 */
+    justify-content: center; /* 텍스트 중앙 정렬 */
+    align-items: center; /* 텍스트 중앙 정렬 */
+    width: 118px; /* 버튼 너비 */
+    height: 54px; /* 버튼 높이 */
+    font-size: 18px; /* 폰트 크기 */
+    text-align: center; /* 텍스트 정렬 */
+    text-decoration: none; /* 밑줄 제거 */
+    background: none; /* 배경 제거 */
+    border: 2px solid #ccc; /* 외곽선 추가 */
+    color: black; /* 글씨 색상 */
+    border-radius: 8px 8px 0 0; /* 모서리 둥글게 */
+    cursor: pointer; /* 마우스 커서 변경 */
+    transition: all 0.3s; /* 애니메이션 효과 */
+}
+
+.tab-button.active {
+    background-color: #4169E1; /* 선택된 탭의 배경색 */
+    color: white; /* 선택된 탭의 글씨 색상 */
+    border: 2px solid #4169E1; /* 선택된 탭의 테두리 색상 */
+    border-bottom: none; /* 선택된 탭과 컨테이너 사이의 선 제거 */
+}
+
+.outer-container {
+    width: 1200px; /* 정확히 1200px로 설정 */
+    height: 675px;
+    border: 2px solid #ccc;
+    border-radius: 0 10px 10px 10px;
+    background-color: #fff;
+    padding: 20px; /* 패딩 포함 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 37px 1fr; /* 두 열과 간격 */
+    grid-template-rows: 1fr 37px 1fr; /* 두 행과 간격 */
+    justify-items: center;
+    align-items: center;
+    gap: 0; /* 불필요한 간격 제거 */
+}
+
+.card {
+    width: 400px;
+    height: 250px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex; /* 플렉스 박스를 사용해 정렬 */
+    flex-direction: column; /* 세로 방향 정렬 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+    justify-content: flex-start; /* 위쪽 정렬 */
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    position: relative; /* 버튼 위치 기준 */
+    overflow: hidden; /* 버튼이 카드 밖으로 나오지 않도록 설정 */
+}
+
+.card.morning {
+    background-color: #87B9F8;
+    grid-column: 1; /* 첫 번째 열 */
+    grid-row: 1; /* 첫 번째 행 */
+}
+
+.card.lunch {
+    background-color: #4169E1;
+    grid-column: 3; /* 세 번째 열 */
+    grid-row: 1; /* 첫 번째 행 */
+}
+
+.card.dinner {
+    background-color: #4169E1;
+    grid-column: 1; /* 첫 번째 열 */
+    grid-row: 3; /* 세 번째 행 */
+}
+
+.card.idea {
+    background-color: #87B9F8;
+    grid-column: 3; /* 세 번째 열 */
+    grid-row: 3; /* 세 번째 행 */
+}
+
+.icon img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+.idea .icon img {
+    width: 90px; /* 전구 이미지 크기 */
+    height: 90px;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    margin-top: 5px; /* 제목과 이미지 사이 여백 */
+    padding-left: 40px; /* 왼쪽 여백 추가로 살짝 오른쪽으로 이동 */
+}
+
+.plus-button {
+    width: 50px;
+    height: 50px;
+    position: absolute; /* 카드 내부에서만 제어 */
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none; /* 배경색 제거 */
+    color: white; /* + 텍스트를 흰색으로 설정 */
+    font-size: 50px; /* 텍스트 크기를 키워서 +를 더 크게 */
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1; /* 다른 요소 위에 표시 */
+}
+
+.description {
+    font-size: 18px;
+    line-height: 1.5;
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    color: white;
+    padding: 0 20px; /* 좌우 여백 */
+    overflow: hidden; /* 텍스트가 넘치면 숨김 */
+    white-space: normal; /* 줄바꿈 허용 */
+    word-break: break-word; /* 단어 단위로 줄바꿈 */
+}
+
+
+
+
+
+
+/* 노멀라이즈: 기본 여백 및 스타일 제거 */
+table, th, td, thead, tbody, tr {
+    margin: 0; /* 기본 외부 여백 제거 */
+    padding: 0; /* 기본 내부 여백 제거 */
+    border-spacing: 0; /* 셀 간 간격 제거 */
+    border-collapse: collapse; /* 셀 간 경계선 병합 */
+}
+
+/* 팝업 배경 (투명 처리) */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* 투명도 적용 */
+    display: none; /* 기본적으로 숨김 */
+    z-index: 999; /* 기존 화면 위로 올림 */
+}
+
+/* 팝업 박스 */
+.popup1 {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 600px;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+    padding: 20px;
+}
+
+/* 팝업 닫기 버튼 */
+.popup-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 40px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #87B9F8;
+}
+
+.popup-close-btn:hover {
+    color: #4169E1;
+}
+
+
+/* 검색 섹션 컨테이너 */
+.search-section {
+    display: flex; /* 검색창과 버튼을 수평으로 배치 */
+    justify-content: center; /* 가운데 정렬 */
+    align-items: center; /* 수직 정렬 */
+    margin-bottom: 20px; /* 아래 여백 추가 */
+    margin-top: 30px;
+}
+
+/* 검색창 */
+.search-bar {
+    width: 360px;
+    height: 40px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-right: none; /* 오른쪽 테두리 제거 */
+    border-radius: 5px 0 0 5px;
+    font-size: 16px;
+}
+
+/* 검색 버튼 */
+.search-button {
+    height: 40px;
+    padding: 0 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #87B9F8;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #4169E1; /* 버튼 호버 효과 */
+}
+
+
+
+/* 검색 결과 부모 컨테이너 */
+.search-results {
+    width: 560px; /* 부모 컨테이너 너비 고정 */
+    height: 200px; /* 부모 컨테이너 높이 고정 */
+    margin: 30px auto; /* 가운데 정렬 및 위아래 여백 */
+    overflow-y: auto; /* 세로 스크롤 */
+    overflow-x: hidden; /* 가로 스크롤 제거 */
+    padding: 0; /* 내부 여백 제거 */
+    box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
+}
+
+/* 검색 결과 테이블 */
+.search-results table {
+    width: 100%; /* 테이블이 부모 컨테이너 너비를 완전히 채움 */
+    border-collapse: collapse; /* 셀 간 경계선 병합 */
+}
+
+/* 테이블 헤더 */
+.search-results th {
+    background-color: #87B9F8; /* 헤더 배경색 */
+    color: white; /* 헤더 폰트 색상 */
+    font-size: 15px; /* 헤더 폰트 크기 */
+    font-weight: bold;
+    text-align: left;
+    padding: 10px; /* 셀 간 여백 */
+}
+
+/* 테이블 셀 */
+.search-results td {
+    font-size: 15px; /* 폰트 크기 */
+    padding: 10px; /* 셀 간 여백 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    text-overflow: ellipsis; /* 넘치는 텍스트 생략 처리 */
+    border-bottom: 1px solid #ddd; /* 하단 경계선 */
+}
+
+/* 테이블 행 */
+.search-results tr {
+    height: 30px; /* 각 행의 높이 */
+}
+
+/* 칼럼 간 간격 */
+.search-results th:nth-child(1),
+.search-results td:nth-child(1) {
+    width: 30%; /* 음식명 */
+}
+
+.search-results th:nth-child(2),
+.search-results td:nth-child(2) {
+    width: 20%; /* 칼로리 */
+}
+
+.search-results th:nth-child(3),
+.search-results td:nth-child(3) {
+    width: 50%; /* 영양정보 */
+}
+
+/* 영양정보 텍스트 스타일 */
+.search-results td:nth-child(3) {
+    font-size: 12px; /* 영양정보 폰트 크기 */
+    color: #424242; /* 텍스트 색상 */
+}
+
+/* 테이블 헤더 스타일 */
+.search-results th:nth-child(1) {
+    text-align: left; /* 텍스트 오른쪽 정렬 */
+    padding-left: 40px; /* 오른쪽 여백 추가 */
+}
+
+/* 테이블 헤더 스타일 */
+.search-results th:nth-child(3) {
+    text-align: right; /* 텍스트 오른쪽 정렬 */
+    padding-right: 40px; /* 오른쪽 여백 추가 */
+}
+
+
+/* 선택된 메뉴 컨테이너 */
+.selected-menu {
+    display: flex;
+    align-items: flex-start; /* 상단 정렬 */
+    margin-top: 20px;
+    justify-content: flex-start; /* 연필과 리스트를 정렬 */
+    position: relative; /* 버튼을 더 아래로 이동하기 위해 */
+}
+
+/* 연필 아이콘 */
+.large-pencil-icon {
+    width: 100px; /* 연필 아이콘 크기 */
+    height: 100px;
+    position: relative; /* 연필 위치 조정 */
+    top: 40px; /* 아래로 이동 */
+    left: 55px; /* 오른쪽으로 이동 */
+}
+
+/* 선택된 메뉴 */
+.selected-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 380px;
+    margin-left: 100px; /* 리스트를 왼쪽으로 이동 */
+}
+
+.selected-menu li {
+    height: 28px;
+    border-bottom: 1px dashed black; /* 점선 경계선 */
+    font-size: 15px; /* 텍스트 크기 */
+    line-height: 28px; /* 텍스트와 줄 높이 맞춤 */
+    overflow: hidden; /* 넘치는 텍스트 숨기기 */
+    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+    text-overflow: ellipsis; /* 넘치는 텍스트에 "..." 표시 */
+}
+
+/* 선택된 슬롯 강조 */
+.selected-menu li.selected {
+    border: 2px solid #87B9F8; /* 선택된 슬롯에 파란 테두리 */
+    background-color: #f0f8ff; /* 선택된 슬롯에 연한 배경 */
+}
+
+
+/* 기록 버튼 */
+.record-button {
+    position: absolute;
+    bottom: 30px; /* 더 아래로 이동 */
+    right: 30px; /* 오른쪽 정렬 */
+    width: 80px;
+    height: 35px;
+    font-size: 14px;
+    color: white;
+    background-color: #4169E1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.record-button:hover {
+    background-color: #87B9F8; /* 호버 시 색상 변경 */
+}
+
+/* li의 첫 번째 span만 굵게 표시 */
+.selected-menu li span:first-of-type {
+    font-weight: bold;
+}
+
+/* 영양정보 텍스트 스타일 */
+.small-text {
+    font-size: 12px; /* 영양정보 폰트 크기 */
+    color: #424242; /* 텍스트 색상 */
+    overflow: hidden; /* 넘치는 텍스트 숨기기 */
+    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+    text-overflow: ellipsis; /* 넘치는 텍스트에 "..." 표시 */
+    flex-shrink: 0; /* 텍스트가 줄어들지 않도록 설정 */
+}

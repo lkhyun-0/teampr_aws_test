@@ -1,0 +1,157 @@
+/* 노멀라이즈 */
+* {
+    box-sizing: border-box;
+}
+
+
+/* 컨테이너 스타일 */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin-top: 250px; /* 위쪽 여백 추가 */
+    margin-bottom: 100px;
+}
+
+/* 상단 탭 */
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    width: 1200px; /* 외곽 박스와 동일 크기 */
+    margin-bottom: 0;
+}
+
+.tab-button {
+    display: inline-flex; /* 버튼처럼 요소 크기 지정 */
+    justify-content: center; /* 텍스트 중앙 정렬 */
+    align-items: center; /* 텍스트 중앙 정렬 */
+    width: 118px; /* 버튼 너비 */
+    height: 54px; /* 버튼 높이 */
+    font-size: 18px; /* 폰트 크기 */
+    text-align: center; /* 텍스트 정렬 */
+    text-decoration: none; /* 밑줄 제거 */
+    background: none; /* 배경 제거 */
+    border: 2px solid #ccc; /* 외곽선 추가 */
+    color: black; /* 글씨 색상 */
+    border-radius: 8px 8px 0 0; /* 모서리 둥글게 */
+    cursor: pointer; /* 마우스 커서 변경 */
+    transition: all 0.3s; /* 애니메이션 효과 */
+}
+
+.tab-button.active {
+    background-color: #4169E1; /* 선택된 탭의 배경색 */
+    color: white; /* 선택된 탭의 글씨 색상 */
+    border: 2px solid #4169E1; /* 선택된 탭의 테두리 색상 */
+    border-bottom: none; /* 선택된 탭과 컨테이너 사이의 선 제거 */
+}
+
+/* 외곽 박스 */
+.outer-container {
+    width: 1200px; /* 정확히 1200px로 설정 */
+    height: 675px;
+    border: 2px solid #ccc;
+    border-radius: 0 10px 10px 10px;
+    background-color: #fff;
+    padding: 40px 20px; /* 상단/하단에 40px 여백 추가 */
+    display: flex;
+    flex-direction: column; /* 자식 요소를 세로로 정렬 */
+    position: relative; /* 상태 표시를 절대 위치로 배치 */
+
+}
+
+/* 상태 표시 */
+.status-indicator {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color : #666666;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-icon {
+    width: 30px;
+    height: 30px;
+}
+
+
+/* 테이블 스타일 */
+.food-table {
+    width: 1080px; /* 테이블의 고정된 가로 너비 */
+    border-collapse: collapse;
+    text-align: center;
+    margin: 25px auto; /* 테이블 상하 간격(위쪽 간격 40px 추가) */
+}
+
+.food-table th {
+    background-color: #87B9F8;
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    border-bottom: 2px solid #ccc; /* 헤더 가로줄 */
+}
+
+.food-table td {
+    height: 65px; /* 행 간격 설정 */
+    font-size: 16px;
+    padding: 0 110px; /* 셀 안에서 텍스트와 아이콘 간격 확보 */
+    border-bottom: 1px solid #ccc; /* 행 간 가로줄 */
+}
+
+/* 테이블 헤더 (날짜) 스타일 */
+.food-table th:first-child {
+    text-align: left; /* 헤더를 왼쪽 정렬 */
+    padding-left: 100px; /* 헤더의 왼쪽 패딩 추가 */
+
+}
+
+.food-table .date {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: left; /* 데이터를 왼쪽 정렬 */
+    padding-left: 65px; /* 데이터의 왼쪽 패딩 추가 */
+}
+
+.icon {
+    width: 51px;
+    height: 50px;
+}
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.pagination a.prev,
+.pagination a.next {
+    color: #87B9F8;
+}
+
+.pagination a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+
+.pagination .active {
+    background-color: #87B9F8;
+    color: white;
+    font-weight: bold;
+}

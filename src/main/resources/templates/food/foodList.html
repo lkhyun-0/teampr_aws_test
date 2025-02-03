@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Tracker</title>
+    <link rel="stylesheet" href="/css/food/foodList.css">
+</head>
+<body>
+
+<div th:insert="/common/header.html"></div>
+
+<div class="container">
+    <!-- 상단 탭 -->
+    <div class="tabs">
+        <a href="/food/foodRecord" class="tab-button">기록</a>
+        <a href="/food/foodList" class="tab-button active">목록</a>
+        <a href="/food/analysis" class="tab-button">내 식단 분석</a>
+    </div>
+
+    <!-- 외곽 박스 -->
+    <div class="outer-container">
+        <!-- 상태 표시 -->
+        <div class="status-indicator">
+            <div class="status-item">
+                <img src="/images/eaten.png" alt="먹었어요" class="status-icon">
+                <span>먹었어요</span>
+            </div>
+            <div class="status-item">
+                <img src="/images/not-eaten.png" alt="안 먹었어요" class="status-icon">
+                <span>안 먹었어요</span>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <!-- 식단 목록 테이블 -->
+            <table class="food-table">
+                <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>아침</th>
+                    <th>점심</th>
+                    <th>저녁</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 더미 데이터 -->
+                <tr onclick="location.href='/food/detail/1'">
+                    <td class="date">2025.01.17</td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
+                </tr>
+                <tr onclick="location.href='/food/detail/2'">
+                    <td class="date">2025.01.16</td>
+                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                </tr>
+                <tr onclick="location.href='/food/detail/3'">
+                    <td class="date">2025.01.16</td>
+                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                </tr>
+                <tr onclick="location.href='/food/detail/4'">
+                    <td class="date">2025.01.16</td>
+                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                </tr>
+                <tr onclick="location.href='/food/detail/5'">
+                    <td class="date">2025.01.16</td>
+                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                </tr>
+                <tr onclick="location.href='/food/detail/6'">
+                    <td class="date">2025.01.16</td>
+                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                </tr>
+                <tr onclick="location.href='/food/detail/7'">
+                    <td class="date">2025.01.16</td>
+                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <a href="#" class="prev">◀</a>
+            <a href="#" class="page active">1</a>
+            <a href="#" class="page">2</a>
+            <a href="#" class="page">3</a>
+            <a href="#" class="page">4</a>
+            <a href="#" class="page">5</a>
+            <a href="#" class="page">6</a>
+            <a href="#" class="page">7</a>
+            <a href="#" class="page">8</a>
+            <a href="#" class="page">9</a>
+            <a href="#" class="next">▶</a>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div th:insert="/common/footer.html"></div>
+
+</body>
+</html>

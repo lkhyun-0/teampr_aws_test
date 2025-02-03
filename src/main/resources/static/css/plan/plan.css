@@ -1,0 +1,299 @@
+/*노멀라이즈*/
+body, ul, li {
+    font-family: 'Arial', sans-serif;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color : inherit;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/*커스텀*/
+.main {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    min-width: 1100px;
+    width: 60%;
+}
+
+/* 캘린더 */
+
+#calendar {
+    max-width: 100%; /* 부모 요소에 맞춤 */
+    width: 100%; /* 캘린더가 전체 차지하도록 설정 */
+    margin: 190px auto 50px; /* 상하 여백 및 가운데 정렬 유지 */
+}
+
+
+.fc-col-header-cell-cushion, .fc-daygrid-day-number {
+    text-decoration: none;
+}
+
+.fc-scrollgrid-sync-inner > .fc-col-header-cell-cushion,
+.fc-day-mon .fc-daygrid-day-number,
+.fc-day-tue .fc-daygrid-day-number,
+.fc-day-wed .fc-daygrid-day-number,
+.fc-day-thu .fc-daygrid-day-number,
+.fc-day-fri .fc-daygrid-day-number {
+    color: black;
+}
+
+.fc-day-sun .fc-col-header-cell-cushion,
+.fc-day-sun a{
+    color : red;
+}
+
+.fc-day-sat .fc-col-header-cell-cushion,
+.fc-day-sat a {
+    color : blue;
+}
+
+.fc-prev-button, .fc-next-button {
+    width: 50px !important; /* 버튼 넓이 */
+    height: 50px !important; /* 버튼 높이 */
+    background-color: white !important; /* 버튼 배경색 */
+    color: #2c3e50 !important; /* 버튼 텍스트 색상 */
+    border: 2px solid #ddd !important; /* 기본 테두리 */
+    border-radius: 5px !important; /* 버튼 모서리 둥글게 */
+}
+
+.fc-today-button, .fc-addEventButton-button {
+    height: 50px !important; /* 버튼 높이 */
+    background-color: white !important; /* 버튼 배경색 */
+    color: #2c3e50 !important; /* 버튼 텍스트 색상 */
+    border: 2px solid #ddd !important; /* 기본 테두리 */
+    border-radius: 5px !important; /* 버튼 모서리 둥글게 */
+}
+
+.fc-prev-button:hover, .fc-next-button:hover, .fc-today-button:hover, .fc-addEventButton-button:hover {
+    background-color: #5882FA !important; /* 버튼 호버 배경색 */
+    color: white !important; /* 버튼 호버 텍스트 색상 */
+}
+
+.fc-prev-button:focus, .fc-next-button:focus, .fc-today-button:focus, .fc-addEventButton-button:focus {
+    outline: none !important; /* 포커스 outline 제거 */
+    box-shadow: none !important; /* 그림자 제거 */
+}
+
+.calendar-title {
+    display: flex;
+    flex-direction: column; /* 세로로 배치 */
+    align-items: center;    /* 가운데 정렬 */
+}
+
+.calendar-year {
+    font-size: 18px;        /* 연도 글자 크기 */
+    color: #000;            /* 연도 색상 */
+}
+
+.calendar-month {
+    font-weight: bold;      /* 글씨 굵게 */
+    font-size: 45px;        /* 월 글자 크기 */
+    color: #000;            /* 월 색상 */
+}
+
+/* 일정관리 */
+.plan {
+    display: flex;
+    width: 100%;
+    min-width: 1000px;
+    margin-bottom: 30px;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.plan-title {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.plan-content {
+    border: 2px solid #ddd;
+    min-width: 400px;
+    padding: 15px 50px;
+}
+
+.plan-input > form > div {
+    padding: 20px 5px;
+}
+
+.type-input {
+    display: flex;
+    align-items: center;
+}
+
+.medicine-types > img {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 10px;
+    height: 40px;
+    width: 40px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.medicine-type.selected {
+    background-color: #4169E1;
+}
+
+.time-list {
+    margin-top: 5px;
+    margin-left: 45px;
+}
+
+/*즐겨찾기*/
+.plan-favorite {
+    display: flex;
+    padding: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.plan-favorite > img {
+    width: 20px;
+    height: 20px;
+    padding: 0 5px;
+}
+
+.favorite-list > a {
+    display: inline-block;
+    background-color: #6495ED;
+    border-radius: 5px;
+    font-weight: normal;
+    color: white;
+    padding: 3px 10px;
+    margin: 5px;
+}
+
+/*상세페이지*/
+.detail-popup {
+    display: flex;
+    position: fixed;
+    background-color:rgba(0,0,0,0.5);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    align-items:center;
+    justify-content:center;
+    flex-direction: column;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.tab-buttons {
+
+}
+
+.tab {
+    background-color: #fff;
+    border-radius: 5px 5px 0 0;
+    padding: 5px 10px;
+}
+
+.tab.active {
+    background-color: #4169E1;
+    color: white;
+}
+
+.detail-content {
+    display: none;
+    width: 500px;
+    height: 500px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    position: relative;
+}
+
+.detail-content.active {
+    display: block;
+}
+
+.content-title {
+    text-align: center;
+    padding: 30px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.content-title > img {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.content-info {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.content-info > table th {
+    background-color: #6495ED;
+    color: white;
+}
+
+.content-info > table td {
+    padding: 0 5px;
+    font-weight: bold;
+}
+
+.medicine-table {
+    text-align: center;
+}
+
+.medicine-table td > img {
+    border-radius: 5px;
+    padding: 5px;
+    margin: 3px;
+}
+
+.content-info > table th, .content-info > table td {
+    border: 1px solid #ddd;
+}
+
+/*이미지*/
+.plan-title > img, .content-title > img, .medicine-table td > img {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.medicine-types > img, .medicine-table td > img {
+    background-color: #6495ED;
+    border-radius: 5px;
+}
+
+/*버튼*/
+.btn {
+    display: block;
+    background-color: #4169E1;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 20px;
+    margin-left: auto;
+}
+
+.detail-content > button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: red;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
