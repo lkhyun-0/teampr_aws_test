@@ -1,0 +1,212 @@
+/* 노멀라이즈 */
+* {
+    box-sizing: border-box;
+}
+
+
+/* 컨테이너 스타일 */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin-top: 250px; /* 위쪽 여백 추가 */
+    margin-bottom: 100px;
+}
+
+/* 상단 탭 */
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    width: 1200px; /* 외곽 박스와 동일 크기 */
+    margin-bottom: 0;
+}
+
+.tab-button {
+    display: inline-flex; /* 버튼처럼 요소 크기 지정 */
+    justify-content: center; /* 텍스트 중앙 정렬 */
+    align-items: center; /* 텍스트 중앙 정렬 */
+    width: 118px; /* 버튼 너비 */
+    height: 54px; /* 버튼 높이 */
+    font-size: 18px; /* 폰트 크기 */
+    text-align: center; /* 텍스트 정렬 */
+    text-decoration: none; /* 밑줄 제거 */
+    background: none; /* 배경 제거 */
+    border: 2px solid #ccc; /* 외곽선 추가 */
+    color: black; /* 글씨 색상 */
+    border-radius: 8px 8px 0 0; /* 모서리 둥글게 */
+    cursor: pointer; /* 마우스 커서 변경 */
+    transition: all 0.3s; /* 애니메이션 효과 */
+}
+
+.tab-button.active {
+    background-color: #4169E1; /* 선택된 탭의 배경색 */
+    color: white; /* 선택된 탭의 글씨 색상 */
+    border: 2px solid #4169E1; /* 선택된 탭의 테두리 색상 */
+    border-bottom: none; /* 선택된 탭과 컨테이너 사이의 선 제거 */
+}
+
+.outer-container {
+    width: 1200px; /* 외곽 컨테이너 너비 */
+    height: 675px; /* 외곽 컨테이너 높이 */
+    border: 2px solid #ccc; /* 외곽선 */
+    border-radius: 0 10px 10px 10px; /* 모서리 둥글게 */
+    background-color: #fff;
+    padding: 0 20px; /* 패딩 */
+    display: flex; /* 플렉스 컨테이너 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    overflow: hidden; /* 내부 카드가 넘치지 않도록 설정 */
+}
+
+
+
+.inner-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* WEEKLY CHECK 스타일 */
+.weekly-check {
+    text-align: left;
+    font-size: 25px;
+    color: #666666;
+}
+
+/* 상단 카드 섹션 */
+.top-section {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* 카드 사이 간격 */
+    width: 100%;
+    margin-top: 80px;
+}
+
+/* 하단 카드 섹션 */
+.bottom-section {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* 카드 간격 */
+    height: 50%; /* 하단 높이 제한 */
+    width: 100%;
+    margin-top: 25px;
+}
+
+
+/* 하단 카드 제목 */
+.analysis-title {
+    font-size: 16px; /* 약간 작은 크기 */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left; /* 왼쪽 정렬 */
+}
+
+
+/* 카드 스타일 공통 */
+.card {
+    flex: 1;
+    max-width: 294px; /* 카드 최대 너비 제한 */
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* 하단 큰 카드 스타일 */
+.card.large {
+    flex: 1;
+    max-width: 450px; /* 하단 카드 최대 너비 */
+    padding: 0 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* 하단 카드 섹션에서 두 번째 카드에만 배경색 적용 */
+/*.bottom-section .card.large:nth-child(2) {
+    background-color: #87B9F8; !* 원하는 배경색 *!
+    color : white;
+}*/
+
+/* 카드 상단 Total Calories 텍스트 */
+.analysis-title {
+    font-size: 18px;
+    color: #333;
+    text-align: left; /* 왼쪽 정렬 */
+    width: 100%; /* 카드 전체 폭에 맞춤 */
+}
+
+/* g 단위 스타일 */
+.card-value {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.card-value .number {
+    font-size: 30px; /* 숫자 폰트 크기 */
+    color: #333; /* 숫자 색상 */
+}
+
+.card-value .unit {
+    font-size: 16px; /* g 폰트 크기 */
+    color: #999; /* g 색상 */
+    margin-left: 5px;
+}
+
+
+.bar {
+    width: 100%;
+    height: 8px; /* 높이 축소 */
+    background-color: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.bar-inner {
+    height: 100%;
+    border-radius: 5px;
+}
+
+.protein {
+    width: 70%;
+    background-color: #2196F3;
+}
+
+.carbs {
+    width: 85%;
+    background-color: #4CAF50;
+}
+
+.fat {
+    width: 55%;
+    background-color: #FFC107;
+}
+
+
+/* 캔버스 크기 설정 */
+#caloriesChart {
+    width: 250px !important; /* 강제 너비 설정 */
+    height: auto !important; /* 강제 높이 설정 */
+    position: relative; /* 중앙 텍스트 배치에 필요 */
+    margin: 0 auto; /* 캔버스 중앙 정렬 */
+    margin-top: -70px;
+}
+
+/* 링 중앙 텍스트 */
+.chart-center-text {
+    position: absolute;
+    top: 77%;
+    left: 38%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 38px;
+    color: #555;
+    pointer-events: none; /* 클릭 방해 방지 */
+}
+

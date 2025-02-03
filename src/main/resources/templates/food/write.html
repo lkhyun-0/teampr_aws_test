@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Tracker</title>
+    <link rel="stylesheet" href="/css/food/write.css">
+
+</head>
+<body>
+
+<div th:insert="/common/header.html"></div>
+
+<div class="wrapper">
+    <div class="form-container">
+        <h1>글 작성</h1>
+        <label for="title">제목</label>
+        <input type="text" id="title" placeholder="제목을 입력해주세요">
+        <label for="content">내용</label>
+        <textarea id="content" placeholder="내용을 입력해주세요"></textarea>
+        <div class="button-container">
+            <button class="attach-btn">첨부 파일</button>
+            <button class="save-btn">저장하기</button>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div th:insert="/common/footer.html"></div>
+
+</body>
+</html>
