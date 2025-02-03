@@ -3,26 +3,15 @@
     box-sizing: border-box;
 }
 
-body, ul, li {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    color: #424242;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
 
 /* 컨테이너 스타일 */
 .container {
-    font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 0;
-    margin-top: 100px; /* 위쪽 여백 추가 */
+    margin-top: 250px; /* 위쪽 여백 추가 */
+    margin-bottom: 100px;
 }
 
 /* 상단 탭 */
@@ -212,7 +201,7 @@ a {
 /* 링 중앙 텍스트 */
 .chart-center-text {
     position: absolute;
-    top: 63%;
+    top: 77%;
     left: 38%;
     transform: translate(-50%, -50%);
     text-align: center;

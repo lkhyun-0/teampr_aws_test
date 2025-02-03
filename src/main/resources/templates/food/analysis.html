@@ -10,11 +10,13 @@
 </head>
 <body>
 
+<div th:insert="/common/header.html"></div>
+
 <div class="container">
     <!-- 상단 탭 -->
     <div class="tabs">
-        <a href="/food/record" class="tab-button">기록</a>
-        <a href="/food/list" class="tab-button">목록</a>
+        <a href="/food/foodRecord" class="tab-button">기록</a>
+        <a href="/food/foodList" class="tab-button">목록</a>
         <a href="/food/analysis" class="tab-button active">내 식단 분석</a>
     </div>
 
@@ -75,6 +77,8 @@
     </div>
 </div>
 
+<!--footer-->
+<div th:insert="/common/footer.html"></div>
 
 <script>
     const ctx = document.getElementById('caloriesChart').getContext('2d');

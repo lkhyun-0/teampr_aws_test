@@ -10,13 +10,15 @@
 </head>
 <body>
 
+<div th:insert="/common/header.html"></div>
+
 <div class="wrapper">
     <h1>식단 목표가 무엇인가요?</h1>
     <div class="container">
-        <a href="/diet" class="card">
+        <button class="card">
             <img src="/images/다이어트.png" alt="다이어트">
             <div class="card-text">다이어트</div>
-        </a>
+        </button>
         <a href="/reduce-sugar" class="card">
             <img src="/images/당제한.png" alt="당 줄이기">
             <div class="card-text">당 줄이기</div>
@@ -46,6 +48,9 @@
     </svg>
     <p>AI가 식단을 추천 중입니다...</p>
 </div>
+
+<!--footer-->
+<div th:insert="/common/footer.html"></div>
 
 
 <script>

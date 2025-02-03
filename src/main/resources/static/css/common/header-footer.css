@@ -39,6 +39,7 @@ img {
     background-color: white;
     top: 0;
     left: 0;
+    z-index: 100;
     border-bottom: 1px solid lightgray;
 }
 
@@ -107,6 +108,7 @@ img {
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: 1000;
     display: none; /* 기본적으로 숨김 */
 }
 
