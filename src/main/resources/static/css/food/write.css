@@ -2,22 +2,9 @@
     box-sizing: border-box;
 }
 
-/* 기본 노멀라이징 */
-body, ul, li {
-    background-color: #f9f9f9;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
 /* 전체를 감싸는 컨테이너 */
 .wrapper {
-    margin-top: 150px; /* 전체 컨테이너를 더 아래로 내림 */
+    margin-top: 250px; /* 전체 컨테이너를 더 아래로 내림 */
     display: flex;
     flex-direction: column;
     align-items: center;

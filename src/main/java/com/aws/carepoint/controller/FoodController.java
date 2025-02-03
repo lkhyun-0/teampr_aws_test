@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/food")
 public class FoodController {
 
-    @GetMapping("/record")
+    @GetMapping("/foodRecord")
     public String showRecordPage() {
 
         return "food/foodRecord"; // templates/food/foodRecord.html
     }
 
-    @GetMapping("/list")
+    @GetMapping("/foodList")
     public String showListPage() {
 
         return "food/foodList"; // templates/food/foodList.html

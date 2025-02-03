@@ -11,6 +11,8 @@
 </head>
 <body>
 
+<div th:insert="/common/header.html"></div>
+
 <div class="wrapper">
     <h1>AI가 추천하는 3가지 식단</h1>
     <div class="tabs">
@@ -281,14 +283,15 @@
             </table>
         </div>
 
-
-
     </div>
     <div class="buttons">
         <button class="button">다른 목표 선택</button>
         <button class="button">메인화면</button>
     </div>
 </div>
+
+<!--footer-->
+<div th:insert="/common/footer.html"></div>
 
 <script>
     $(document).ready(function () {
