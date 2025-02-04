@@ -1,0 +1,88 @@
+/* 컨테이너 전체 */
+.article-container {
+    width: 60%;
+    background-color: #87B9F8;
+    border: 2px solid #ddd;
+    margin: 220px auto 50px;
+    padding-top: 20px;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* 제목 */
+.article-title {
+    font-size: 1.6em;
+    padding: 10px;
+    margin: 0 10px 10px;
+}
+
+/* 작성 정보와 통계 */
+.info-bar {
+    display: flex;
+    justify-content: space-between;
+    color: #777;
+    margin: 10px 10px 10px 20px;
+}
+
+.info-left {
+    display: flex;
+    gap: 10px;
+}
+
+
+/* 작성 날짜 스타일 */
+.info-left span:last-child {
+    font-size: 0.8em; /* 글씨 크기 축소 */
+    color: #999; /* 연한 색상 */
+    margin-top: 2px;
+}
+
+/* 본문 내용 */
+.article-content {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: white;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+    min-height: 400px; /* 최소 높이 설정 */
+    overflow: auto; /* 스크롤 처리 */
+    word-wrap: break-word; /* 긴 단어 줄바꿈 */
+}
+
+/* 추천 및 버튼 */
+.actions {
+    display: flex;
+    background-color: white;
+    justify-content: flex-end; /* 버튼을 왼쪽으로 정렬 */
+    gap: 10px; /* 버튼 간격 */
+}
+
+
+.btn {
+    display: inline-block;
+    margin: 10px 10px 10px 0;
+    padding: 7px 12px;
+    background-color: #4169E1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* 목록 버튼 (왼쪽 끝에 배치) */
+.btn-left {
+    margin-left: 10px;
+    margin-right: auto; /* 오른쪽 여백 최대화 */
+}
+
+/* 수정 및 삭제 버튼 그룹 */
+.btn-group {
+    display: flex;
+}
+
+.btn:hover {
+    background-color: #3156b3;
+}
