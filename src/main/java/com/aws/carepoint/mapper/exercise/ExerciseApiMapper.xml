@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aws.carepoint.mapper.ExerciseApiMapper">
+
+    <insert id="insertExercise">
+        INSERT INTO exercise_api (exercise_api_pk, exercise_name, MET)
+        VALUES (#{exerciseId}, #{exerciseName}, #{met})
+    </insert>
+
+</mapper>

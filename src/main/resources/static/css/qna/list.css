@@ -207,7 +207,7 @@
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center;     /* 수직 정렬 */
     height: 1000px;          /* 높이 설정 */
-    width: 55%;
+    width: 60%;
     margin: 20px auto 0 auto;
 }
 
