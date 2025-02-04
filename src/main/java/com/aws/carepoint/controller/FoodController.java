@@ -1,12 +1,20 @@
 package com.aws.carepoint.controller;
 
+import com.aws.carepoint.dto.FoodDTO;
+import com.aws.carepoint.service.FoodService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/food")
+@RequiredArgsConstructor
 public class FoodController {
+
+    private final FoodService foodService;
+
 
     @GetMapping("/foodRecord")
     public String showRecordPage() {
@@ -44,6 +52,13 @@ public class FoodController {
         return "food/recomResult"; // templates/food/analysis.html
     }
 
+
+    // 2. 검색 API - JSON 데이터 반환
+    @GetMapping("/search")
+    @ResponseBody
+    public List<FoodDTO> searchFood(@RequestParam(name = "query") String query) {
+        return foodService.searchFood(query);
+    }
 
     }
 
