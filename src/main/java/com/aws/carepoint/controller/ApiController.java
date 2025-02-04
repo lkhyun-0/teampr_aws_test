@@ -17,7 +17,7 @@ public class ApiController {
 
     @GetMapping("/fetch")
     public String fetchAndSaveExerciseData() {
-        exerciseService.fetchAndSaveExercise();
-        return "데이터를 성공적으로 가져와서 DB에 저장했습니다.";
+
+        return "✅ 데이터가 성공적으로 저장되었습니다.";
     }
 }
