@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ public class FoodService {
 
     // 여기에 API 주소와 API 키를 직접 입력
     private final String API_URL = "https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo01/getFoodNtrCpntDbInq01";
-    private final String API_KEY = "S15Q20%2BeKCS9XCxG%2BBSU%2FyMA3XAfmRYgzURInD%2BA5qWVaViHx2JBGK2G8g7S8F2cipeL1lLYJoFto1DX2FxpNw%3D%3D"; // 🔥 네 API 키 넣기
+    private final String API_KEY = "w0x%2F%2FhcjF7XzsNtQz1z%2BN7HBII%2B43N4Jty2e4NO32EsUKlHqoeqj1HwLAde%2BHaZRphi3YMnhCU4fKeYzIvs8uA%3D%3D";
 
     public List<FoodDTO> searchFood(String query) {
         RestTemplate restTemplate = new RestTemplate();
@@ -31,8 +29,8 @@ public class FoodService {
 
             // API 요청 URL 생성 (API_KEY 인코딩 X)
             String url = API_URL + "?serviceKey=" + API_KEY
-                    + "&FOOD_NM_KR=" + query
-                    + "&numOfRows=15"
+                    + "&FOOD_NM_KR=" + encodedQuery
+                    + "&numOfRows=5"
                     + "&pageNo=1"
                     + "&type=json";
 
@@ -41,7 +39,7 @@ public class FoodService {
 
             // API 호출 (🔥 UTF-8 인코딩 강제 적용)
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(List.of(MediaType.APPLICATION_JSON));  // 나는 JSON을 원해
             HttpEntity<String> entity = new HttpEntity<>(headers);
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
@@ -49,12 +47,6 @@ public class FoodService {
 
             // 응답 로그 확인
             System.out.println("✅ API 응답: " + responseBody);
-
-            // 응답이 HTML이면 API 키 오류일 가능성이 높음!
-            if (responseBody == null || responseBody.startsWith("<")) {
-                System.out.println("❌ API에서 HTML 응답이 반환됨. URL 또는 API 키를 확인하세요.");
-                return foodList; // 빈 리스트 반환
-            }
 
             // JSON 파싱
             JsonNode root = objectMapper.readTree(responseBody);
