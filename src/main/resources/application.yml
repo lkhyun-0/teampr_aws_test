@@ -2,15 +2,10 @@ server:
   port: 8081
 
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/carepoint?serverTimezone=Asia/Seoul
-    username: root
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  config:
+    import: classpath:application-DB.yml  # DB 설정을 application-DB.yml에서 불러옴
+  profiles:
+    active: local  # 기본 환경을 local로 설정 (선택 사항)
 
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    hibernate:
-      ddl-auto: update
 
 
