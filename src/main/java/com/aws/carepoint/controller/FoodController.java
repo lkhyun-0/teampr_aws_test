@@ -1,24 +1,20 @@
 package com.aws.carepoint.controller;
 
-//import com.aws.carepoint.entity.FoodInfo;
-//import com.aws.carepoint.service.FoodInfoService;
+import com.aws.carepoint.dto.FoodDTO;
+import com.aws.carepoint.service.FoodService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/food")
+@RequiredArgsConstructor
 public class FoodController {
 
-//    private final FoodInfoService foodInfoService;
-//
-//    public FoodController(FoodInfoService foodInfoService) {
-//        this.foodInfoService = foodInfoService;
-//    }
+    private final FoodService foodService;
+
 
     @GetMapping("/foodRecord")
     public String showRecordPage() {
@@ -57,23 +53,12 @@ public class FoodController {
     }
 
 
-//    // 특정 음식명을 기반으로 API 데이터를 가져와 DB에 저장
-//    @PostMapping("/fetch")
-//    public String fetchFoodData(@RequestParam String menu) {
-//        foodInfoService.fetchAndSaveFoodData(menu);
-//        return "Food data fetched and saved!";
-//    }
-//
-//    // 음식명 검색 API (AJAX 요청)
-//    @GetMapping("/search")
-//    public List<FoodInfo> searchFood(@RequestParam String menu) {
-//        return foodInfoService.searchFoodByName(menu);
-//    }
-
-
-
-
-
+    // 2. 검색 API - JSON 데이터 반환
+    @GetMapping("/search")
+    @ResponseBody
+    public List<FoodDTO> searchFood(@RequestParam(name = "query") String query) {
+        return foodService.searchFood(query);
+    }
 
     }
 
