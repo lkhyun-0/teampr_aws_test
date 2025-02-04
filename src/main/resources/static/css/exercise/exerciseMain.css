@@ -1,17 +1,7 @@
 @charset "UTF-8";
 
-/*노멀라이즈*/
-body, ul, li {
-    font-family: Arial, sans-serif;
-    background-color: white;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
+.main {
+    margin: 220px auto;
 }
 
 /* 운동 페이지 */
@@ -106,7 +96,6 @@ a {
     justify-content: space-between;
     font-size: 14px;
     margin: 10px auto 5px auto;
-    margin-bottom: 5px;
     width: 450px;
 }
 
@@ -122,7 +111,7 @@ a {
 .target-progress {
     width: 33%;
     height: 30px;
-    background-color: #ffb6c1; /* 연한 핑크색 */
+    background-color: rgba(129, 199, 132, 0.8); /* 연한 핑크색 */
 }
 
 .target-box > button {
@@ -228,7 +217,6 @@ a {
 .cumulative-total span {
     flex: 1;
     font-weight: bold;
-    padding: 15px 0;
     border-right: 1px solid lightgray;
     font-size: 36px;
     padding: 25px 0;
@@ -283,13 +271,13 @@ a {
     right: 5px;
     top: 5px;
     font-size: 30px;
-    color: darkgray;
-    background-color: white;
+    color: darkgray !important;
+    background-color: white !important;
 }
 
 .target-popup__head > button:hover {
-    color: lightcoral;
-    background-color: white;
+    color: lightcoral !important;
+    background-color: white !important;
 }
 
 .target-popup__body {
@@ -340,7 +328,7 @@ a {
     justify-content: center; /* 가로 중앙 정렬 */
     align-items: center; /* 세로 중앙 정렬 */
     width: 1200px; /* 부모 컨테이너 전체 너비 */
-    height: 200px;
+    height: 120px;
     margin: 0 auto; /* 완벽한 중앙 정렬 */
     margin-top: 50px; /* 폼 위쪽 간격 */
     text-align: center; /* 내부 텍스트 중앙 정렬 */
@@ -352,7 +340,7 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 25px;
+    font-size: 20px;
     margin: 0 30px; /* 부모 기준 중앙 정렬 */
 }
 
@@ -362,9 +350,9 @@ a {
 }
 
 .exercise-type > i {
-    width: 2rem;
+    width: 30px;
     margin-left: 40px;
-    font-size: 2rem;
+    font-size: 30px;
     border: 3px solid #424242AA;
     color: #424242AA;
     border-radius: 50%;
@@ -436,21 +424,21 @@ a {
 }
 
 .exercise-type-popup__head > div > button {
-    background-color: white;
+    background-color: white !important;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #6495ED;
+    color: #6495ED !important;
     margin-left: 5px;
-    border: 2px solid lightgray;
-    border-radius: 5px;
+    border: 2px solid lightgray !important;
+    border-radius: 5px !important;
     height: 36px;
     width: 36px;
 }
 
 .exercise-type-popup__head > div > button:hover {
-    background-color: #6495ED;
-    color: white;
+    background-color: #6495ED !important;
+    color: white !important;
 }
 
 .exercise-type-popup__head > div > button > i {
@@ -474,13 +462,13 @@ a {
     right: 5px;
     top: 5px;
     font-size: 30px;
-    color: darkgray;
-    background-color: white;
+    color: darkgray !important;
+    background-color: white !important;
 }
 
 .exercise-type-popup__head > button:hover {
-    color: lightcoral;
-    background-color: white;
+    color: lightcoral !important;
+    background-color: white !important;
 }
 
 .exercise-type-popup__body {
@@ -613,7 +601,6 @@ a {
 /* 날짜 스타일 */
 .calendar-year {
     font-size: 18px;
-    font-weight: lighter;
 }
 
 .calendar-month {
@@ -661,7 +648,6 @@ a {
     margin-top: 25px;
     padding: 5px;
     font-size: 14px;
-    background-color: white;
     border: none;
 }
 
@@ -679,17 +665,13 @@ a {
 .event-text {
     line-height: 1.4;
     color: #424242;
-}
-
-.event-calories {
-    font-size: 14px;
-    font-weight: bold;
-    color: #424242;
+    text-align: left;
     margin-top: 5px; /* 간격 추가 */
 }
+
 .custom-event img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     margin-right: 5px;
 }
 
@@ -708,7 +690,24 @@ a {
 
 .fc .fc-daygrid-day-frame {
     position: relative;
-    height: 120px;
+    height: 170px;
+}
+
+/* 오늘 날짜 셀 배경을 노란색으로 지정 */
+.fc-day-today .fc-daygrid-day-frame {
+    background-color: #e3f0ff !important;
+}
+
+/* 오늘 날짜 셀 위의 이벤트 배경은 투명 처리 */
+.fc-day-today .fc-daygrid-event {
+    background-color: transparent !important;
+    border: none !important; /* 테두리까지 없애고 싶다면 */
+}
+
+/* (선택) 다른 날의 이벤트는 흰 배경으로 표시하고 싶다면 */
+.fc-daygrid-event {
+    background-color: #ffffff;
+    /* 필요에 따라 다른 스타일 적용 */
 }
 
 /* 운동시간 이벤트 추가 */
@@ -733,22 +732,27 @@ a {
     border-radius: 4px;
 }
 
+/*소모 칼로리 폰트 키우기*/
+.highlight-kcal {
+    font-size: 20px;
+}
+
 
 
 button {
-    background-color: #4169E1;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+    background-color: #4169E1 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
 }
 
 select:focus,
 button:focus {
-    outline: none;
-    box-shadow: none; /* 필요시 */
+    outline: none !important;
+    box-shadow: none !important; /* 필요시 */
 }
 
 button:hover {
-    background-color: #315AB0; /* 호버 효과 */
+    background-color: #315AB0 !important; /* 호버 효과 */
 }
