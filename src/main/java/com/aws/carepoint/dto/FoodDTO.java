@@ -9,4 +9,5 @@ public class FoodDTO {
     private float protein; // 🔥 float로 변경 (소수 가능)
     private float fat;
     private float carbohydrate;
+    
 }
