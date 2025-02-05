@@ -1,8 +1,6 @@
 package com.aws.carepoint.dto;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class FoodDTO {
