@@ -1,18 +1,11 @@
-package com.aws.carepoint.vo;
+package com.aws.carepoint.dto;
 
-import jakarta.persistence.*;
+
 import lombok.*;
 
-@Entity
-@Table(name = "users") // 실제 DB 테이블명
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Users {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Data
+public class UsersDto {
+
     private int user_pk;
     private int auth_level;
     private int social_login_status;

@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS `carepoint`;
+CREATE DATABASE `carepoint`;
+USE `carepoint`;
+
 CREATE TABLE users (
                        user_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                        auth_level SMALLINT(2) NOT NULL, -- 권한 레벨 (3=일반, 7=관리자)

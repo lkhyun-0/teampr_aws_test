@@ -3,6 +3,9 @@ server:
 
 spring:
   config:
-    import: classpath:application.DB.yml
+    import: classpath:application-DB.yml  # DB 설정을 application-DB.yml에서 불러옴
   profiles:
-    active: local
+    active: local  # 기본 환경을 local로 설정 (선택 사항)
+
+
+

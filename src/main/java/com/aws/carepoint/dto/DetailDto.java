@@ -1,4 +1,4 @@
-package com.aws.carepoint.vo;
+package com.aws.carepoint.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Detail {
+public class DetailDto {
     private int detail_pk;
     private int age;
     private String weight;
