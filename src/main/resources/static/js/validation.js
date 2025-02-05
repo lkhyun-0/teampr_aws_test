@@ -11,17 +11,17 @@ function joinCheck() {
         alert("닉네임을 입력해주세요");
         fm.usernick.focus();
         return;
-    } /*else if ($("#nick-btn").prop("value") === "N") {
-        alert("닉네임 중복확인을 해주세요");
+    } else if ($("#nick-btn").val() === "N") {  // 닉네임 중복 확인 안 했으면 막기
+        alert("닉네임 중복 확인을 해주세요.");
         return;
-    }*/ else if (fm.userid.value === "") {
+    } else if (fm.userid.value === "") {
         alert("아이디를 입력해주세요");
         fm.userid.focus();
         return;
-    } /*else if ($("#id-btn").prop("value") === "N") {
-        alert("아이디 중복확인을 해주세요");
+    } else if ($("#id-btn").val() === "N") {  // 아이디 중복 확인 안 했으면 막기
+        alert("아이디 중복 확인을 해주세요.");
         return;
-    } */else if (fm.userpwd.value === "") {
+    } else if (fm.userpwd.value === "") {
         alert("비밀번호를 입력해주세요");
         fm.userpwd.focus();
         return;
@@ -52,77 +52,82 @@ function joinCheck() {
             userid: fm.userid.value,
             userpwd: fm.userpwd.value,
             email: fm.email.value,
-            phone: fm.phone.value
+            phone: fm.phone.value,
+            /*            auth_level: fm.auth_level.value,
+                        social_login_status: fm.social_login_status.value,
+                        del_status: fm.del_status.value*/
+
         };
 
         fetch("/user/userSignUp", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(userData)
         })
             .then(response => response.json())
             .then(data => {
                 alert("회원가입 성공!");
-                window.location.href = "/user/userLogin";
+                window.location.href = "/user/userDetail";
             })
             .catch(error => {
-               alert("회원가입 실패 : " + error.message);
+                alert("회원가입 실패 : " + error.message);
             });
     }
 }
 
-/*function checkUserId() {
-    let userid = $("#userid").val();
-    if (userid === "") {
-        alert("아이디 입력란이 공란입니다.");
+// ✅ 아이디 또는 닉네임이 변경될 때 버튼 상태 초기화
+document.getElementById("userid").addEventListener("input", function () {
+    document.getElementById("id-btn").value = "N";
+});
+
+document.getElementById("usernick").addEventListener("input", function () {
+    document.getElementById("nick-btn").value = "N";
+});
+
+
+function checkUserId() {
+    let userid = document.getElementById("userid").value.trim();
+    let idButton = document.getElementById("id-btn");
+    if (!userid) {  // 아이디 입력란 비어있을 때
+        alert("아이디를 입력하세요.");
         return;
     }
 
-    $.ajax({
-        type: "post",
-        url: "/user/userIdCheck",
-        dataType: "json",
-        data: { "userid": userid },
-        success: function (result) {
-            if (result.cnt === 0) {
-                alert("사용할 수 있는 아이디입니다.");
-                $("#id-btn").prop("value", "Y");
+    fetch(`/user/checkUserId?userid=${encodeURIComponent(userid)}`)
+        .then(response => response.json())
+        .then(isDuplicate => {
+            if (isDuplicate) {
+                alert("이미 사용 중인 아이디입니다. 다른 아이디를 입력해주세요.");
+                idButton.value = "N"; // 중복된 경우 다시 확인 필요
             } else {
-                alert("사용할 수 없는 아이디입니다.");
-                $("#userid").val("");
+                alert("사용 가능한 아이디입니다!");
+                idButton.value = "Y"; // 사용 가능하면 "Y"로 변경
             }
-        },
-        error: function () {
-            alert("전송 실패");
-        }
-    });
+        })
+        .catch(error => console.error("Error:", error));
 }
 
 function checkNickname() {
-    let usernick = $("#usernick").val();
-    if (usernick === "") {
-        alert("닉네임 입력란이 공란입니다.");
+    let usernick = document.getElementById("usernick").value.trim();
+    let nickButton = document.getElementById("nick-btn");
+
+    if (!usernick) {
+        alert("닉네임을 입력하세요.");
         return;
     }
 
-    $.ajax({
-        type: "post",
-        url: "/user/userNickCheck",
-        dataType: "json",
-        data: { "usernick": usernick },
-        success: function (result) {
-            if (result.cnt === 0) {
-                alert("사용할 수 있는 닉네임입니다.");
-                $("#nick-btn").prop("value", "Y");
+    fetch(`/user/checkNickname?usernick=${encodeURIComponent(usernick)}`)
+        .then(response => response.json())
+        .then(isDuplicate => {
+            if (isDuplicate) {
+                alert("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
+                nickButton.value = "N"; // 중복된 경우 다시 확인 필요
             } else {
-                alert("사용할 수 없는 닉네임입니다.");
-                $("#usernick").val("");
+                alert("사용 가능한 닉네임입니다!");
+                nickButton.value = "Y"; // 사용 가능하면 "Y"로 변경
             }
-        },
-        error: function () {
-            alert("전송 실패");
-        }
-    });
-}*/
+        })
+        .catch(error => console.error("Error:", error));
+}

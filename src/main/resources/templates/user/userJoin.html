@@ -115,8 +115,8 @@
     <section class="registration-form">
         <h1>회원가입</h1>
         <form name="frm" action="/user/userSignUp" method="post">
-            <input type="text" id="auth_level" name="auth_level" value=3>
-            <input type="text" id="social_login_status" name="social_login_status" value=0>
+            <input type="hidden" id="auth_level" name="auth_level" value=3>
+            <input type="hidden" id="social_login_status" name="social_login_status" value=0>
             <div class="form-group">
                 <label>이름</label>
                 <input type="text" id="username" name="username" placeholder="이름을 입력하세요" required>
