@@ -3,29 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Q&A 게시글 상세보기</title>
-    <link href="/css/free/contents.css" rel="stylesheet">
+    <link href="/css/qna/content.css" rel="stylesheet">
 </head>
 <body>
 <div th:insert="/common/header.html"></div>
 <div class="article-container">
-  <div class="article-title">목표 설정 어떻게 하나요?</div>
+  <div class="article-title" th:text="${qna.title}"></div>
+
   <div class="info-bar">
     <div class="info-left">
-      <span>22na |</span>
-      <span>2024-12-26 18:10:48</span>
+      <span th:text="${qna.userNick}"></span> |
+      <span th:text="${#temporals.format(qna.regDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
     </div>
   </div>
-  <div class="article-content">
-    설정 어떻게 하는지 알려주세요
+
+  <div class="article-content" th:text="${qna.content}">
   </div>
+
   <div class="actions">
     <!-- 목록으로 버튼 -->
-    <a href="#" class="btn btn-left">목록</a>
+    <a href="/qna/qnaList" class="btn btn-left">목록</a>
     <!-- 수정 및 삭제 버튼 -->
     <div class="btn-group">
-      <a href="#" class="btn" >답변</a>
-      <a href="#" class="btn">수정</a>
-      <a href="#" class="btn">삭제</a>
+      <a th:href="@{/qna/qnaReply.html/{id}(id=${qna.articlePk})}" class="btn" >답변</a>
+      <a th:href="@{/qna/qnaModify/{id}(id=${qna.articlePk})}" class="btn">수정</a>
+      <a th:href="@{/qna/qnaDelete/{id}(id=${qna.articlePk})}" class="btn">삭제</a>
     </div>
   </div>
 </div>

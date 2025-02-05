@@ -1,14 +1,13 @@
 @charset "UTF-8";
 
-/* 자유 게시판 List */
-.listDiv {
+/* Q&A 게시판 List */
+.qnaListDiv {
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
-    height: 100%;          /* 높이 설정 */
-    flex-direction: column;  /* 검색창과 테이블을 세로로 배치 */
-    align-items: center;     /* 중앙 정렬 */
-    width: 55%;
-    margin: 0 auto;
+    align-items: center;     /* 수직 정렬 */
+    height: 700px;          /* 높이 설정 */
+    width: 60%;
+    margin: 230px auto 0 auto;
 }
 
 .listTable {
@@ -36,7 +35,6 @@
     text-align: center;
     padding: 0; /* 기본 패딩 제거 */
     border-bottom: 1px solid lightgray;
-
 }
 
 .listTable .subject {
@@ -153,6 +151,7 @@
 .page {
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
+    margin-bottom: 100px;
 }
 
 .page ul {
@@ -201,28 +200,3 @@
 }
 
 
-/* Q&A 게시판 List */
-.qnaListDiv {
-    display: flex;
-    justify-content: center; /* 수평 중앙 정렬 */
-    align-items: center;     /* 수직 정렬 */
-    height: 1000px;          /* 높이 설정 */
-    width: 60%;
-    margin: 20px auto 0 auto;
-}
-
-
-/* 공지사항 게시판 List */
-.noticeListDiv {
-    display: flex;
-    justify-content: center; /* 수평 중앙 정렬 */
-    align-items: center;     /* 수직 정렬 */
-    height: 1000px;          /* 높이 설정 */
-    width: 55%;
-    margin: 0 auto;
-}
-
-.noticeNo {
-    text-align: center; /* 여전히 텍스트를 중앙 정렬 */
-    width: 10%;
-}

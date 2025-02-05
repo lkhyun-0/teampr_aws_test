@@ -1,0 +1,15 @@
+<resultMap id="qnaResultMap" type="com.aws.carepoint.dto.QnaDto">
+    <result property="articlePk" column="article_pk"/>
+    <result property="content" column="content"/>
+    <result property="filename" column="filename"/>
+    <result property="recom" column="recom"/>
+    <result property="viewcnt" column="viewcnt"/>
+    <result property="originNum" column="origin_num"/>
+    <result property="level" column="level_"/>
+    <result property="regDate" column="reg_date"/>
+    <result property="updateDate" column="update_date"/>
+    <result property="boardPk" column="board_pk"/>
+    <result property="title" column="title"/>
+    <result property="boardType" column="board_type"/>
+    <result property="userPk" column="user_pk"/>
+</resultMap>
