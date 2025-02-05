@@ -3,9 +3,10 @@ package com.aws.carepoint.service;
 import com.aws.carepoint.dto.FoodDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.util.List;
 @Service
 public class FoodService {
 
-    // 여기에 API 주소와 API 키를 직접 입력
     private final String API_URL = "https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo01/getFoodNtrCpntDbInq01";
     private final String API_KEY = "w0x%2F%2FhcjF7XzsNtQz1z%2BN7HBII%2B43N4Jty2e4NO32EsUKlHqoeqj1HwLAde%2BHaZRphi3YMnhCU4fKeYzIvs8uA%3D%3D";
 
@@ -27,23 +27,19 @@ public class FoodService {
             // 음식명 URL 인코딩
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
 
-            // API 요청 URL 생성 (API_KEY 인코딩 X)
-            String url = API_URL + "?serviceKey=" + API_KEY
-                    + "&FOOD_NM_KR=" + encodedQuery
-                    + "&numOfRows=5"
-                    + "&pageNo=1"
-                    + "&type=json";
+            // URI 객체 생성 (🔥 URI를 사용하여 자동 인코딩 처리)
+            URI uri = new URI(API_URL +
+                    "?serviceKey=" + API_KEY +
+                    "&FOOD_NM_KR=" + encodedQuery +
+                    "&numOfRows=5" +
+                    "&pageNo=1" +
+                    "&type=json");
 
-            // 요청 URL 확인
-            System.out.println("✅ API 요청 URL: " + url);
+            // 요청 URI 확인
+            System.out.println("✅ API 요청 URI: " + uri);
 
-            // API 호출 (🔥 UTF-8 인코딩 강제 적용)
-            HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(List.of(MediaType.APPLICATION_JSON));  // 나는 JSON을 원해
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-
-            String responseBody = responseEntity.getBody();
+            // API 호출 (🔥 getForObject 사용)
+            String responseBody = restTemplate.getForObject(uri, String.class);
 
             // 응답 로그 확인
             System.out.println("✅ API 응답: " + responseBody);
@@ -75,5 +71,3 @@ public class FoodService {
         return foodList;
     }
 }
-
-
