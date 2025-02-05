@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Data
 public class ExerciseDto {
     @JsonProperty("운동명")
     private String exerciseName;
@@ -12,19 +13,4 @@ public class ExerciseDto {
     @JsonProperty("MET 계수")
     private String metValue;
 
-    public String getExerciseName() {
-        return exerciseName;
-    }
-
-    public String getMetValue() {
-        return metValue;
-    }
-
-    public void setExerciseName(String exerciseName) {
-        this.exerciseName = exerciseName;
-    }
-
-    public void setMetValue(String metValue) {
-        this.metValue = metValue;
-    }
 }
