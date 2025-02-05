@@ -129,7 +129,7 @@ h1 {
     position: relative;
     border-bottom: 1px dashed #ddd;
     padding-bottom: 1px;
-    width: 270px;
+    width: 310px;
 }
 
 .meal-menu span {
@@ -150,7 +150,7 @@ h1 {
     position: absolute;
     bottom: 0; /* 줄 위치를 정확히 하단에 고정 */
     left: 0;
-    width: 270px;
+    width: 310px;
     height: 1px;
     border-bottom: 1px dashed #424242; /* 줄 스타일을 점선으로 설정 */
 }
@@ -164,4 +164,9 @@ h1 {
     left: 50%; /* 수평 중앙 정렬 */
     transform: translateX(-50%); /* 수평 중앙 정렬 보정 */
     width: 100%; /* 넓이를 부모 요소에 맞춤 */
+}
+
+span#total-kcal {
+    font-weight: bold;
+    font-size: 25px;
 }
