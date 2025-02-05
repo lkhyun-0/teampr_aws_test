@@ -1,6 +1,6 @@
 package com.aws.carepoint.controller;
 
-import com.aws.carepoint.vo.User;
+import com.aws.carepoint.vo.Users;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +17,12 @@ public class UserController {
         return "user/userJoin";
     }
 
-    @PostMapping("userJoinAction")
+/*    @PostMapping("userJoinAction")
 
-    public String userJoinAction(User user, RedirectAttributes rttr, HttpSession session) {
+    public String userJoinAction(Users users, RedirectAttributes rttr, HttpSession session) {
 
         return "redirect:/user/userJoin";
-    }
+    }*/
 
 
 
