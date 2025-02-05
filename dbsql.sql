@@ -205,7 +205,8 @@ CREATE TABLE hospital_plan (
 
 
 
-
+INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
+VALUES (3, 0, 'testuser', 'testpassword', '홍길동', '길동이', '010-1234-5678', 'testuser@example.com');
 
 
 
