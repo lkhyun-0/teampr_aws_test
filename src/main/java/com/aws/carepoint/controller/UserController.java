@@ -4,9 +4,12 @@ import com.aws.carepoint.dto.UsersDto;
 import com.aws.carepoint.mapper.UserMapper;
 import com.aws.carepoint.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Controller // @RestController= @Controller + @ResponseBody
 @RequestMapping("/user/")
@@ -21,15 +24,23 @@ public class UserController {
     }
     @ResponseBody
     @PostMapping("userSignUp")
-    public ResponseEntity<String> userSignUp(@RequestBody UsersDto usersDto, HttpSession session) {
-        userService.userSignUp(usersDto);   // 회원가입 처리 !
+    public ResponseEntity<Map<String, String>> userSignUp(@RequestBody UsersDto usersDto, HttpSession session) {
+        try {
+            userService.userSignUp(usersDto);
+            System.out.println("유저디티오 확인 : " + usersDto);
 
-        session.setAttribute("detailInsert", true);
-        session.setAttribute("user_pk", usersDto.getUser_pk());
-        // 상세정보 입력할 때 사용할 회원번호 세션에 담기
+            session.setAttribute("detailInsert", true);
+            session.setAttribute("user_pk", usersDto.getUser_pk());
 
-        return ResponseEntity.ok("회원가입 성공! 상세 정보를 입력해주세요.");
+            // ✅ JSON 응답으로 변경 (기존 단순 문자열 반환 → JSON)
+            return ResponseEntity.ok(Map.of("message", "회원가입 성공!", "redirect", "/user/userDetail"));
 
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류 발생: " + e.getMessage()));
+        }
     }
     // 아이디 중복 체크 API
     @GetMapping("checkUserId")

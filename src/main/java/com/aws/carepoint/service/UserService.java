@@ -20,7 +20,7 @@ public class UserService {
     }
 
     public void userSignUp(UsersDto usersDto) {
-        System.out.println("유저디티오값 확인 : " + usersDto);
+
 
         // 아이디 중복 검사
         if (userMapper.countByUserId(usersDto.getUserid()) > 0) {

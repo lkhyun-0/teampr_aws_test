@@ -66,13 +66,24 @@ function joinCheck() {
             },
             body: JSON.stringify(userData)
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error("서버 오류: " + text);
+                    });
+                }
+                return response.json();  // ✅ JSON 변환
+            })
             .then(data => {
-                alert("회원가입 성공!");
-                window.location.href = "/user/userDetail";
+                console.log("서버 응답 데이터:", data);  // ✅ 응답 데이터 확인
+                if (data.error) {
+                    throw new Error(data.error);  // 오류 메시지 처리
+                }
+                alert(data.message);
+                window.location.href = data.redirect;  // ✅ 서버에서 받은 redirect 경로로 이동
             })
             .catch(error => {
-                alert("회원가입 실패 : " + error.message);
+                alert("회원가입 실패: " + error.message);
             });
     }
 }
