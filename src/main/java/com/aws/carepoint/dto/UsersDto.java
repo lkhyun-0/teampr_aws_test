@@ -5,7 +5,6 @@ import lombok.*;
 
 @Data
 public class UsersDto {
-
     private int user_pk;
     private int auth_level;
     private int social_login_status;
