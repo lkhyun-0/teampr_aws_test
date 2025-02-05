@@ -1,36 +1,37 @@
 package com.aws.carepoint.service;
 
 import com.aws.carepoint.dto.UsersDto;
-//import com.aws.carepoint.repository.UserRepository;
+import com.aws.carepoint.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+@Slf4j
 @Service
 public class UserService {
-/*
-    private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    @Autowired
+    public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // 회원가입 - 비밀번호 암호화 후 저장
-    @Transactional
-    public UsersDto registerUser(UsersDto users) {
-        String encryptedPassword = passwordEncoder.encode(users.getUserpwd()); // 비밀번호 암호화 적용
-        users.setUserpwd(encryptedPassword); // 암호화된 비밀번호 설정
+    public void userSignUp(UsersDto usersDto) {
 
-        return userRepository.save(users); // DB에 저장
+        // 기본값 설정
+        usersDto.setAuth_level(3); // 일반 회원
+        usersDto.setSocial_login_status(0); // ✅ setter 메서드 사용
+        usersDto.setDel_status(0); // 기본값: 탈퇴하지 않은 상태
+        // 비밀번호 암호화
+        String encodedPwd = passwordEncoder.encode(usersDto.getUserpwd());
+        usersDto.setUserpwd(encodedPwd);
+        System.out.println("암호화된 비번: " + encodedPwd);
+
+        // 회원 정보 저장
+        userMapper.insertUser(usersDto);
     }
 
-    // 로그인 - 비밀번호 검증
-    public boolean login(String userid, String rawPassword) {
-        UsersDto users = userRepository.findByUserid(userid)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-
-        return passwordEncoder.matches(rawPassword, users.getUserpwd()); // 입력한 비밀번호와 DB 비밀번호 비교
-    }*/
 }
