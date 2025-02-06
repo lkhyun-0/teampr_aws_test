@@ -142,9 +142,6 @@ h1 {
     cursor: pointer;
 }
 
-
-
-
 .meal-menu::after {
     content: "";
     position: absolute;

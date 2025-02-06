@@ -105,20 +105,16 @@ public class FoodService {
     }
 
 
-    // 1️⃣ 특정 날짜의 식단 조회
+    //  특정 날짜의 식단 조회
     public List<FoodList> getFoodByDate(int userPk, String selectDate) {
         return foodMapper.getFoodByDate(userPk, selectDate);
     }
 
-    // 2️⃣ 개별 음식 삭제
+    // 개별 음식 삭제
     public void deleteFood(int foodListPk) {
         foodMapper.deleteFood(foodListPk);
     }
 
-    // 3️⃣ 개별 음식 수정
-    public void updateFood(FoodList foodList) {
-        foodMapper.updateFood(foodList);
-    }
 
 
 

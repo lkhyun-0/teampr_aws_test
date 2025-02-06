@@ -5,6 +5,7 @@ import com.aws.carepoint.dto.FoodDto;
 import com.aws.carepoint.dto.FoodRecordRequest;
 import com.aws.carepoint.service.FoodService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,13 +89,8 @@ public class FoodController {
         return "success";
     }
 
-    //음식 수정
-    @PostMapping("/update")
-    @ResponseBody
-    public String updateFood(@RequestBody FoodList foodList) {
-        foodService.updateFood(foodList);
-        return "success";
-    }
+
+
 
 }
 

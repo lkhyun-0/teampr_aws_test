@@ -84,17 +84,16 @@
 </div>
 
 <script>
-
-    // 날짜 변환 함수 (YYYY-MM-DD → M월 D일)
-    function formatDate(dateStr) {
-        let dateParts = dateStr.split("-");
-        return `${parseInt(dateParts[1])}월 ${parseInt(dateParts[2])}일`;
-    }
-
-
     $(document).ready(function () {
-        let selectedDate = "2025-02-05"; // 선택한 날짜
+        let selectedDate = "2025-02-06"; // 선택한 날짜
         let userPk = 1;  // 로그인된 사용자 ID
+        let mealTypes = ["breakfast", "lunch", "dinner"]; // 아침, 점심, 저녁
+
+        // 날짜 변환 함수 (YYYY-MM-DD → M월 D일)
+        function formatDate(dateStr) {
+            let dateParts = dateStr.split("-");
+            return `${parseInt(dateParts[1])}월 ${parseInt(dateParts[2])}일`;
+        }
 
         // 특정 날짜의 식단 불러오기
         function loadDietRecords() {
@@ -103,25 +102,44 @@
                 type: "GET",
                 data: { userPk: userPk, selectDate: selectedDate },
                 success: function (response) {
-                    $(".meal-list .meal-menu").remove(); // 기존 데이터 초기화
+                    $(".meal-list").each(function () {
+                        $(this).find(".meal-menu").remove(); // 기존 음식 목록만 삭제 (meal-header는 유지)
+                    });
+
                     let totalCalories = 0;
+                    let meals = { breakfast: [], lunch: [], dinner: [] };
 
                     // 날짜 표시 업데이트
                     $("#diet-date").text(`${formatDate(selectedDate)} 식단 기록표`);
 
+                    // 받아온 데이터를 mealType별로 분류
                     response.forEach(food => {
                         let mealType = getMealType(food.foodType);
-                        let mealSection = $("#" + mealType + " .meal-list");
-
-                        let foodItem = `
-                        <li class="meal-menu" data-foodlistpk="${food.foodListPk}">
-                            ${food.menu} <span>${food.kcal} kcal</span>
-                            <a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a>
-                        </li>
-                        `;
-
-                        mealSection.append(foodItem);
+                        meals[mealType].push({
+                            menu: food.menu,
+                            kcal: food.kcal,goit 
+                            foodListPk: food.foodListPk
+                        });
                         totalCalories += food.kcal;
+                    });
+
+                    // 각 식사별로 5줄을 유지하면서 데이터 채우기
+                    mealTypes.forEach(mealType => {
+                        let mealSection = $("#" + mealType + " .meal-list");
+                        let mealData = meals[mealType];
+
+                        for (let i = 0; i < 5; i++) {
+                            let foodItem = mealData[i]
+                                ? `<li class="meal-menu" data-foodlistpk="${mealData[i].foodListPk}">
+                                    ${mealData[i].menu} <span>${mealData[i].kcal} kcal</span>
+                                    <a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a>
+                                </li>`
+                                : `<li class="meal-menu">
+                                    &nbsp; <span> &nbsp; </span>
+                                </li>`;
+
+                            mealSection.append(foodItem);
+                        }
                     });
 
                     $("#total-kcal").text(totalCalories);
@@ -132,41 +150,7 @@
             });
         }
 
-        // 아침/점심/저녁 전체 수정
-        $(".edit-icon").click(function () {
-            let mealType = $(this).closest(".meal-time").attr("id");
-            let mealItems = $("#" + mealType + " .meal-menu").map(function () {
-                return $(this).text().trim().split(" ")[0];  // 음식 이름만 가져오기
-            }).get().join(", ");
-
-            let newMeal = prompt(`${mealType} 식사를 수정하세요 (쉼표로 구분)`, mealItems);
-            if (newMeal !== null) {
-                updateMeal(mealType, newMeal.split(",").map(item => item.trim()));
-            }
-        });
-
-        function updateMeal(mealType, newFoods) {
-            $.ajax({
-                url: "/food/updateMeal",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({
-                    userPk: userPk,
-                    selectDate: selectedDate,
-                    foodType: getMealCode(mealType),
-                    foods: newFoods
-                }),
-                success: function () {
-                    alert("식단이 수정되었습니다.");
-                    loadDietRecords();
-                },
-                error: function () {
-                    alert("수정에 실패했습니다.");
-                }
-            });
-        }
-
-        // 개별 음식 삭제
+        // 개별 음식 삭제 기능
         $(document).on("click", ".delete-icon", function () {
             let foodListPk = $(this).closest(".meal-menu").data("foodlistpk");
 
@@ -186,13 +170,9 @@
             });
         });
 
-        // 4️⃣ 아침/점심/저녁 식사 코드 변환
+        // 아침/점심/저녁 식사 코드 변환
         function getMealType(foodType) {
             return foodType === "B" ? "breakfast" : foodType === "L" ? "lunch" : "dinner";
-        }
-
-        function getMealCode(mealType) {
-            return mealType === "breakfast" ? "B" : mealType === "lunch" ? "L" : "D";
         }
 
         // 식단 불러오기 실행
