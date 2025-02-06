@@ -3,33 +3,34 @@ function joinCheck() {
 
     let fm = document.frm;
 
-    if (fm.username.value === "") {
+    if (fm.userName.value === "") {
         alert("이름을 입력해주세요");
-        fm.username.focus();
+        fm.userName.focus();
         return;
-    } else if (fm.usernick.value === "") {
+    } else if (fm.userNick.value === "") {
         alert("닉네임을 입력해주세요");
-        fm.usernick.focus();
+        fm.userNick.focus();
         return;
     } else if ($("#nick-btn").val() === "N") {  // 닉네임 중복 확인 안 했으면 막기
         alert("닉네임 중복 확인을 해주세요.");
         return;
-    } else if (fm.userid.value === "") {
+    } else if (fm.userId.value === "") {
         alert("아이디를 입력해주세요");
-        fm.userid.focus();
+        fm.userId.focus();
         return;
     } else if ($("#id-btn").val() === "N") {  // 아이디 중복 확인 안 했으면 막기
         alert("아이디 중복 확인을 해주세요.");
+        fm.userId.focus();
         return;
-    } else if (fm.userpwd.value === "") {
+    } else if (fm.userPwd.value === "") {
         alert("비밀번호를 입력해주세요");
-        fm.userpwd.focus();
+        fm.userPwd.focus();
         return;
     } else if (fm.userpwd2.value === "") {
         alert("비밀번호를 확인해주세요");
         fm.userpwd2.focus();
         return;
-    } else if (fm.userpwd.value !== fm.userpwd2.value) {
+    } else if (fm.userPwd.value !== fm.userpwd2.value) {
         alert("비밀번호가 일치하지 않습니다.");
         fm.userpwd2.value = "";
         fm.userpwd2.focus();
@@ -47,16 +48,12 @@ function joinCheck() {
     let ans = confirm("회원가입 하시겠습니까?");
     if (ans) {
         let userData = {
-            username: fm.username.value,
-            usernick: fm.usernick.value,
-            userid: fm.userid.value,
-            userpwd: fm.userpwd.value,
+            userName: fm.userName.value,  // ✅ 서버 DTO와 동일한 필드명 사용
+            userNick: fm.userNick.value,
+            userId: fm.userId.value,
+            userPwd: fm.userPwd.value,
             email: fm.email.value,
             phone: fm.phone.value,
-            /*            auth_level: fm.auth_level.value,
-                        social_login_status: fm.social_login_status.value,
-                        del_status: fm.del_status.value*/
-
         };
 
         fetch("/user/userSignUp", {
@@ -89,24 +86,24 @@ function joinCheck() {
 }
 
 // ✅ 아이디 또는 닉네임이 변경될 때 버튼 상태 초기화
-document.getElementById("userid").addEventListener("input", function () {
+document.getElementById("userId").addEventListener("input", function () {
     document.getElementById("id-btn").value = "N";
 });
 
-document.getElementById("usernick").addEventListener("input", function () {
+document.getElementById("userNick").addEventListener("input", function () {
     document.getElementById("nick-btn").value = "N";
 });
 
 
 function checkUserId() {
-    let userid = document.getElementById("userid").value.trim();
+    let userId = document.getElementById("userId").value.trim();
     let idButton = document.getElementById("id-btn");
-    if (!userid) {  // 아이디 입력란 비어있을 때
+    if (!userId) {  // 아이디 입력란 비어있을 때
         alert("아이디를 입력하세요.");
         return;
     }
 
-    fetch(`/user/checkUserId?userid=${encodeURIComponent(userid)}`)
+    fetch(`/user/checkUserId?userid=${encodeURIComponent(userId)}`)
         .then(response => response.json())
         .then(isDuplicate => {
             if (isDuplicate) {
@@ -121,15 +118,15 @@ function checkUserId() {
 }
 
 function checkNickname() {
-    let usernick = document.getElementById("usernick").value.trim();
+    let userNick = document.getElementById("userNick").value.trim();
     let nickButton = document.getElementById("nick-btn");
 
-    if (!usernick) {
+    if (!userNick) {
         alert("닉네임을 입력하세요.");
         return;
     }
 
-    fetch(`/user/checkNickname?usernick=${encodeURIComponent(usernick)}`)
+    fetch(`/user/checkNickname?userNick=${encodeURIComponent(userNick)}`)
         .then(response => response.json())
         .then(isDuplicate => {
             if (isDuplicate) {

@@ -115,17 +115,17 @@
     <section class="registration-form">
         <h1>회원가입</h1>
         <form name="frm" action="/user/userSignUp" method="post">
-            <input type="hidden" id="auth_level" name="auth_level" value=3>
-            <input type="hidden" id="social_login_status" name="social_login_status" value=0>
+            <input type="hidden" id="authLevel" name="authLevel" value=3>
+            <input type="hidden" id="socialLoginStatus" name="socialLoginStatus" value=0>
             <div class="form-group">
                 <label>이름</label>
-                <input type="text" id="username" name="username" placeholder="이름을 입력하세요" required>
+                <input type="text" id="userName" name="userName" placeholder="이름을 입력하세요" required>
             </div>
 
             <div class="form-group">
                 <label>닉네임</label>
                 <div class="check">
-                    <input type="text" id="usernick" name="usernick" placeholder="닉네임을 입력하세요" required>
+                    <input type="text" id="userNick" name="userNick" placeholder="닉네임을 입력하세요" required>
                     <button type="button" id="nick-btn" class="check-btn" value="N" onclick="checkNickname();">중복확인</button>
                 </div>
             </div>
@@ -133,14 +133,14 @@
             <div class="form-group">
                 <label>아이디</label>
                 <div class="check">
-                    <input type="text" id="userid" name="userid" placeholder="아이디를 입력하세요" required>
+                    <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요" required>
                     <button type="button" id="id-btn" class="check-btn" value="N" onclick="checkUserId();">중복확인</button>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>비밀번호</label>
-                <input type="password" id="userpwd" name="userpwd" placeholder="비밀번호를 입력하세요" required>
+                <input type="password" id="userPwd" name="userPwd" placeholder="비밀번호를 입력하세요" required>
             </div>
 
             <div class="form-group">

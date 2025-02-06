@@ -30,7 +30,7 @@ public class UserController {
             System.out.println("유저디티오 확인 : " + usersDto);
 
             session.setAttribute("detailInsert", true);
-            session.setAttribute("user_pk", usersDto.getUser_pk());
+            session.setAttribute("user_pk", usersDto.getUserPk());
 
             // ✅ JSON 응답으로 변경 (기존 단순 문자열 반환 → JSON)
             return ResponseEntity.ok(Map.of("message", "회원가입 성공!", "redirect", "/user/userDetail"));
