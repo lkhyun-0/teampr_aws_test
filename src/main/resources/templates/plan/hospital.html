@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>가까운 병원 찾기</title>
     <link href="/css/plan/hospital.css" type="text/css" rel="stylesheet">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8Lr0W0_S0gchFmLITwOCGGDrjiZCav1E&libraries=places"></script>
 </head>
 <body>
 <!--header-->
@@ -42,68 +41,49 @@
     let infowindow;
 
     function initMap() {
-        // 기본 지도 위치 (서울 기준)
         const center = {lat: 37.5665, lng: 126.9780};
         map = new google.maps.Map(document.getElementById("map"), {
             center: center,
             zoom: 15
         });
 
-        // 사용자의 현재 위치 가져오기
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                const userLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                map.setCenter(userLocation);
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
 
-                // 병원 검색 함수 호출
-                findNearbyHospitals(userLocation);
-            });
+                    map.setCenter(userLocation);
+
+                    // ✅ AdvancedMarkerElement 수정된 코드
+                    const marker = new google.maps.marker.AdvancedMarkerElement({
+                        map: map,
+                        position: userLocation,
+                        title: "내 위치"
+                    });
+
+                    findNearbyHospitals(userLocation);
+                },
+                error => {
+                    console.error("위치 정보를 가져올 수 없습니다.", error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
         } else {
             alert("위치 정보를 사용할 수 없습니다.");
         }
     }
 
-    navigator.geolocation.getCurrentPosition(function (position) {
-            var userLocation = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            // 지도 중심을 사용자의 현재 위치로 설정
-            map.setCenter(userLocation);
-
-            // 현재 위치에 마커 추가
-            new google.maps.Marker({
-                position: userLocation,
-                map: map,
-                title: "내 위치",
-                icon: {
-                    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" // 현재 위치 마커를 파란색으로 표시
-                }
-            });
-
-            // 병원 검색 함수 호출
-            findNearbyHospitals(userLocation);
-        },
-        function (error) {
-            console.error("위치 정보를 가져올 수 없습니다.", error);
-        },
-        {
-            enableHighAccuracy: true, // 높은 정확도의 위치 정보 요청
-            timeout: 10000, // 10초 내 응답이 없으면 오류 처리
-            maximumAge: 0 // 항상 최신 위치 정보 사용
-        }
-    );
-
-    // 병원 검색 함수
     function findNearbyHospitals(location) {
         const request = {
             location: location,
             radius: 5000,
-            rankBy: google.maps.places.RankBy.DISTANCE,
             type: ["hospital"]
         };
 
@@ -113,32 +93,36 @@
                 for (let i = 0; i < results.length; i++) {
                     createMarker(results[i]);
                 }
+            } else {
+                console.error("Places API 오류:", status);
             }
         });
     }
 
-    // 병원 마커 추가 함수
     function createMarker(place) {
         if (!place.geometry || !place.geometry.location) return;
 
-        const marker = new google.maps.Marker({
-            map,
-            position: place.geometry.location
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+            location: place.geometry.location,
+            title: place.name
         });
 
-        google.maps.event.addListener(marker, "click", () => {
+        // ✅ `addListener()` 대신 `addEventListener()` 사용
+        marker.addEventListener("click", () => {
             infowindow = new google.maps.InfoWindow();
             infowindow.setContent(place.name);
-            infowindow.open(map, marker);
+
+            infowindow.open({
+                map: map,
+                anchor: marker,
+                shouldFocus: false
+            });
         });
+
+        marker.addToMap(map);  // ✅ 지도에 마커 추가
     }
-
 </script>
-
-<script>
-    // 지도 초기화
-    window.onload = initMap;
-</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8Lr0W0_S0gchFmLITwOCGGDrjiZCav1E&libraries=places&v=beta&callback=initMap"></script>
 
 </body>
 </html>

@@ -99,7 +99,7 @@
 </head>
 <body>
 <!--header-->
-<div th:insert="/common/header.html"></div>
+<div th:insert="~{/common/header.html}"></div>
 
 <div class="detail-popup">
     <div class="tab-buttons">
@@ -230,7 +230,7 @@
 </section>
 
 <!--footer-->
-<div th:insert="/common/footer.html"></div>
+<div th:insert="~{/common/footer.html}"></div>
 
 <script>
     $(".medicine-type").click(function () {

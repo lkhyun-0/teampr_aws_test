@@ -7,7 +7,7 @@
 </head>
 <body>
 <!--header-->
-<div th:insert="/common/header.html"></div>
+<div th:insert="~{/common/header.html}"></div>
 
 <section class="main">
     <form class="search" name="frm" action="" method="get">
@@ -163,6 +163,7 @@
 <div style="height: 100px;"></div>
 
 <!--footer-->
-<div th:insert="/common/footer.html"></div>
+<div th:insert="~{/common/footer.html}"></div>
+
 </body>
 </html>
