@@ -40,11 +40,24 @@ public interface FoodMapper {
     @Delete("DELETE FROM foodlist WHERE foodlist_pk = #{foodListPk}")
     void deleteFood(@Param("foodListPk") int foodListPk);
 
-    // 3️⃣ 개별 음식 수정
     @Update("UPDATE foodlist SET menu = #{menu}, kcal = #{kcal}, protein = #{protein}, carbohydrate = #{carbohydrate}, fat = #{fat} WHERE foodlist_pk = #{foodListPk}")
     void updateFood(FoodList foodList);
 
-
+    @Select("SELECT * FROM food f JOIN foodlist fl ON f.food_pk = fl.food_pk " +
+            "WHERE f.user_pk = #{userPk} AND f.select_date = #{selectDate} AND f.foodtype = #{foodType}")
+    @Results({
+            @Result(property = "foodPk", column = "food_pk"),
+            @Result(property = "selectDate", column = "select_date"),
+            @Result(property = "foodType", column = "foodtype"),
+            @Result(property = "userPk", column = "user_pk"),
+            @Result(property = "foodListPk", column = "foodlist_pk"),
+            @Result(property = "menu", column = "menu"),
+            @Result(property = "kcal", column = "kcal"),
+            @Result(property = "protein", column = "protein"),
+            @Result(property = "carbohydrate", column = "carbohydrate"),
+            @Result(property = "fat", column = "fat")
+    })
+    List<FoodList> getFoodByDateAndType(@Param("userPk") int userPk, @Param("selectDate") String selectDate, @Param("foodType") String foodType);
 
 
 

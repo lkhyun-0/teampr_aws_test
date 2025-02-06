@@ -7,7 +7,8 @@
     <link href="/css/user/self.css" type="text/css" rel="stylesheet">
 </head>
 <body>
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 
 <div class="tabs-container">
     <!-- 탭 버튼 -->
@@ -252,7 +253,8 @@
     </div>
 </div>
 
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 </body>
 <script>
     // 모든 탭 버튼과 콘텐츠 가져오기

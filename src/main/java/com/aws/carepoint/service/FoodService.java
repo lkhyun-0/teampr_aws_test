@@ -4,6 +4,7 @@ import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
 import com.aws.carepoint.dto.FoodDto;
 import com.aws.carepoint.dto.FoodRecordRequest;
+import com.aws.carepoint.dto.UpdateMealRequest;
 import com.aws.carepoint.mapper.FoodMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,6 +116,41 @@ public class FoodService {
         foodMapper.deleteFood(foodListPk);
     }
 
+
+    @Transactional
+    public void updateMeal(UpdateMealRequest request) {
+        List<FoodList> existingFoods = foodMapper.getFoodByDateAndType(
+                request.getUserPk(), request.getSelectDate(), request.getFoodType()
+        );
+
+        List<FoodDto> newFoodList = request.getFoodList(); // 클라이언트가 보낸 수정된 음식 리스트
+
+        for (int i = 0; i < newFoodList.size(); i++) {
+            if (i < existingFoods.size() && newFoodList.get(i).getFoodListPk() != null) {
+                // ✅ 기존 음식이면 업데이트
+                FoodList updatedFood = new FoodList();
+                updatedFood.setFoodListPk(newFoodList.get(i).getFoodListPk());
+                updatedFood.setMenu(newFoodList.get(i).getMenu());
+                updatedFood.setKcal(newFoodList.get(i).getKcal());
+                updatedFood.setProtein(newFoodList.get(i).getProtein());
+                updatedFood.setCarbohydrate(newFoodList.get(i).getCarbohydrate());
+                updatedFood.setFat(newFoodList.get(i).getFat());
+
+                foodMapper.updateFood(updatedFood);
+            } else if (newFoodList.get(i).getFoodListPk() == null) {
+                // ✅ 새로운 음식이면 추가
+                FoodList newFood = new FoodList();
+                newFood.setMenu(newFoodList.get(i).getMenu());
+                newFood.setKcal(newFoodList.get(i).getKcal());
+                newFood.setProtein(newFoodList.get(i).getProtein());
+                newFood.setCarbohydrate(newFoodList.get(i).getCarbohydrate());
+                newFood.setFat(newFoodList.get(i).getFat());
+                newFood.setFoodPk(existingFoods.get(0).getFoodPk()); // 기존 식사와 연결된 foodPk 사용
+
+                foodMapper.insertFoodList(newFood);
+            }
+        }
+    }
 
 
 
