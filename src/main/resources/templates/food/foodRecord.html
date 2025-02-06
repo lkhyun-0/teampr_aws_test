@@ -10,7 +10,8 @@
 </head>
 <body>
 
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 
 <div class="container">
   <!-- 상단 탭 -->
@@ -87,7 +88,7 @@
 
 
 <!--footer-->
-<div th:insert="/common/footer.html"></div>
+<div th:insert="~{/common/footer.html}"></div>
 
 <script>
   $(document).ready(function () {

@@ -3,6 +3,7 @@ package com.aws.carepoint.controller;
 import com.aws.carepoint.domain.FoodList;
 import com.aws.carepoint.dto.FoodDto;
 import com.aws.carepoint.dto.FoodRecordRequest;
+import com.aws.carepoint.dto.UpdateMealRequest;
 import com.aws.carepoint.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -87,6 +88,12 @@ public class FoodController {
     public String deleteFood(@RequestParam("foodListPk") int foodListPk) {
         foodService.deleteFood(foodListPk);
         return "success";
+    }
+
+    @PostMapping("/updateMeal")
+    public ResponseEntity<String> updateMeal(@RequestBody UpdateMealRequest request) {
+        foodService.updateMeal(request);
+        return ResponseEntity.ok("식단이 수정되었습니다.");
     }
 
 

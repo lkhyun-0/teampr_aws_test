@@ -6,7 +6,8 @@
     <link href="/css/board/boardWrite.css" rel="stylesheet">
 </head>
 <body>
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 <section class="main">
   <h2 class="main-title">Q&A</h2>
   <p class="sub-title">궁금한 점을 물어보세요!</p>
@@ -35,6 +36,7 @@
     </form>
   </div>
 </section>
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 </body>
 </html>
