@@ -1,8 +1,10 @@
 package com.aws.carepoint.mapper;
 
+import com.aws.carepoint.mapper.sql.QnaSqlProvider;
 import com.aws.carepoint.util.SearchCriteria;
 import com.aws.carepoint.dto.QnaDto;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ public interface QnaMapper {
             "JOIN users u ON a.user_pk = u.user_pk " +
             "WHERE a.board_pk = 1 " +
             "AND a.del_status = 0 " +
-            "ORDER BY a.article_pk DESC " +
+            "ORDER BY a.origin_num DESC, a.level_ ASC " +
             "LIMIT #{pageStart}, #{perPageNum} ")
     @Results(id = "qnaResultMap", value = {
             @Result(property = "articlePk", column = "article_pk"),
@@ -43,6 +45,23 @@ public interface QnaMapper {
     @ResultMap("qnaResultMap")
     QnaDto getQnaDetail(int articlePk);
 
+    // 게시글 작성
+    @Insert("INSERT INTO article (title, content, user_pk, board_pk)" +
+            "VALUES (#{title}, #{content}, 2, 1)")
+    @Options(useGeneratedKeys = true, keyProperty = "articlePk")
+    int insertArticle(QnaDto qna);
+
+    // 게시글 작성 후 originNum 업데이트
+    @Update("UPDATE article " +
+            "SET origin_num = #{articlePk} " +
+            "WHERE article_pk = #{articlePk} ")
+    int updateOriginNum(int articlePk);
+
+    // 게시글 삭제
+    @UpdateProvider(type = QnaSqlProvider.class, method = "updateDelStatus")
+    @ResultMap("qnaResultMap")
+    int updateDelStatus(QnaDto qna);
+
     // 게시글 수정
     @Update("UPDATE article " +
             "SET content = #{content}, " +
@@ -54,17 +73,21 @@ public interface QnaMapper {
     @ResultMap("qnaResultMap")
     void updateQna(QnaDto qna);
 
-    /*@Insert("INSERT INTO board (board_type, title, user_pk) " +
-            "VALUES ('Q', #{title}, 2)")
-    void insertBoard(QnaDto qna);
+    // 답변글 작성
+    @Insert("INSERT INTO article (title, content, origin_num, level_, user_pk, board_pk) " +
+            "VALUES (#{title}, #{content}, #{originNum}, 1, 1, 1)")
+    @Options(useGeneratedKeys = true, keyProperty = "articlePk")
+    @ResultMap("qnaResultMap")
+    int insertQnaReply(QnaDto qna);
 
-    @Select("SELECT MAX(board_pk) AS max_board_pk " +
-            "FROM board " +
-            "WHERE board_type = 'Q'")
-    Long maxBoardPk();
+    @Select("SELECT COUNT(*) " +
+            "FROM article " +
+            "WHERE origin_num = #{originNum} " +
+            "AND del_status = 0")
+    int countReplies(int originNum);
 
-    @Insert("INSERT INTO article (content, filename, origin_num, level_, board_pk)" +
-            "VALUES (#{content}, #{filename}, 0, 0, #{boardPk})")
-    void insertArticle(QnaDto qna);*/
+
 }
+
+
 

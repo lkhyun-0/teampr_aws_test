@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class QnaDto {
-    private Long articlePk;
+    private int articlePk;
     private String content;
     private String filename;
     private Integer recom;
@@ -16,7 +16,7 @@ public class QnaDto {
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
     private String userNick;
-    private Long boardPk;
+    private int boardPk;
     private String title;
     private String boardType;
     private Integer userPk;

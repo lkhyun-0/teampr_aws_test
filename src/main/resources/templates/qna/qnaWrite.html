@@ -4,6 +4,26 @@
     <meta charset="UTF-8">
     <title>Q&A 글 작성</title>
     <link href="/css/qna/write.css" rel="stylesheet">
+    <script>
+      function validataForm() {
+        let subject = document.getElementById("subject").value.trim();
+        let content = document.getElementById("content").value.trim();
+
+        if (subject === "") {
+          alert("제목을 입력해주세요.");
+          document.getElementById("subject").focus();
+          return false;
+        }
+
+        if (content === "") {
+          alert("내용을 입력해주세요.");
+          document.getElementById("content").focus();
+          return false;
+        }
+
+        return confirm("저장하시겠습니까?");
+      }
+    </script>
 </head>
 <body>
 <div th:insert="/common/header.html"></div>
@@ -11,7 +31,7 @@
   <h2 class="main-title">Q&A</h2>
   <p class="sub-title">궁금한 점을 물어보세요!</p>
   <div class="edit-container">
-    <form name="frm" action="/qna/qnaWriteAction" method="post">
+    <form name="frm" action="/qna/qnaWriteAction" method="post" onsubmit="return validataForm()">
 
       <div class="form-group">
         <label for="subject">제목</label>

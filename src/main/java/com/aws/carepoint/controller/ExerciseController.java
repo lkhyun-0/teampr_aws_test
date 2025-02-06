@@ -34,41 +34,6 @@ public class ExerciseController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @ResponseBody
     @GetMapping("/apiSave")
     public String callapihttp() {

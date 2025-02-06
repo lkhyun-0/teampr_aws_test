@@ -4,18 +4,38 @@
     <meta charset="UTF-8">
     <title>Q&A 글 답변</title>
     <link href="/css/qna/write.css" rel="stylesheet">
+    <script>
+        function validataForm() {
+            let subject = document.getElementById("subject").value.trim();
+            let content = document.getElementById("content").value.trim();
+
+            if (subject === "") {
+                alert("제목을 입력해주세요.");
+                document.getElementById("subject").focus();
+                return false;
+            }
+
+            if (content === "") {
+                alert("내용을 입력해주세요.");
+                document.getElementById("content").focus();
+                return false;
+            }
+
+            return confirm("답변을 등록하시겠습니까?");
+        }
+    </script>
 </head>
 <body>
 <div th:insert="/common/header.html"></div>
 <section class="main">
     <h2>문의글 답변</h2>
     <div class="edit-container">
-        <form name="frm">
-            <input type="hidden" name="origin_num" value="${bv.origin_num}">
+        <form name="frm" action="/qna/qnaReplyAction" method="post" onsubmit="return validataForm()">
+            <input type="hidden" name="originNum" th:value="${qna.originNum}" />
 
             <div class="form-group">
                 <label for="subject">제목</label>
-                <input type="text" id="subject" name="subject" placeholder="제목을 입력해주세요" >
+                <input type="text" id="subject" name="title" placeholder="제목을 입력해주세요" >
             </div>
 
             <div class="form-group">
@@ -29,7 +49,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" class="save-button" onclick="replyCheck();">저장</button>
+                <button type="submit" class="save-button">저장</button>
                 <button type="button" class="cancle-button" onclick="history.back();">취소</button>
             </div>
         </form>

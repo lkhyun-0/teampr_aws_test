@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <title>Q&A 게시글 상세보기</title>
     <link href="/css/qna/content.css" rel="stylesheet">
+    <script th:if="${msg}">
+      alert("[[${msg}]]");
+    </script>
+
+    <script>
+      function confirmDelete() {
+        return confirm("정말 삭제하시겠습니까?");
+      }
+    </script>
 </head>
 <body>
 <div th:insert="/common/header.html"></div>
@@ -25,9 +34,14 @@
     <a href="/qna/qnaList" class="btn btn-left">목록</a>
     <!-- 수정 및 삭제 버튼 -->
     <div class="btn-group">
-      <a th:href="@{/qna/qnaReply.html/{id}(id=${qna.articlePk})}" class="btn" >답변</a>
+      <!-- articlePk와 originNum이 같을 때만 답변 버튼 표시 -->
+      <a th:if="${qna.articlePk == qna.originNum}" th:href="@{/qna/qnaReply/{id}(id=${qna.articlePk})}" class="btn">
+        답변
+      </a>
       <a th:href="@{/qna/qnaModify/{id}(id=${qna.articlePk})}" class="btn">수정</a>
-      <a th:href="@{/qna/qnaDelete/{id}(id=${qna.articlePk})}" class="btn">삭제</a>
+      <form th:action="@{/qna/qnaDeleteAction/{id}(id=${qna.articlePk})}" method="post" onsubmit="return confirmDelete()">
+        <button type="submit" class="btn del-btn">삭제</button>
+      </form>
     </div>
   </div>
 </div>

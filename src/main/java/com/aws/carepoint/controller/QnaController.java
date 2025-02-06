@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
 
@@ -29,10 +30,32 @@ public class QnaController {
     }
 
     @GetMapping("/qnaContent/{id}")
-    public String qnaContent(@PathVariable("id") int articlePk, Model model) {
+    public String qnaContent(@PathVariable("id") int articlePk, Model model, RedirectAttributes rttr) {
         QnaDto qna = qnaService.getQnaDetail(articlePk);
         model.addAttribute("qna", qna);
+
         return "qna/qnaContent";
+    }
+
+    @GetMapping("/qnaWrite")
+    public String qnaWrite() {
+
+        return "qna/qnaWrite";
+    }
+
+    @PostMapping("/qnaWriteAction")
+    public String qnaWriteAction(@ModelAttribute QnaDto qna, RedirectAttributes rttr) {
+        qnaService.createQna(qna);
+        rttr.addFlashAttribute("msg", "게시글이 등록 되었습니다.");
+        return "redirect:/qna/qnaContent/" + qna.getArticlePk(); // 상세보기 페이지로 이동
+    }
+
+    @PostMapping("/qnaDeleteAction/{id}")
+    public String qnaDeleteAction(@PathVariable("id") int articlePk, RedirectAttributes rttr) {
+        QnaDto qna = qnaService.getQnaDetail(articlePk);
+        qnaService.deleteQna(qna);
+        rttr.addFlashAttribute("msg", "게시글이 삭제 되었습니다.");
+        return "redirect:/qna/qnaList";
     }
 
     @GetMapping("/qnaModify/{id}")
@@ -43,26 +66,30 @@ public class QnaController {
     }
 
     @PostMapping("/qnaModifyAction")
-    public String qnaModifyAction(@ModelAttribute QnaDto qna) {
+    public String qnaModifyAction(@ModelAttribute QnaDto qna, RedirectAttributes rttr) {
         qnaService.updateQna(qna);
+        rttr.addFlashAttribute("msg", "게시글이 수정 되었습니다.");
         return "redirect:/qna/qnaContent/" + qna.getArticlePk(); // 상세보기 페이지로 이동
     }
 
-    /*@GetMapping("/qnaWrite")
-    public String qnaWrite() {
+    @GetMapping("/qnaReply/{id}")
+    public String qnaReply(@PathVariable("id") int articlePk, Model model, RedirectAttributes rttr) {
+        QnaDto qna = qnaService.getQnaDetail(articlePk);
+        model.addAttribute("qna", qna);
 
-        return "qna/qnaWrite";
-    }
-
-    @PostMapping("/qnaWriteAction")
-    public String qnaWriteAction(@ModelAttribute QnaDto qna) {
-        qnaService.createQna(qna);
-        return "redirect:/qna/qnaContent/" + qna.getArticlePk(); // 상세보기 페이지로 이동
-    }
-
-    @GetMapping("/qnaReply")
-    public String qnaBoardReply() {
-
+        int value = qnaService.hasQnaReply(qna);
+        System.out.println("value ====================> " + value);
+        if (value > 1) {
+            rttr.addFlashAttribute("msg", "이미 답변이 존재합니다.");
+            return "redirect:/qna/qnaList";
+        }
         return "qna/qnaReply";
-    }*/
+    }
+
+    @PostMapping("/qnaReplyAction")
+    public String qnaReplyAction(@ModelAttribute QnaDto qna, RedirectAttributes rttr) {
+        qnaService.createQnaReply(qna);
+        rttr.addFlashAttribute("msg", "답변이 등록 되었습니다.");
+        return "redirect:/qna/qnaContent/" + qna.getArticlePk(); // 상세보기 페이지로 이동
+    }
 }

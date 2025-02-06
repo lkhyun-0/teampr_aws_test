@@ -57,7 +57,6 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
-        var today = new Date().toISOString().split('T')[0]; // 오늘 날짜
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridWeek', // 주 단위로 표시
           height: 'auto',
@@ -160,20 +159,21 @@
                 cell.appendChild(dateEl);
               });
             }, 50);
+            adjustRowHeights();
           },
           events: [
             {
               title: '운동 종목: 줄넘기<br>운동 시간: 1시간<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal',
-              start: '2025-02-03',
+              start: '2025-02-05',
               extendedProps: {
-                icon: '/images/줄넘기.jpg',
+                icon: '/images/운동일러.jpg',
               }
             },
             {
               title: '운동 종목: 줄넘기<br>운동 시간: 1시간<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal',
-              start: '2025-02-05',
+              start: '2025-02-07',
               extendedProps: {
-                icon: '/images/줄넘기.jpg',
+                icon: '/images/운동일러.jpg',
               }
             }
           ],
@@ -190,6 +190,28 @@
           }
         });
         calendar.render();
+
+        function adjustRowHeights() {
+          requestAnimationFrame(() => {
+            document.querySelectorAll('.fc-daygrid-body tr').forEach(row => {
+              let hasEvent = row.querySelector('.fc-daygrid-event'); // 해당 주에 이벤트가 있는지 확인
+
+              let targetHeight = hasEvent ? 210 : 150;
+              let currentHeight = parseInt(window.getComputedStyle(row).height, 10);
+
+              if (currentHeight !== targetHeight) {
+                row.style.transition = 'height 0.3s ease-in-out';
+                row.style.overflow = 'hidden';
+                row.style.height = `${targetHeight}px`;
+              }
+            });
+          });
+        }
+
+
+
+
+
       });
     </script>
 

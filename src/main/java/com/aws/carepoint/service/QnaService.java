@@ -5,6 +5,7 @@ import com.aws.carepoint.util.SearchCriteria;
 import com.aws.carepoint.dto.QnaDto;
 import com.aws.carepoint.mapper.QnaMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.jdbc.SQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +24,10 @@ public class QnaService {
     @Autowired
     private final QnaMapper qnaMapper;
 
+    // 전체 게시글 개수 조회
     public Map<String, Object> getQnaList(SearchCriteria scri) {
         Map<String, Object> result = new HashMap<>();
 
-        // ✅ 전체 게시글 개수 조회
         int totalCount = qnaMapper.getTotalQnaCount(scri);
 
         scri.setPerPageNum(12);
@@ -44,9 +45,20 @@ public class QnaService {
         return result;
     }
 
+    // 특정 게시글 상세 내용 가져오기
     public QnaDto getQnaDetail(int articlePk) {
-        // 게시글 상세 내용 가져오기
         return qnaMapper.getQnaDetail(articlePk);
+    }
+
+    // 게시글 작성
+    public void createQna(QnaDto qna) {
+        qnaMapper.insertArticle(qna);
+        qnaMapper.updateOriginNum(qna.getArticlePk());
+    }
+
+    public int deleteQna(QnaDto qna) {
+        int value = qnaMapper.updateDelStatus(qna);
+        return value;
     }
 
     // 게시글 수정
@@ -54,17 +66,17 @@ public class QnaService {
         qnaMapper.updateQna(qna);
     }
 
-    /*// 게시글 작성
-    @Transactional
-    public void createQna(QnaDto qna) {
-        // 1. board 테이블에 데이터 삽입
-        qnaMapper.insertBoard(qna);  // INSERT 실행
+    // 답변글 존재 여부
+    public int hasQnaReply(QnaDto qna) {
+        int value = qnaMapper.countReplies(qna.getOriginNum());
+        if (value == 2) {
+            return value;
+        }
+        return value;
+    }
 
-        // 2. 방금 삽입된 board_pk 가져오기 (MyBatis에서 자동으로 세팅됨)
-        Long maxBoardPk = qnaMapper.maxBoardPk();
-        qna.setBoardPk(maxBoardPk);
-
-        // 3. article 테이블에 데이터 삽입
-        qnaMapper.insertArticle(qna);  // INSERT 실행
-    }*/
+    // 답변글 작성
+    public void createQnaReply(QnaDto qna) {
+        qnaMapper.insertQnaReply(qna);
+    }
 }
