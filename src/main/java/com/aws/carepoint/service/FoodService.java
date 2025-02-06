@@ -53,7 +53,7 @@ public class FoodService {
             String responseBody = restTemplate.getForObject(uri, String.class);
 
             // 응답 로그 확인
-            System.out.println("API 응답: " + responseBody);
+            //System.out.println("API 응답: " + responseBody);
 
             // JSON 파싱
             JsonNode root = objectMapper.readTree(responseBody);
@@ -85,14 +85,14 @@ public class FoodService {
 
     @Transactional
     public void recordFood(FoodRecordRequest request) {
-        // 1️⃣ `food` 테이블에 식단 기록 추가
+        // `food` 테이블에 식단 기록 추가
         Food food = new Food();
         food.setSelectDate(LocalDate.parse(request.getSelectDate()));
         food.setFoodType(request.getFoodType());
         food.setUserPk(request.getUserPk());
         foodMapper.insertFood(food); // `food_pk` 자동 생성됨
 
-        // 2️⃣ `foodlist` 테이블에 개별 음식 저장
+        // `foodlist` 테이블에 개별 음식 저장
         for (var foodDto : request.getFoodList()) {
             FoodList foodList = new FoodList();
             foodList.setMenu(foodDto.getMenu());
@@ -127,7 +127,7 @@ public class FoodService {
 
         for (int i = 0; i < newFoodList.size(); i++) {
             if (i < existingFoods.size() && newFoodList.get(i).getFoodListPk() != null) {
-                // ✅ 기존 음식이면 업데이트
+                // 기존 음식이면 업데이트
                 FoodList updatedFood = new FoodList();
                 updatedFood.setFoodListPk(newFoodList.get(i).getFoodListPk());
                 updatedFood.setMenu(newFoodList.get(i).getMenu());
@@ -138,7 +138,7 @@ public class FoodService {
 
                 foodMapper.updateFood(updatedFood);
             } else if (newFoodList.get(i).getFoodListPk() == null) {
-                // ✅ 새로운 음식이면 추가
+                // 새로운 음식이면 추가
                 FoodList newFood = new FoodList();
                 newFood.setMenu(newFoodList.get(i).getMenu());
                 newFood.setKcal(newFoodList.get(i).getKcal());

@@ -20,7 +20,7 @@ public interface FoodMapper {
     public void insertFoodList(FoodList foodList);
 
 
-    // 1️⃣ 특정 날짜의 식단 기록 조회
+    // 특정 날짜의 식단 기록 조회
     @Select("SELECT * FROM food f JOIN foodlist fl ON f.food_pk = fl.food_pk WHERE f.user_pk = #{userPk} AND f.select_date = #{selectDate}")
     @Results({
             @Result(property = "foodPk", column = "food_pk"),
@@ -36,7 +36,7 @@ public interface FoodMapper {
     })
     List<FoodList> getFoodByDate(@Param("userPk") int userPk, @Param("selectDate") String selectDate);
 
-    // 2️⃣ 개별 음식 삭제
+    // 개별 음식 삭제
     @Delete("DELETE FROM foodlist WHERE foodlist_pk = #{foodListPk}")
     void deleteFood(@Param("foodListPk") int foodListPk);
 
