@@ -35,12 +35,6 @@ public class QnaController {
         return "qna/qnaContent";
     }
 
-    @GetMapping("/qnaWrite")
-    public String qnaWrite() {
-
-        return "qna/qnaWrite";
-    }
-
     @GetMapping("/qnaModify/{id}")
     public String qnaModify(@PathVariable("id") int articlePk, Model model) {
         QnaDto qna = qnaService.getQnaDetail(articlePk);
@@ -54,9 +48,21 @@ public class QnaController {
         return "redirect:/qna/qnaContent/" + qna.getArticlePk(); // 상세보기 페이지로 이동
     }
 
+    /*@GetMapping("/qnaWrite")
+    public String qnaWrite() {
+
+        return "qna/qnaWrite";
+    }
+
+    @PostMapping("/qnaWriteAction")
+    public String qnaWriteAction(@ModelAttribute QnaDto qna) {
+        qnaService.createQna(qna);
+        return "redirect:/qna/qnaContent/" + qna.getArticlePk(); // 상세보기 페이지로 이동
+    }
+
     @GetMapping("/qnaReply")
     public String qnaBoardReply() {
 
         return "qna/qnaReply";
-    }
+    }*/
 }

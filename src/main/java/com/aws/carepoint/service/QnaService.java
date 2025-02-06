@@ -7,6 +7,7 @@ import com.aws.carepoint.mapper.QnaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,4 +53,18 @@ public class QnaService {
     public void updateQna(QnaDto qna) {
         qnaMapper.updateQna(qna);
     }
+
+    /*// 게시글 작성
+    @Transactional
+    public void createQna(QnaDto qna) {
+        // 1. board 테이블에 데이터 삽입
+        qnaMapper.insertBoard(qna);  // INSERT 실행
+
+        // 2. 방금 삽입된 board_pk 가져오기 (MyBatis에서 자동으로 세팅됨)
+        Long maxBoardPk = qnaMapper.maxBoardPk();
+        qna.setBoardPk(maxBoardPk);
+
+        // 3. article 테이블에 데이터 삽입
+        qnaMapper.insertArticle(qna);  // INSERT 실행
+    }*/
 }
