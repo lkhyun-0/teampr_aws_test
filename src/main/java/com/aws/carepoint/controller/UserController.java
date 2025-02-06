@@ -29,7 +29,7 @@ public class UserController {
             userService.userSignUp(usersDto);
             System.out.println("유저디티오 확인 : " + usersDto);
 
-            session.setAttribute("detailInsert", true);
+            session.setAttribute("detailInsert", true); // 상세정보 입력 판단
             session.setAttribute("user_pk", usersDto.getUserPk());
 
             // ✅ JSON 응답으로 변경 (기존 단순 문자열 반환 → JSON)
@@ -51,8 +51,8 @@ public class UserController {
 
     // 닉네임 중복 체크 API
     @GetMapping("checkNickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam String usernick) {
-        boolean isDuplicate = userMapper.countByUserNick(usernick) > 0;
+    public ResponseEntity<Boolean> checkNickname(@RequestParam String userNick) {
+        boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
 
