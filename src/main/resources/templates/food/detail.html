@@ -83,6 +83,42 @@
     </div>
 </div>
 
+<div class="popup-overlay">
+    <div class="popup1">
+        <!-- 상단에 닫기 버튼 추가 -->
+        <button class="popup-close-btn">x</button>
+        <div class="search-section">
+            <input type="text" class="search-bar" placeholder="무슨 음식을 드셨나요?">
+            <button class="search-button">검색</button>
+        </div>
+        <div class="search-results">
+            <table>
+                <thead>
+                <tr>
+                    <th>음식명</th>
+                    <th>칼로리</th>
+                    <th>영양정보</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 검색 결과가 여기에 추가될 예정 -->
+                </tbody>
+            </table>
+        </div>
+        <div class="selected-menu">
+            <img src="/images/연필.png" alt="연필 아이콘" class="large-pencil-icon">
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+        <button class="update-button">수정하기</button>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
         let selectedDate = "2025-02-06"; // 선택한 날짜
@@ -117,7 +153,7 @@
                         let mealType = getMealType(food.foodType);
                         meals[mealType].push({
                             menu: food.menu,
-                            kcal: food.kcal,goit 
+                            kcal: food.kcal,
                             foodListPk: food.foodListPk
                         });
                         totalCalories += food.kcal;
@@ -168,6 +204,30 @@
                     alert("삭제에 실패했습니다.");
                 }
             });
+        });
+
+        let activeSlot = null; // 현재 활성화된 슬롯
+        let selectedFoodType = ""; // 현재 선택된 식사 타입 (아침, 점심, 저녁)
+
+        // 팝업 열기 + 식사 타입 설정
+        $('.edit-icon').click(function () {
+            $('.popup-overlay').fadeIn();
+            $('.popup1').fadeIn();
+
+            // 클릭된 카드에서 식사 타입(아침, 점심, 저녁) 가져오기
+            let parentCard = $(this).closest(".card");
+            selectedFoodType = parentCard.find(".title").text().trim(); // "아침", "점심", "저녁"
+        });
+
+        // 팝업 닫기 (오버레이 또는 닫기 버튼 클릭)
+        $('.popup-overlay, .popup-close-btn').click(function () {
+            $('.popup-overlay').fadeOut();
+            $('.popup1').fadeOut();
+        });
+
+        // 팝업 내부 클릭 시 닫히지 않도록 방지
+        $('.popup1').on('click', function (event) {
+            event.stopPropagation();
         });
 
         // 아침/점심/저녁 식사 코드 변환

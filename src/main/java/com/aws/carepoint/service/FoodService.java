@@ -41,7 +41,7 @@ public class FoodService {
             URI uri = new URI(API_URL +
                     "?serviceKey=" + API_KEY +
                     "&FOOD_NM_KR=" + encodedQuery +
-                    "&numOfRows=20" +
+                    "&numOfRows=30" +
                     "&pageNo=1" +
                     "&type=json");
 
