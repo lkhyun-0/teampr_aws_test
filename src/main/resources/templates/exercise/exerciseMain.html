@@ -218,7 +218,8 @@
 </head>
 <body>
 
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 
 <div class="target-popup">
   <div class="target-popup-content">
@@ -378,7 +379,8 @@
     </form>
   </div>
 
-  <div class="calendar" id="calendar"></div>
+  <!--footer-->
+  <div th:insert="~{/common/footer.html}"></div>
 </section>
 
 <div th:insert="/common/footer.html"></div>

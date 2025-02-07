@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Q&A 게시글 목록</title>
+    <link href="/css/board/boardList.css" rel="stylesheet">
+</head>
+<body>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
+<div class="qnaListDiv">
+    <table class="listTable">
+        <tr>
+            <th>No</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+        </tr>
+
+        <tr>
+            <td class="No">10</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">9</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">8</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">7</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">6</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">5</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">4</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">3</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">2</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr>
+            <td class="No">1</td>
+            <td class="subject">
+                <a href="#">Q. 질문입니다.</a>
+            </td>
+            <td class="writer">22na</td>
+            <td class="writeday">2025-01-31</td>
+        </tr>
+
+        <tr class="write-tr">
+            <td class="write-td" colspan="4"><button>글 작성</button></td>
+        </tr>
+    </table>
+</div>
+<!--
+<div class="page">
+    <ul>
+        <c:set var="queryParam" value="keyword=${pm.scri.keyword}&searchType=${pm.scri.searchType}"></c:set>
+        <c:if test="${pm.prev==true}">
+            <li>
+                <a class="prev" href="${pageContext.request.contextPath}/qnaBoard/qnaBoardList.aws?page=${pm.startPage-1}&${queryParam}">◀</a>
+            </li>
+        </c:if>
+
+        <c:forEach var="i" begin="${pm.startPage}" end="${pm.endPage}" step="1">
+            <li <c:if test="${i == pm.scri.page}">class='on'</c:if> >
+            <a href="${pageContext.request.contextPath}/qnaBoard/qnaBoardList.aws?page=${i}&${queryParam}">${i}</a>
+            </li>
+        </c:forEach>
+
+        <c:if test="${pm.next&&pm.endPage>0}">
+            <li>
+                <a class="next" href="${pageContext.request.contextPath}/qnaBoard/qnaBoardList.aws?page=${pm.endPage+1}&${queryParam}">▶</a>
+            </li>
+        </c:if>
+    </ul>
+</div>
+-->
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
+</body>
+</html>
