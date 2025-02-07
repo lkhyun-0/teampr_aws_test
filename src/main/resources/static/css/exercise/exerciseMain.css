@@ -670,8 +670,8 @@
 }
 
 .custom-event img {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     margin-right: 5px;
 }
 
@@ -688,9 +688,12 @@
     background-color: white !important;
 }
 
-.fc .fc-daygrid-day-frame {
+/* 기본적으로 max-height 사용 */
+.fc .fc-daygrid-body tr {
     position: relative;
-    height: 170px;
+    height: 150px; /* 기본값 */
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out; /* 부드러운 애니메이션 */
 }
 
 /* 오늘 날짜 셀 배경을 노란색으로 지정 */
