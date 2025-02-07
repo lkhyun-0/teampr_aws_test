@@ -2,14 +2,6 @@ DROP DATABASE IF EXISTS `carepoint`;
 CREATE DATABASE `carepoint`;
 USE `carepoint`;
 
-<<<<<<< HEAD
-CREATE TABLE exercise_API (
-                              exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
-                              exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
-                              MET INT DEFAULT 0 NOT NULL -- MET 지수
-);
-=======
-
 CREATE TABLE users (
                        user_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                        auth_level SMALLINT(2) NOT NULL, -- 권한 레벨 (3=일반, 7=관리자)
@@ -162,8 +154,7 @@ CREATE TABLE exercise (
 CREATE TABLE exercise_API (
                               exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                               exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
-                              MET INT DEFAULT 0 NOT NULL, -- MET 지수
-                              exercise_img VARCHAR(100) NOT NULL -- 이미지
+                              MET INT DEFAULT 0 NOT NULL -- MET 지수
 );
 
 CREATE TABLE medicine (
@@ -221,6 +212,3 @@ SELECT * FROM users;
 SELECT * FROM food;
 SELECT * FROM foodlist;
 
-
-
->>>>>>> df4d74ac3d213e01b1040c5f42d112331dd328d1
