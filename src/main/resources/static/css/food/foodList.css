@@ -100,6 +100,7 @@
 }
 
 .food-table td {
+    white-space: nowrap;
     height: 65px; /* 행 간격 설정 */
     font-size: 16px;
     padding: 0 110px; /* 셀 안에서 텍스트와 아이콘 간격 확보 */

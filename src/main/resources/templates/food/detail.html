@@ -121,7 +121,9 @@
 
 <script>
     $(document).ready(function () {
-        let selectedDate = "2025-02-05"; // 선택한 날짜
+        //  URL에서 날짜 가져오기
+        let urlParams = new URLSearchParams(window.location.search);
+        let selectedDate = urlParams.get("date"); // URL에서 date 파라미터 가져오기
         let userPk = 1;  // 로그인된 사용자 ID
         let mealTypes = ["breakfast", "lunch", "dinner"]; // 아침, 점심, 저녁
         let selectedMealType = ""; // 현재 선택된 식사 타입
@@ -134,13 +136,20 @@
             return `${parseInt(dateParts[1])}월 ${parseInt(dateParts[2])}일`;
         }
 
+        console.log("불러온 날짜:", selectedDate);
+        $("#diet-date").text(`${selectedDate} 식단 기록표`); // 제목 업데이트
+
+        // 기존 하드코딩된 `selectedDate` 제거 후 동적으로 반영
+        loadDietRecords(selectedDate);
+
         // 특정 날짜의 식단 불러오기
-        function loadDietRecords() {
+        function loadDietRecords(data) {
             $.ajax({
                 url: "/food/detail/data",
                 type: "GET",
-                data: { userPk: userPk, selectDate: selectedDate },
+                data: { userPk: userPk, selectDate: data },
                 success: function (response) {
+
                     $(".meal-list").each(function () {
                         $(this).find(".meal-menu").remove(); // 기존 음식 목록 삭제
                     });
@@ -321,7 +330,9 @@
                 success: function () {
                     alert("식단이 수정되었습니다.");
                     $(".popup-overlay").fadeOut();
-                    loadDietRecords();
+
+                    // 수정된 데이터를 즉시 반영
+                    loadDietRecords(selectedDate);
                 },
                 error: function (xhr, status, error) {
                     console.error("업데이트 실패:", error);
@@ -329,7 +340,7 @@
             });
         });
 
-        // 개별 음식 삭제
+// 개별 음식 삭제
         $(document).on("click", ".delete-icon", function () {
             let foodListPk = $(this).closest(".meal-menu").data("foodlistpk");
 
@@ -338,16 +349,25 @@
             $.ajax({
                 url: "/food/delete",
                 type: "DELETE",
-                data: { foodListPk: foodListPk },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    foodListPk: foodListPk,
+                    selectDate: selectedDate,  // 삭제 요청에 날짜 포함
+                    foodType: selectedMealType.toUpperCase().charAt(0), // 현재 식사 타입 포함
+                    userPk: userPk // 사용자 ID 포함
+                }),
                 success: function () {
                     alert("음식이 삭제되었습니다.");
-                    loadDietRecords();
+
+                    // ✅ 삭제 후 즉시 업데이트
+                    loadDietRecords(selectedDate);
+                    updateFoodList(); // 삭제 후 리스트 업데이트
+                },
+                error: function () {
+                    alert("음식 삭제에 실패했습니다.");
                 }
             });
         });
-
-        // 초기 데이터 로드
-        loadDietRecords();
     });
 
 </script>

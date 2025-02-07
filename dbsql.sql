@@ -215,4 +215,14 @@ SELECT * FROM food;
 SELECT * FROM foodlist;
 
 
+DELETE FROM foodlist
+WHERE food_pk IN (
+    SELECT food_pk FROM food
+    WHERE select_date = '2025-02-07' AND foodtype = 'L'
+);
+
+
+DELETE FROM food
+WHERE select_date = '2025-02-07' AND foodtype = 'L';
+
 
