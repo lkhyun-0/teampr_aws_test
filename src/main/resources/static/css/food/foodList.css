@@ -82,6 +82,11 @@
     height: 30px;
 }
 
+/* 테이블 행에 마우스를 올렸을 때 스타일 적용 */
+.food-table tbody tr:hover {
+    cursor: pointer; /* 클릭 가능하도록 마우스 포인터 변경 */
+}
+
 
 /* 테이블 스타일 */
 .food-table {

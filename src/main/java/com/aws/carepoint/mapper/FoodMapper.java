@@ -73,7 +73,7 @@ public interface FoodMapper {
     List<FoodList> getFoodByDateAndType(@Param("userPk") int userPk, @Param("selectDate") String selectDate, @Param("foodType") String foodType);
 
 
-    // ✅ 4️⃣ 기존 음식 수정 (칼로리, 영양소 변경)
+    // 기존 음식 수정 (칼로리, 영양소 변경)
     @Update("UPDATE foodlist SET menu = #{menu}, kcal = #{kcal}, protein = #{protein}, " +
             "carbohydrate = #{carbohydrate}, fat = #{fat} WHERE foodlist_pk = #{foodListPk}")
     void updateFood(FoodList foodList);

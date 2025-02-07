@@ -172,11 +172,6 @@ span#total-kcal {
     font-size: 25px;
 }
 
-
-
-
-
-
 /* 노멀라이즈: 기본 여백 및 스타일 제거 */
 table, th, td, thead, tbody, tr {
     margin: 0; /* 기본 외부 여백 제거 */

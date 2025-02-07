@@ -210,6 +210,9 @@
 
             selectedMealType = $(this).closest(".meal-time").attr("id");
 
+            // foodList 배경 흐리게 만들기
+            $(".food-table").addClass("blur-background");
+
             $(".selected-menu li").empty();
 
             $.ajax({
@@ -308,8 +311,11 @@
                 }
             });
 
-            console.log("업데이트 요청 데이터:", updatedFoods);
-            console.log("선택한 날짜:", selectedDate);
+            // 음식이 하나도 선택되지 않은 경우 경고 메시지 출력 후 중단
+            if (updatedFoods.length === 0) {
+                alert("수정할 음식을 선택해주세요.");
+                return;
+            }
 
             // selectDate가 제대로 정의되어 있는지 확인하고 요청 보내기
             if (!selectedDate) {
@@ -359,7 +365,7 @@
                 success: function () {
                     alert("음식이 삭제되었습니다.");
 
-                    // ✅ 삭제 후 즉시 업데이트
+                    // 삭제 후 즉시 업데이트
                     loadDietRecords(selectedDate);
                     updateFoodList(); // 삭제 후 리스트 업데이트
                 },

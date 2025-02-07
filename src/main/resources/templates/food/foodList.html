@@ -108,10 +108,10 @@
                 tableBody.append(row);
             });
 
-            // ✅ 이벤트 위임 방식으로 클릭 이벤트 추가
+            //  이벤트 위임 방식으로 클릭 이벤트 추가
             $(document).on("click", "#food-list tr", function () {
                 let selectedDate = $(this).data("date");
-                console.log("클릭한 날짜:", selectedDate); // ✅ 디버깅용 로그 추가
+                console.log("클릭한 날짜:", selectedDate); // 디버깅용 로그 추가
                 window.location.href = `/food/detail?date=${selectedDate}`;
             });
 
