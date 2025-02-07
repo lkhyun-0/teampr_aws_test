@@ -1,15 +1,14 @@
 package com.aws.carepoint.controller;
 
 import com.aws.carepoint.dto.ExerciseDto;
+import com.aws.carepoint.dto.GraphDto;
 import com.aws.carepoint.service.ExerciseService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -32,6 +31,31 @@ public class ExerciseController {
 
         return "exercise/exerciseMain";
     }
+
+    @ResponseBody
+    @PostMapping("/saveGraph")
+    public ResponseEntity<String> saveGraph(@RequestBody GraphDto graphDto) {
+        exerciseService.saveGraph(graphDto);
+        return ResponseEntity.ok("오늘의 수치가 저장되었습니다.");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @ResponseBody

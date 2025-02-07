@@ -2,6 +2,7 @@ package com.aws.carepoint.service;
 
 import com.aws.carepoint.domain.ExerciseEntity;
 import com.aws.carepoint.dto.ExerciseDto;
+import com.aws.carepoint.dto.GraphDto;
 import com.aws.carepoint.mapper.ExerciseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,9 @@ public class ExerciseService {
 
         // DB 저장
         exerciseMapper.saveExerciseApi(exerciseEntity);
+    }
+
+    public void saveGraph(GraphDto graphDto) {
+        exerciseMapper.insertGraph(graphDto);
     }
 }

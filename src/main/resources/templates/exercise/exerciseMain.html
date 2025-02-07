@@ -207,14 +207,62 @@
             });
           });
         }
-
-
-
-
-
       });
     </script>
+    <script>
+      function saveCheck() {
+        // 입력 필드 가져오기
+        const bloodSugarInput = document.getElementById("blood_sugar");
+        const bloodPressInput = document.getElementById("blood_press");
+        const weightInput = document.getElementById("weight");
 
+        // 입력 값 가져오기
+        const bloodSugar = bloodSugarInput.value.trim();
+        const bloodPress = bloodPressInput.value.trim();
+        const weight = weightInput.value.trim();
+
+        // 최소 하나 이상의 입력값이 필요함
+        if (!bloodSugar && !bloodPress && !weight) {
+          alert("수치를 한 개 이상 입력해주세요.");
+
+          // 비어 있는 첫 번째 입력 필드에 포커스 맞추기
+          if (!bloodSugar) {
+            bloodSugarInput.focus();
+          }
+
+          return; // 서버로 요청 보내지 않음
+        }
+
+        // 데이터 객체 생성
+        const data = {
+          bloodSugar: bloodSugar || null, // 값이 비어있으면 null로 전달
+          bloodPress: bloodPress || null,
+          weight: weight || null
+        };
+
+        // 서버로 데이터 전송
+        fetch('/exercise/saveGraph', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(result => {
+          alert(result); // 저장 성공 메시지
+
+          // ✅ 입력 필드 초기화 (값을 비움)
+          bloodSugarInput.value = "";
+          bloodPressInput.value = "";
+          weightInput.value = "";
+
+          // ✅ 첫 번째 입력 필드에 포커스 맞추기
+          bloodSugarInput.focus();
+        })
+        .catch(error => console.error('Error:', error));
+      }
+    </script>
 </head>
 <body>
 
@@ -336,7 +384,7 @@
             <li>혈압 <input type="text" id="blood_press" name="blood_press" required> mmHg</li>
             <li>몸무게 <input type="text" id="weight" name="weight" class="weight" required> kg</li>
           </ul>
-          <button type="button" class="save-button" onclick="saveCheck();">저 장</button>
+          <button type="button" class="save-button" onclick="saveCheck()">저 장</button>
         </form>
       </div>
       <div class="cumulative-count">
@@ -379,11 +427,11 @@
     </form>
   </div>
 
-  <!--footer-->
-  <div th:insert="~{/common/footer.html}"></div>
+  <div class="calendar" id="calendar"></div>
 </section>
 
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 
 </body>
 </html>
