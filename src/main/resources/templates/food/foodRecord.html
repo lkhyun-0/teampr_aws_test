@@ -10,7 +10,8 @@
 </head>
 <body>
 
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 
 <div class="container">
   <!-- 상단 탭 -->
@@ -87,16 +88,21 @@
 
 
 <!--footer-->
-<div th:insert="/common/footer.html"></div>
+<div th:insert="~{/common/footer.html}"></div>
 
 <script>
   $(document).ready(function () {
     let activeSlot = null; // 현재 활성화된 슬롯
+    let selectedFoodType = ""; // 현재 선택된 식사 타입 (아침, 점심, 저녁)
 
-    // 팝업 열기
+    // 팝업 열기 + 식사 타입 설정
     $('.plus-button').click(function () {
       $('.popup-overlay').fadeIn();
       $('.popup1').fadeIn();
+
+      // 클릭된 카드에서 식사 타입(아침, 점심, 저녁) 가져오기
+      let parentCard = $(this).closest(".card");
+      selectedFoodType = parentCard.find(".title").text().trim(); // "아침", "점심", "저녁"
     });
 
     // 팝업 닫기 (오버레이 또는 닫기 버튼 클릭)
@@ -105,7 +111,7 @@
       $('.popup1').fadeOut();
     });
 
-    // 팝업 내부 클릭 시 닫히지 않도록 방지
+    // 팝업 내부 클릭 시 닫히지 않도록 방지 (❗ 원래 코드에서 빠졌던 부분 추가)
     $('.popup1').on('click', function (event) {
       event.stopPropagation();
     });
@@ -125,12 +131,14 @@
 
           response.forEach(food => {
             let row = `
-                            <tr data-menu="${food.menu}" data-kcal="${food.kcal}" data-protein="${food.protein}" data-carb="${food.carbohydrate}" data-fat="${food.fat}">
-                                <td>${food.menu}</td>
-                                <td>${food.kcal} kcal</td>
-                                <td>단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</td>
-                            </tr>
-                        `;
+                        <tr data-menu="${food.menu}" data-kcal="${food.kcal}"
+                            data-protein="${food.protein}" data-carb="${food.carbohydrate}"
+                            data-fat="${food.fat}">
+                            <td>${food.menu}</td>
+                            <td>${food.kcal} kcal</td>
+                            <td>단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</td>
+                        </tr>
+                    `;
             tableBody.append(row);
           });
 
@@ -151,10 +159,10 @@
       let fat = $(this).data("fat");
 
       const selectedText = `
-                <span>${foodName}</span>
-                <span>${kcal} kcal</span>
-                <span class="small-text">단백질: ${protein}g | 탄수화물: ${carbohydrate}g | 지방: ${fat}g</span>
-            `;
+            <span>${foodName}</span>
+            <span>${kcal} kcal</span>
+            <span class="small-text">단백질: ${protein}g | 탄수화물: ${carbohydrate}g | 지방: ${fat}g</span>
+        `;
 
       if (activeSlot) {
         activeSlot.html(selectedText);
@@ -173,7 +181,54 @@
       $(this).addClass("selected");
       activeSlot = $(this);
     });
+
+    // 기록하기 버튼 클릭 이벤트
+    $(".record-button").click(function () {
+      let selectedFoods = [];
+      let foodTypeCode = selectedFoodType === "아침" ? "B" : selectedFoodType === "점심" ? "L" : "D"; // B: 아침, L: 점심, D: 저녁
+
+      $(".selected-menu li").each(function () {
+        if ($(this).html().trim() !== "") {
+          let foodData = {
+            menu: $(this).find("span:nth-child(1)").text(),
+            kcal: parseInt($(this).find("span:nth-child(2)").text().replace(" kcal", "")),
+            protein: parseFloat($(this).find(".small-text").text().match(/단백질: ([0-9.]+)g/)[1]),
+            carbohydrate: parseFloat($(this).find(".small-text").text().match(/탄수화물: ([0-9.]+)g/)[1]),
+            fat: parseFloat($(this).find(".small-text").text().match(/지방: ([0-9.]+)g/)[1])
+          };
+          selectedFoods.push(foodData);
+        }
+      });
+
+      if (selectedFoods.length === 0) {
+        alert("선택된 음식이 없습니다.");
+        return;
+      }
+
+      let requestData = {
+        selectDate: new Date().toISOString().split("T")[0], // 현재 날짜
+        foodType: foodTypeCode, // 정확한 식사 타입 반영
+        userPk: 1, // TODO: 로그인 사용자 ID로 변경
+        foodList: selectedFoods
+      };
+
+      $.ajax({
+        url: "/food/record",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestData),
+        success: function (response) {
+          alert("식단이 성공적으로 저장되었습니다.");
+          $(".selected-menu li").empty(); // UI 초기화
+        },
+        error: function () {
+          alert("식단 저장에 실패했습니다.");
+        }
+      });
+    });
+
   });
+
 </script>
 
 </body>

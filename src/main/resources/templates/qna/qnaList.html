@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Q&A 게시글 목록</title>
+    <link href="/css/qna/list.css?v=1.0" rel="stylesheet">
+    <script th:if="${msg}">
+        alert("[[${msg}]]");
+    </script>
+</head>
+<body>
+<div th:insert="/common/header.html"></div>
+<div class="qnaListDiv">
+    <table class="listTable">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="qna : ${qnaList}">
+                <td class="No" th:text="${pageMaker.totalCount - (qnaStat.index + (scri.page - 1) * scri.perPageNum)}"></td>
+                <td class="subject">
+                    <!-- 원글(Q)과 답변(A) 구분 -->
+                    <span th:if="${qna.level == 0}">
+                        <a th:href="@{/qna/qnaContent/{id}(id=${qna.articlePk})}">Q. 질문입니다.</a>
+                    </span>
+                    <span th:if="${qna.level > 0}">
+                        &nbsp;&nbsp;ㄴ <a th:href="@{/qna/qnaContent/{id}(id=${qna.articlePk})}">A. 답변입니다.</a>
+                    </span>
+                </td>
+                <td class="writer" th:text="${qna.userNick}"></td>
+                <td class="writeday" th:text="${#temporals.format(qna.regDate, 'yyyy-MM-dd')}"></td>
+            </tr>
+        </tbody>
+
+        <tr class="write-tr">
+            <td class="write-td" colspan="4">
+                <a href="/qna/qnaWrite"><button>글 작성</button></a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="page">
+    <ul>
+        <!-- 이전 페이지 버튼 -->
+        <li th:if="${pageMaker.prev}">
+            <a class="prev" th:href="@{/qna/qnaList(page=${pageMaker.startPage - 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">◀</a>
+        </li>
+
+        <!-- 페이지 번호 (1~10까지) -->
+        <li th:each="i : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}"
+            th:classappend="${i == scri.page} ? 'on' : ''">
+            <a th:href="@{/qna/qnaList(page=${i}, keyword=${scri.keyword}, searchType=${scri.searchType})}" th:text="${i}"></a>
+        </li>
+
+        <!-- 다음 페이지 버튼 -->
+        <li th:if="${pageMaker.next}">
+            <a class="next" th:href="@{/qna/qnaList(page=${pageMaker.endPage + 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">▶</a>
+        </li>
+    </ul>
+</div>
+
+<div th:insert="/common/footer.html"></div>
+</body>
+</html>

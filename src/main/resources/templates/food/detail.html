@@ -1,99 +1,322 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상세내용</title>
+    <title>식단 상세 기록</title>
     <link rel="stylesheet" href="/css/food/detail.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
-
 <!-- 팝업 -->
 <div class="container">
-<div id="dietPopup" class="popup">
-    <div class="icon-legend">
-        <span>
-            <img src="/images/수정.png" alt="수정 아이콘" class="legend-icon"> : 수정
-        </span>
-        <span>
-            <img src="/images/x.png" alt="삭제 아이콘" class="legend-icon"> : 삭제
-        </span>
-    </div>
-    <div class="popup-content">
-        <button type="button" class="close" onclick="history.back();">&times;</button>
-        <h1>12월 19일 식단 기록표</h1>
-        <div class="meal-section">
-            <div class="meal-time">
-                <div class="meal-img">
-                    <img src="/images/아침.png" alt="아침">
-                </div>
-                <div class="meal-content">
-                    <ul class="meal-list">
-                        <li class="meal-header">
-                            <h3>아침</h3>
-                            <a href="#" class="edit-icon">
-                                <img src="/images/수정.png" alt="수정">
-                            </a>
-                        </li>
-                        <li class="meal-menu">닭가슴살<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">고구마<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">사과<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">땅콩버터<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">빵<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                    </ul>
-                </div>
-            </div>
+    <div id="dietPopup" class="popup">
+        <div class="icon-legend">
+            <span>
+                <img src="/images/수정.png" alt="수정 아이콘" class="legend-icon"> : 수정
+            </span>
+            <span>
+                <img src="/images/x.png" alt="삭제 아이콘" class="legend-icon"> : 삭제
+            </span>
+        </div>
+        <div class="popup-content">
+            <button type="button" class="close" onclick="history.back();">&times;</button>
+            <h1 id="diet-date">식단 기록</h1> <!-- 날짜 동적으로 변경 -->
+            <div class="meal-section">
 
-            <div class="meal-time">
-                <div class="meal-img">
-                    <img src="/images/점심.png" alt="점심">
+                <!-- 아침 -->
+                <div class="meal-time" id="breakfast">
+                    <div class="meal-img">
+                        <img src="/images/아침.png" alt="아침">
+                    </div>
+                    <div class="meal-content">
+                        <ul class="meal-list">
+                            <li class="meal-header">
+                                <h3>아침</h3>
+                                <a href="#" class="edit-icon">
+                                    <img src="/images/수정.png" alt="수정">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="meal-content">
-                    <ul class="meal-list">
-                        <li class="meal-header">
-                            <h3>점심</h3>
-                            <a href="#" class="edit-icon">
-                                <img src="/images/수정.png" alt="수정">
-                            </a>
-                        </li>
-                        <li class="meal-menu">빵<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">닭가슴살<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">사과<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">땅콩버터<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">고구마<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                    </ul>
-                </div>
-            </div>
 
-            <div class="meal-time">
-                <div class="meal-img">
-                    <img src="/images/저녁.png" alt="저녁">
+                <!-- 점심 -->
+                <div class="meal-time" id="lunch">
+                    <div class="meal-img">
+                        <img src="/images/점심.png" alt="점심">
+                    </div>
+                    <div class="meal-content">
+                        <ul class="meal-list">
+                            <li class="meal-header">
+                                <h3>점심</h3>
+                                <a href="#" class="edit-icon">
+                                    <img src="/images/수정.png" alt="수정">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="meal-content">
-                    <ul class="meal-list">
-                        <li class="meal-header">
-                            <h3>저녁</h3>
-                            <a href="#" class="edit-icon">
-                                <img src="/images/수정.png" alt="수정">
-                            </a>
-                        </li>
-                        <li class="meal-menu">빵<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">땅콩버터<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">닭가슴살<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">사과<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                        <li class="meal-menu">고구마<span>250kcal</span><a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a></li>
-                    </ul>
-                </div>
-            </div>
 
-            <p class="total-calories">이 날 먹은 총 칼로리는 __________kcal 입니다.</p>
+                <!-- 저녁 -->
+                <div class="meal-time" id="dinner">
+                    <div class="meal-img">
+                        <img src="/images/저녁.png" alt="저녁">
+                    </div>
+                    <div class="meal-content">
+                        <ul class="meal-list">
+                            <li class="meal-header">
+                                <h3>저녁</h3>
+                                <a href="#" class="edit-icon">
+                                    <img src="/images/수정.png" alt="수정">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 총 칼로리 -->
+                <p class="total-calories">이 날 먹은 총 칼로리는 <span id="total-kcal">0</span> kcal 입니다.</p>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="popup-overlay">
+    <div class="popup1">
+        <!-- 상단에 닫기 버튼 추가 -->
+        <button class="popup-close-btn">x</button>
+        <div class="search-section">
+            <input type="text" class="search-bar" placeholder="무슨 음식을 드셨나요?">
+            <button class="search-button">검색</button>
+        </div>
+        <div class="search-results">
+            <table>
+                <thead>
+                <tr>
+                    <th>음식명</th>
+                    <th>칼로리</th>
+                    <th>영양정보</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 검색 결과가 여기에 추가될 예정 -->
+                </tbody>
+            </table>
+        </div>
+        <div class="selected-menu">
+            <img src="/images/연필.png" alt="연필 아이콘" class="large-pencil-icon">
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+        <button class="update-button">수정하기</button>
+    </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        let selectedDate = "2025-02-06"; // 선택한 날짜
+        let userPk = 1;  // 로그인된 사용자 ID
+        let mealTypes = ["breakfast", "lunch", "dinner"]; // 아침, 점심, 저녁
+        let selectedMealType = ""; // 현재 선택된 식사 타입
+        let activeSlot = null; // 현재 활성화된 슬롯
 
+        // ✅ 날짜 변환 함수 (YYYY-MM-DD → M월 D일)
+        function formatDate(dateStr) {
+            if (!dateStr) return "날짜 없음";
+            let dateParts = dateStr.split("-");
+            return `${parseInt(dateParts[1])}월 ${parseInt(dateParts[2])}일`;
+        }
+
+        // ✅ 특정 날짜의 식단 불러오기
+        function loadDietRecords() {
+            $.ajax({
+                url: "/food/detail/data",
+                type: "GET",
+                data: { userPk: userPk, selectDate: selectedDate },
+                success: function (response) {
+                    $(".meal-list").each(function () {
+                        $(this).find(".meal-menu").remove(); // 기존 음식 목록 삭제
+                    });
+
+                    let totalCalories = 0;
+                    let meals = { breakfast: [], lunch: [], dinner: [] };
+
+                    $("#diet-date").text(`${formatDate(selectedDate)} 식단 기록표`);
+
+                    response.forEach(food => {
+                        let mealType = getMealType(food.foodType);
+                        meals[mealType].push({
+                            menu: food.menu,
+                            kcal: food.kcal,
+                            protein: food.protein,
+                            carbohydrate: food.carbohydrate,
+                            fat: food.fat,
+                            foodListPk: food.foodListPk
+                        });
+                        totalCalories += food.kcal;
+                    });
+
+                    mealTypes.forEach(mealType => {
+                        let mealSection = $("#" + mealType + " .meal-list");
+                        let mealData = meals[mealType];
+
+                        for (let i = 0; i < 5; i++) {
+                            let foodItem = mealData[i]
+                                ? `<li class="meal-menu" data-foodlistpk="${mealData[i].foodListPk}">
+                                ${mealData[i].menu} <span>${mealData[i].kcal} kcal</span>
+                                <a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a>
+                            </li>`
+                                : `<li class="meal-menu">
+                                &nbsp; <span> &nbsp; </span>
+                            </li>`;
+
+                            mealSection.append(foodItem);
+                        }
+                    });
+
+                    $("#total-kcal").text(totalCalories);
+                },
+                error: function (xhr, status, error) {
+                    console.error("🚨 식단 정보를 불러오는 데 실패했습니다.", error);
+                }
+            });
+        }
+
+        // ✅ 식사 코드 변환 (B, L, D → breakfast, lunch, dinner)
+        function getMealType(foodType) {
+            return foodType === "B" ? "breakfast" : foodType === "L" ? "lunch" : "dinner";
+        }
+
+        // ✅ 수정 팝업 열기
+        $(".edit-icon").click(function () {
+            $(".popup-overlay").fadeIn();
+            $(".popup1").fadeIn();
+
+            selectedMealType = $(this).closest(".meal-time").attr("id");
+
+            $(".selected-menu li").empty();
+
+            $.ajax({
+                url: "/food/detail/data",
+                type: "GET",
+                data: { userPk: userPk, selectDate: selectedDate },
+                success: function (response) {
+                    let existingFoods = response.filter(food => getMealType(food.foodType) === selectedMealType);
+
+                    existingFoods.forEach((food, index) => {
+                        $(".selected-menu li").eq(index).html(`
+                        <span>${food.menu}</span>
+                        <span>${food.kcal} kcal</span>
+                    `).attr("data-foodlistpk", food.foodListPk);
+                    });
+                }
+            });
+        });
+
+        // ✅ 슬롯 클릭 이벤트
+        $(document).on("click", ".selected-menu li", function () {
+            $(".selected-menu li").removeClass("selected");
+            $(this).addClass("selected");
+            activeSlot = $(this);
+        });
+
+        // ✅ 검색 버튼 클릭 시 API 호출
+        $(".search-button").click(function () {
+            let query = $(".search-bar").val().trim();
+            if (query === "") return;
+
+            $.ajax({
+                url: "/food/search",
+                type: "GET",
+                data: { query: query },
+                success: function (response) {
+                    let tableBody = $(".search-results tbody");
+                    tableBody.empty();
+
+                    response.forEach(food => {
+                        let row = `<tr data-menu="${food.menu}" data-kcal="${food.kcal}">
+                        <td>${food.menu}</td>
+                        <td>${food.kcal} kcal</td>
+                    </tr>`;
+                        tableBody.append(row);
+                    });
+                }
+            });
+        });
+
+        // ✅ 검색 결과 클릭 시 선택된 슬롯에 반영 (이벤트 위임 방식)
+        $(document).on("click", ".search-results tr", function () {
+            if (!activeSlot) {
+                alert("먼저 수정할 칸을 선택하세요!");
+                return;
+            }
+
+            let foodName = $(this).data("menu");
+            let kcal = $(this).data("kcal");
+
+            activeSlot.html(`
+            <span>${foodName}</span>
+            <span>${kcal} kcal</span>
+        `);
+        });
+
+        // ✅ 수정 저장 (updateMeal)
+        $(".update-button").click(function () {
+            let updatedFoods = [];
+
+            $(".selected-menu li").each(function () {
+                if ($(this).html().trim() !== "") {
+                    let foodData = {
+                        foodListPk: $(this).attr("data-foodlistpk") || null,
+                        menu: $(this).find("span:nth-child(1)").text(),
+                        kcal: parseInt($(this).find("span:nth-child(2)").text().replace(" kcal", ""))
+                    };
+                    updatedFoods.push(foodData);
+                }
+            });
+
+            $.ajax({
+                url: "/food/updateMeal",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ userPk, selectDate, foodType: selectedMealType.toUpperCase().charAt(0), foodList: updatedFoods }),
+                success: function () {
+                    alert("식단이 수정되었습니다.");
+                    $(".popup-overlay").fadeOut();
+                    loadDietRecords();
+                }
+            });
+        });
+
+        // ✅ 개별 음식 삭제
+        $(document).on("click", ".delete-icon", function () {
+            let foodListPk = $(this).closest(".meal-menu").data("foodlistpk");
+
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+
+            $.ajax({
+                url: "/food/delete",
+                type: "DELETE",
+                data: { foodListPk: foodListPk },
+                success: function () {
+                    alert("음식이 삭제되었습니다.");
+                    loadDietRecords();
+                }
+            });
+        });
+
+        // ✅ 초기 데이터 로드
+        loadDietRecords();
+    });
+
+</script>
 
 </body>
 </html>
