@@ -2,12 +2,9 @@
 <html lang="UTF-8">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>식단 기록</title>
+    <title>AI 추천 식단</title>
     <link rel="stylesheet" href="/css/food/recomResult.css">
-    <!-- 제이쿼리 불러오기 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
 </head>
 <body>
 
@@ -15,279 +12,100 @@
 <div th:insert="~{/common/header.html}"></div>
 
 <div class="wrapper">
-    <h1>AI가 추천하는 3가지 식단</h1>
+    <h1 id="goal-title">AI가 추천하는 3가지 식단</h1>
+
+    <!-- 탭 -->
     <div class="tabs">
         <div class="tab active" data-tab="tab1">식단 1 🍴</div>
         <div class="tab" data-tab="tab2">식단 2 🍴</div>
         <div class="tab" data-tab="tab3">식단 3 🍴</div>
     </div>
 
-    <div class="table-container">
-        <div id="tab1" class="tab-content active">
-            <table>
-                <thead>
-                <tr>
-                    <th>메뉴</th>
-                    <th>영양정보</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        아침 식단 😊
-                        <br>
-                        <ul>
-                            <li>통밀 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        점심 식단 ✨
-                        <br>
-                        <ul>
-                            <li>통밀 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        저녁 식단 🌙
-                        <ul>
-                            <li>통밀 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="tab2" class="tab-content">
-            <table>
-                <thead>
-                <tr>
-                    <th>메뉴</th>
-                    <th>영양정보</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        아침 식단 😊
-                        <br>
-                        <ul>
-                            <li>통밀2 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        점심 식단 ✨
-                        <br>
-                        <ul>
-                            <li>통밀 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        저녁 식단 🌙
-                        <ul>
-                            <li>통밀 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="tab3" class="tab-content">
-            <table>
-                <thead>
-                <tr>
-                    <th>메뉴</th>
-                    <th>영양정보</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        아침 식단 😊
-                        <br>
-                        <ul>
-                            <li>통밀3 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        점심 식단 ✨
-                        <br>
-                        <ul>
-                            <li>통밀 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        저녁 식단 🌙
-                        <ul>
-                            <li>통밀 토스트와 아보카도</li>
-                            <li>삶은 달걀과 아몬드</li>
-                            <li>블루베리 요거트</li>
-                            <li>현미죽</li>
-                            <li>배추김치</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>통밀빵 40g 아보카도 30g</li>
-                            <li>달걀 50g 아몬드 10g</li>
-                            <li>플레인 요거트 100g 블루베리 50g</li>
-                            <li>현미 50g 배추김치 30g</li>
-                        </ul>
-                        <p>
-                            통밀과 현미는 혈당 지수를 낮추어 혈당 급등을 억제하며, 블루베리와
-                            요거트의 항산화 성분은 대사 건강에 이롭습니다.
-                        </p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
+    <!-- 식단1 표 -->
+    <div id="tab1" class="tab-content active">
+        <table>
+            <thead>
+            <tr>
+                <th>메뉴</th>
+                <th>영양정보</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 아침 -->
+            <tr>
+                <td>아침 식단 😊<br><ul id="tab1-breakfast"></ul></td>
+                <td><ul id="tab1-breakfast-nutrition"></ul><p id="tab1-breakfast-tip"></p></td>
+            </tr>
+            <!-- 점심 -->
+            <tr>
+                <td>점심 식단 ✨<br><ul id="tab1-lunch"></ul></td>
+                <td><ul id="tab1-lunch-nutrition"></ul><p id="tab1-lunch-tip"></p></td>
+            </tr>
+            <!-- 저녁 -->
+            <tr>
+                <td>저녁 식단 🌙<br><ul id="tab1-dinner"></ul></td>
+                <td><ul id="tab1-dinner-nutrition"></ul><p id="tab1-dinner-tip"></p></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
+
+    <!-- 식단2 표 -->
+    <div id="tab2" class="tab-content">
+        <table>
+            <thead>
+            <tr>
+                <th>메뉴</th>
+                <th>영양정보</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>아침 식단 😊<br><ul id="tab2-breakfast"></ul></td>
+                <td><ul id="tab2-breakfast-nutrition"></ul><p id="tab2-breakfast-tip"></p></td>
+            </tr>
+            <tr>
+                <td>점심 식단 ✨<br><ul id="tab2-lunch"></ul></td>
+                <td><ul id="tab2-lunch-nutrition"></ul><p id="tab2-lunch-tip"></p></td>
+            </tr>
+            <tr>
+                <td>저녁 식단 🌙<br><ul id="tab2-dinner"></ul></td>
+                <td><ul id="tab2-dinner-nutrition"></ul><p id="tab2-dinner-tip"></p></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 식단3 표 -->
+    <div id="tab3" class="tab-content">
+        <table>
+            <thead>
+            <tr>
+                <th>메뉴</th>
+                <th>영양정보</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>아침 식단 😊<br><ul id="tab3-breakfast"></ul></td>
+                <td><ul id="tab3-breakfast-nutrition"></ul><p id="tab3-breakfast-tip"></p></td>
+            </tr>
+            <tr>
+                <td>점심 식단 ✨<br><ul id="tab3-lunch"></ul></td>
+                <td><ul id="tab3-lunch-nutrition"></ul><p id="tab3-lunch-tip"></p></td>
+            </tr>
+            <tr>
+                <td>저녁 식단 🌙<br><ul id="tab3-dinner"></ul></td>
+                <td><ul id="tab3-dinner-nutrition"></ul><p id="tab3-dinner-tip"></p></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 버튼 -->
     <div class="buttons">
-        <button class="button">다른 목표 선택</button>
-        <button class="button">메인화면</button>
+        <button class="button" onclick="window.location.href='/food/recom'">다른 목표 선택</button>
+        <button class="button" onclick="window.location.href='/'">메인화면</button>
     </div>
 </div>
 
@@ -295,21 +113,122 @@
 <div th:insert="~{/common/footer.html}"></div>
 
 <script>
-    $(document).ready(function () {
-        $('.tab').on('click', function () {
-            // 모든 탭 비활성화
-            $('.tab').removeClass('active');
-            // 클릭된 탭 활성화
-            $(this).addClass('active');
+    function parseMealOption(text) {
+        const lines = text.split("\n").map(line => line.trim());
+        let currentSection = null;
 
-            // 모든 콘텐츠 숨기기
-            $('.tab-content').removeClass('active');
-            // 클릭된 탭에 해당하는 콘텐츠 표시
-            $('#' + $(this).data('tab')).addClass('active');
+        const data = {
+            breakfast: [],
+            lunch: [],
+            dinner: [],
+            tip: []
+        };
+
+        for (let line of lines) {
+            if (line.startsWith("### ")) {
+                continue; // "### 식단 1:"은 건너뜀
+            }
+            if (line.startsWith("**아침")) {
+                currentSection = "breakfast";
+                continue;
+            } else if (line.startsWith("**점심")) {
+                currentSection = "lunch";
+                continue;
+            } else if (line.startsWith("**저녁")) {
+                currentSection = "dinner";
+                continue;
+            } else if (line.startsWith("**영양 팁")) {
+                currentSection = "tip";
+                continue;
+            }
+
+            if (line.startsWith("-")) {
+                const item = line.replace(/^-\s*/, "");
+                if (currentSection && data[currentSection]) {
+                    data[currentSection].push(item);
+                }
+            }
+        }
+
+        return data;
+    }
+
+    // 하드코딩된 표에 내용 채워넣기
+    function renderDietToHTML(dietData, tabIndex) {
+        // 아침
+        const bfUl = $(`#tab${tabIndex}-breakfast`);
+        bfUl.empty();
+        dietData.breakfast.forEach(item => {
+            bfUl.append(`<li>${item}</li>`);
+        });
+
+        // 여기서는 "영양정보" 영역을 별도로 안 나눴고, 예제상 tip만 표시
+        // 필요하다면 식품명과 [g, kcal]을 구분 파싱해서 왼쪽/오른쪽 칸에 나눌 수도 있음
+        const bfTip = $(`#tab${tabIndex}-breakfast-tip`);
+        bfTip.text(dietData.tip.join(" "));
+
+        // 점심
+        const lunchUl = $(`#tab${tabIndex}-lunch`);
+        lunchUl.empty();
+        dietData.lunch.forEach(item => {
+            lunchUl.append(`<li>${item}</li>`);
+        });
+        const lunchTip = $(`#tab${tabIndex}-lunch-tip`);
+        lunchTip.text(dietData.tip.join(" "));
+
+        // 저녁
+        const dinnerUl = $(`#tab${tabIndex}-dinner`);
+        dinnerUl.empty();
+        dietData.dinner.forEach(item => {
+            dinnerUl.append(`<li>${item}</li>`);
+        });
+        const dinnerTip = $(`#tab${tabIndex}-dinner-tip`);
+        dinnerTip.text(dietData.tip.join(" "));
+    }
+
+    $(document).ready(function(){
+        const goal = localStorage.getItem("goal");
+        if (!goal) {
+            alert("추천받은 식단이 없습니다. 다시 추천을 받아주세요.");
+            window.location.href = "/food/recom";
+            return;
+        }
+        $("#goal-title").text(`${goal}을(를) 위한 AI 추천 식단`);
+
+        // 서버로부터 식단 응답
+        $.ajax({
+            url: "http://localhost:8000/recommend",
+            type: "GET",
+            data: { goal: goal },
+            success: function(response) {
+                const mealOptions = response.meal_options;
+                // mealOptions[0] = 식단 1, mealOptions[1] = 식단 2, mealOptions[2] = 식단 3
+                if (mealOptions && mealOptions.length >= 3) {
+                    const diet1 = parseMealOption(mealOptions[0]);
+                    renderDietToHTML(diet1, 1);
+
+                    const diet2 = parseMealOption(mealOptions[1]);
+                    renderDietToHTML(diet2, 2);
+
+                    const diet3 = parseMealOption(mealOptions[2]);
+                    renderDietToHTML(diet3, 3);
+                }
+            },
+            error: function() {
+                alert("추천을 가져오는 데 실패했습니다.");
+            }
+        });
+
+        // 탭 전환
+        $(".tab").on("click", function() {
+            $(".tab").removeClass("active");
+            $(this).addClass("active");
+
+            $(".tab-content").removeClass("active");
+            const target = $(this).data("tab");
+            $(`#${target}`).addClass("active");
         });
     });
 </script>
-
-
 </body>
 </html>

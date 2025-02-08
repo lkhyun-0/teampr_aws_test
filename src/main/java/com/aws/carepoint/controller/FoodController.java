@@ -7,6 +7,7 @@ import com.aws.carepoint.dto.FoodListDto;
 import com.aws.carepoint.dto.FoodRecordRequest;
 import com.aws.carepoint.dto.UpdateMealRequest;
 import com.aws.carepoint.service.FoodService;
+import com.aws.carepoint.service.MealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,9 @@ import java.util.Map;
 public class FoodController {
 
     private final FoodService foodService;
+    private final MealService mealService;
+
+
 
     @GetMapping("/foodRecord")
     public String showRecordPage() {
@@ -118,6 +122,22 @@ public class FoodController {
         foodService.updateMeal(request);
         return "success";
     }
+
+
+    // ai api
+    @GetMapping("/recommend")
+    @ResponseBody
+    public ResponseEntity<String> recommendMeal(@RequestParam(name = "goal") String goal) {
+        String recommendation = mealService.getMealRecommendation(goal).block(); // Mono → String 변환
+        return recommendation != null ? ResponseEntity.ok(recommendation) : ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/foodResult")
+    public String showResultPage() {
+        return "food/foodResult"; // templates/food/foodresult.html
+    }
+
+
 
 
 
