@@ -41,16 +41,14 @@ CREATE TABLE user_detail (
 CREATE TABLE board (
                        board_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                        board_type CHAR(1) NOT NULL, -- 게시판종류 (Q : Q&A, F : Free, N : Notice)
-                       title VARCHAR(100) NOT NULL, -- 제목
                        reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
                        update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
-                       del_status TINYINT(1) DEFAULT 0 NOT NULL, -- 삭제 여부 (0=삭제 전, 1=삭제 후)
-                       user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
-                       CONSTRAINT fk_board_users FOREIGN KEY (user_pk) REFERENCES users (user_pk) -- 외래 키 설정
+                       del_status TINYINT(1) DEFAULT 0 NOT NULL -- 삭제 여부 (0=삭제 전, 1=삭제 후)
 );
 
 CREATE TABLE article (
                          article_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
+                         title VARCHAR(100) NOT NULL, -- 제목
                          content TEXT NOT NULL, -- 내용
                          filename VARCHAR(200), -- 파일이름
                          recom INT DEFAULT 0, -- 추천수
@@ -59,7 +57,10 @@ CREATE TABLE article (
                          level_ INT DEFAULT 0, -- 답변레벨
                          reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
                          update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
+                         del_status TINYINT(1) DEFAULT 0 NOT NULL, -- 삭제 여부 (0=삭제 전, 1=삭제 후)
+                         user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
                          board_pk INT NOT NULL, -- 외래 키 (board 테이블의 board_pk 참조)
+                         CONSTRAINT fk_article_users FOREIGN KEY (user_pk) REFERENCES users (user_pk), -- 외래 키 설정
                          CONSTRAINT fk_article_board FOREIGN KEY (board_pk) REFERENCES board (board_pk) -- 외래 키 설정
 );
 
@@ -209,11 +210,10 @@ INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, u
 VALUES (3, 0, 'testuser', 'testpassword', '홍길동', '길동이', '010-1234-5678', 'testuser@example.com');
 
 
-SELECT * FROM users;
+SELECT * FROM users
 
 SELECT * FROM food;
 SELECT * FROM foodlist;
-
 
 DELETE FROM foodlist
 WHERE food_pk IN (
@@ -225,4 +225,7 @@ WHERE food_pk IN (
 DELETE FROM food
 WHERE select_date = '2025-02-07' AND foodtype = 'L';
 
-
+SET FOREIGN_KEY_CHECKS = 0; -- 외래 키 제약 해제
+DROP TABLE IF EXISTS article;
+DROP TABLE IF EXISTS board;
+SET FOREIGN_KEY_CHECKS = 1; -- 외래 키 제약 다시 활성화
