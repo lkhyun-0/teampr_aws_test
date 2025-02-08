@@ -1,5 +1,3 @@
-
-
 /*노말라이즈*/
 body,
 ul,
@@ -81,7 +79,7 @@ main {
 }
 
 .form-group input {
-    width: 380px;
+    width: 420px;
     padding: 10px;
     font-size: 14px;
     border: none;
@@ -92,7 +90,7 @@ main {
 
 /*-------------중복 확인 버튼 스타일--------------*/
 
-.form-group .check > input {/*todo*/
+.form-group .check > input {
 
  }
 .check {
@@ -100,7 +98,7 @@ main {
 
 }
 
-.check button {
+.check-btn {
     position: absolute;
     top: 50%; /* 세로 중앙 정렬 */
     right: 20px; /* 오른쪽 여백 */
@@ -119,13 +117,14 @@ main {
     color: #aaa;
 }
 
-button {
+.join-btn {
     color:white ;
     padding :10px;
     border-radius :5px ;
     border:none ;
     align-self: center; /* 버튼을 중앙 정렬 */
     margin-top: auto; /* 위쪽 여백 자동 설정 */
+    background-color: #4169E1;
 }
 
 
@@ -176,18 +175,18 @@ button {
     text-align: center;
 }
 
-button {
+.modal-button {
     padding: 10px 20px;
     margin: 5px;
     border-radius: 5px;
     border: none;
 }
 
-button:first-of-type {
+.modal-button:first-of-type {
     background-color: #ccc; /* 취소 버튼 */
 }
 
-button:last-of-type {
+.modal-button:last-of-type {
     background-color: #4169E1; /* 회원가입 버튼 */
     color: white;
 }

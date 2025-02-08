@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Q&A 게시글 상세보기</title>
+    <link href="/css/qna/content.css" rel="stylesheet">
+    <script th:if="${msg}">
+      alert("[[${msg}]]");
+    </script>
+
+    <script>
+      function confirmDelete() {
+        return confirm("정말 삭제하시겠습니까?");
+      }
+    </script>
+</head>
+<body>
+<div th:insert="/common/header.html"></div>
+<div class="article-container">
+  <div class="article-title" th:text="${qna.title}"></div>
+
+  <div class="info-bar">
+    <div class="info-left">
+      <span th:text="${qna.userNick}"></span> |
+      <span th:text="${#temporals.format(qna.regDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    </div>
+  </div>
+
+  <div class="article-content" th:text="${qna.content}">
+  </div>
+
+  <div class="actions">
+    <!-- 목록으로 버튼 -->
+    <a href="/qna/qnaList" class="btn btn-left">목록</a>
+    <!-- 수정 및 삭제 버튼 -->
+    <div class="btn-group">
+      <!-- articlePk와 originNum이 같을 때만 답변 버튼 표시 -->
+      <a th:if="${qna.articlePk == qna.originNum}" th:href="@{/qna/qnaReply/{id}(id=${qna.articlePk})}" class="btn">
+        답변
+      </a>
+      <a th:href="@{/qna/qnaModify/{id}(id=${qna.articlePk})}" class="btn">수정</a>
+      <form th:action="@{/qna/qnaDeleteAction/{id}(id=${qna.articlePk})}" method="post" onsubmit="return confirmDelete()">
+        <button type="submit" class="btn del-btn">삭제</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div th:insert="/common/footer.html"></div>
+
+
+</body>
+</html>
