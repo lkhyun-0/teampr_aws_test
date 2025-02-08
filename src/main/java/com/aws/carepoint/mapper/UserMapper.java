@@ -2,17 +2,25 @@ package com.aws.carepoint.mapper;
 
 import com.aws.carepoint.dto.UsersDto;
 import org.apache.ibatis.annotations.*;
-
 @Mapper
 public interface UserMapper {
-    // 회원 가입
-    @Insert("INSERT INTO users (userid, username, userpwd, usernick, phone, email, auth_level, social_login_status, del_status) " +
-            "VALUES (#{userId}, #{userName}, #{userPwd}, #{userNick}, #{phone}, #{email}, #{authLevel}, #{socialLoginStatus}, #{delStatus})")
+
+    // ✅ 회원 가입 (ResultMap이 필요 없음)
+    @Insert("INSERT INTO users (userid, username, userpwd, usernick, phone, email, auth_level, social_login_status, del_status, delDate) " +
+            "VALUES (#{userId}, #{userName}, #{userPwd}, #{userNick}, #{phone}, #{email}, #{authLevel}, #{socialLoginStatus}, #{delStatus}, #{delDate})")
     @Options(useGeneratedKeys = true, keyProperty = "userPk", keyColumn = "user_pk")
-    // ✅ 자동 증가된 user_pk 값을 DTO에 반영
+    void insertUser(UsersDto usersDto);
 
+    // ✅ 아이디 중복 체크 (단일 값 조회이므로 ResultMap 필요 없음)
+    @Select("SELECT COUNT(*) FROM users WHERE userid = #{userId}")
+    int countByUserId(@Param("userId") String userId);
 
-    @Results(id = "usersResultsMap", value = {
+    // ✅ 닉네임 중복 체크 (단일 값 조회이므로 ResultMap 필요 없음)
+    @Select("SELECT COUNT(*) FROM users WHERE usernick = #{userNick}")
+    int countByUserNick(@Param("userNick") String userNick);
+
+    // ✅ `@Results(id = "userResultMap")`을 여기에 선언하여 한 번만 등록
+    @Results(id = "userResultMap", value = {
             @Result(property = "userPk", column = "user_pk"),
             @Result(property = "authLevel", column = "auth_level"),
             @Result(property = "socialLoginStatus", column = "social_login_status"),
@@ -25,19 +33,13 @@ public interface UserMapper {
             @Result(property = "joinDate", column = "join_date"),
             @Result(property = "updateDate", column = "update_date"),
             @Result(property = "delStatus", column = "del_status"),
-            @Result(property = "delDate", column = "delDate"),
+            @Result(property = "delDate", column = "delDate")
     })
-    @ResultMap(value = "usersResultMap")
+    @Select("SELECT user_pk, userid, username, userpwd, usernick, phone, email, auth_level, social_login_status, del_status, delDate FROM users WHERE userid = #{userId}")
+    UsersDto findByUserId(@Param("userId") String userId);
 
-    void insertUser(UsersDto usersDto);
-
-    // 아이디 중복 체크
-    @Select("SELECT COUNT(*) FROM users WHERE userid = #{userId}")
-    int countByUserId(@Param("userId") String userId);       // 중복체크 오류 해결해야함
-
-    // 닉네임 중복 체크
-    @Select("SELECT COUNT(*) FROM users WHERE usernick = #{userNick}")
-    int countByUserNick(@Param("userNick") String usernick);
-
-
+    // ✅ `@ResultMap("userResultMap")`을 사용하여 중복 제거
+    @Select("SELECT * FROM users WHERE user_pk = #{userPk}")
+    @ResultMap("userResultMap")
+    UsersDto getUserById(int userPk);
 }

@@ -252,7 +252,6 @@
 </div>
 
 <div th:insert="/common/footer.html"></div>
-</body>
 <script>
     // 모든 탭 버튼과 콘텐츠 가져오기
     const tabButtons = document.querySelectorAll('.tab-button');
@@ -370,7 +369,7 @@
         } else {
             resultMessage.innerHTML = `아무 항목도 선택되지 않았습니다.<br>증상이 있는 경우 체크해주세요!`;
         }
- 
+
         // 모달 표시
         modal.style.display = "block";
     });
@@ -389,5 +388,10 @@
 
 
 </script> <!--자가진단 팝업 스크립트-->
+
+
+
+</body>
+
 
 </html>

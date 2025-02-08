@@ -1,99 +1,59 @@
-function joinCheck() {
-    //alert("test");
+function signUp() {
+    let signUpfm = document.forms["signUpfm"]; // ✅ 폼 요소 정확히 가져오기
 
-    let fm = document.frm;
-
-    if (fm.userName.value === "") {
-        alert("이름을 입력해주세요");
-        fm.userName.focus();
-        return;
-    } else if (fm.userNick.value === "") {
-        alert("닉네임을 입력해주세요");
-        fm.userNick.focus();
-        return;
-    } else if ($("#nick-btn").val() === "N") {  // 닉네임 중복 확인 안 했으면 막기
+    if (document.getElementById("nick-btn").value === "N") {
         alert("닉네임 중복 확인을 해주세요.");
         return;
-    } else if (fm.userId.value === "") {
-        alert("아이디를 입력해주세요");
-        fm.userId.focus();
-        return;
-    } else if ($("#id-btn").val() === "N") {  // 아이디 중복 확인 안 했으면 막기
+    }
+    if (document.getElementById("id-btn").value === "N") {
         alert("아이디 중복 확인을 해주세요.");
-        fm.userId.focus();
+        signUpfm.userId.focus();
         return;
-    } else if (fm.userPwd.value === "") {
-        alert("비밀번호를 입력해주세요");
-        fm.userPwd.focus();
-        return;
-    } else if (fm.userpwd2.value === "") {
+    }
+    if (signUpfm.userpwd2.value === "") {
         alert("비밀번호를 확인해주세요");
-        fm.userpwd2.focus();
+        signUpfm.userpwd2.focus();
         return;
-    } else if (fm.userPwd.value !== fm.userpwd2.value) {
+    }
+    if (signUpfm.userPwd.value !== signUpfm.userpwd2.value) {
         alert("비밀번호가 일치하지 않습니다.");
-        fm.userpwd2.value = "";
-        fm.userpwd2.focus();
-        return;
-    } else if (fm.phone.value === "") {
-        alert("전화번호를 입력해주세요");
-        fm.phone.focus();
-        return;
-    } else if (fm.email.value === "") {
-        alert("이메일을 입력해주세요");
-        fm.email.focus();
+        signUpfm.userpwd2.value = "";
+        signUpfm.userpwd2.focus();
         return;
     }
 
     let ans = confirm("회원가입 하시겠습니까?");
     if (ans) {
         let userData = {
-            userName: fm.userName.value,  // ✅ 서버 DTO와 동일한 필드명 사용
-            userNick: fm.userNick.value,
-            userId: fm.userId.value,
-            userPwd: fm.userPwd.value,
-            email: fm.email.value,
-            phone: fm.phone.value,
+            userName: signUpfm.userName.value,
+            userNick: signUpfm.userNick.value,
+            userId: signUpfm.userId.value,
+            userPwd: signUpfm.userPwd.value,
+            email: signUpfm.email.value,
+            phone: signUpfm.phone.value
         };
 
-        fetch("/user/userSignUp", {
+        fetch("/user/dosignUp", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(userData)
         })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error("서버 오류: " + text);
-                    });
-                }
-                return response.json();  // ✅ JSON 변환
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log("서버 응답 데이터:", data);  // ✅ 응답 데이터 확인
                 if (data.error) {
-                    throw new Error(data.error);  // 오류 메시지 처리
+                    throw new Error(data.error);
                 }
                 alert(data.message);
-                window.location.href = data.redirect;  // ✅ 서버에서 받은 redirect 경로로 이동
+                window.location.href = data.redirect;
             })
             .catch(error => {
+                console.error("회원가입 실패:", error);
                 alert("회원가입 실패: " + error.message);
             });
     }
 }
-
-// ✅ 아이디 또는 닉네임이 변경될 때 버튼 상태 초기화
-document.getElementById("userId").addEventListener("input", function () {
-    document.getElementById("id-btn").value = "N";
-});
-
-document.getElementById("userNick").addEventListener("input", function () {
-    document.getElementById("nick-btn").value = "N";
-});
-
 
 function checkUserId() {
     let userId = document.getElementById("userId").value.trim();
@@ -106,16 +66,18 @@ function checkUserId() {
     fetch(`/user/checkUserId?userid=${encodeURIComponent(userId)}`)
         .then(response => response.json())
         .then(isDuplicate => {
+            console.log(isDuplicate + "중복확인 값 확인");
             if (isDuplicate) {
                 alert("이미 사용 중인 아이디입니다. 다른 아이디를 입력해주세요.");
                 idButton.value = "N"; // 중복된 경우 다시 확인 필요
+
             } else {
                 alert("사용 가능한 아이디입니다!");
                 idButton.value = "Y"; // 사용 가능하면 "Y"로 변경
             }
         })
         .catch(error => console.error("Error:", error));
-}
+}// 회원가입시에 아이디 중복체크 하는 스크립트
 
 function checkNickname() {
     let userNick = document.getElementById("userNick").value.trim();
@@ -138,4 +100,15 @@ function checkNickname() {
             }
         })
         .catch(error => console.error("Error:", error));
-}
+}// 회원가입시 닉네임 중복체크 하는 스크립트
+
+// ✅ 아이디 또는 닉네임이 변경될 때 버튼 상태 초기화
+document.getElementById("userId").addEventListener("input", function () {
+    document.getElementById("id-btn").value = "N";
+});
+// 이벤트 감지해서 닉네임 중복체크 하고난 뒤에 변경사항이 있으면 다시 중복체크를 시도하도록 제한
+
+document.getElementById("userNick").addEventListener("input", function () {
+    document.getElementById("nick-btn").value = "N";
+});
+

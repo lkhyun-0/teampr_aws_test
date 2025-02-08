@@ -13,7 +13,7 @@
 <body>
 
 <div th:insert="/common/header.html"></div>
-
+<input type="hidden" id="userPk" th:value="${session.userPk}">
 <div class="main-container">
     <div class="top-section">
         <!-- 회원정보 + 그래프 나타는 부분 -->
@@ -22,22 +22,33 @@
             <div class="user-info">
                 <button id="openModal" class="modify-btn">수정하기</button>
                 <ul>
-                    <li>닉네임 : 필릭스</li>
-                    <li>관리중인 질병 : 없음 건강함</li>
-                    <li>생년월일 :</li>
-                    <li>가입일 :</li>
-                    <li>전화번호 :</li>
-                    <li>이메일 :</li>
-                    <li>키 / 체중 :</li>
-                    <li>흡연 / 음주 : 🚬 / 🍺</li>
-                </ul>
 
+                        <li>닉네임 : <span th:text="${userInfo != null ? userInfo.userNick : '정보 없음'}"></span></li>
+                        <li>아이디 : <span th:text="${userInfo != null ? userInfo.userId : '정보 없음'}"></span></li>
+                        <li>이메일 : <span th:text="${userInfo != null ? userInfo.email : '정보 없음'}"></span></li>
+                        <li>전화번호 : <span th:text="${userInfo != null ? userInfo.phone : '정보 없음'}"></span></li>
+                        <li>가입일 : <span th:text="${userInfo != null ? userInfo.joinDate : '정보 없음'}"></span></li><!--todo    일단 가져와진다 !-->
+                    <li>키 / 체중 :
+                        <span th:text="${detailDto != null ? (detailDto.height + 'cm / ' + detailDto.weight + 'kg') : '정보 없음'}"></span>
+                    </li>
+                    <li>흡연 / 음주 :
+                        <span th:text="${detailDto != null ? (detailDto.smoke == 1 ? '🚬' : '❌') + ' / ' + (detailDto.drink == 1 ? '🍺' : '❌') : '정보 없음'}"></span>
+                    </li>
+
+                </ul>
             </div>
         </div>
 
+
         <!-- 그래프 섹션 -->
+
+
+
         <div class="graph-info">
             <canvas id="progressChart"></canvas>
+            <p id="noDataMessage" class="no-data-message" style="display: none;">
+                <a href="#">아직 입력된 데이터가 없습니다. 건강 기록을 추가해주세요!</a>
+            </p>
         </div>
     </div>
     <div class="post-container">
@@ -109,12 +120,12 @@
             <div class="modal-body">
                 <ul>
                     <li>
-                        <label for="phone">전화번호:</label>
-                        <input type="text" id="phone" value="010-1111-1111">
+                        <label>전화번호:</label>
+                        <input type="text" id="modal-phone" value="010-1111-1111">
                     </li>
                     <li>
-                        <label for="email">이메일:</label>
-                        <input type="email" id="email" value="hi@gmail.com">
+                        <label>이메일:</label>
+                        <input type="email" id="modal-email" value="hi@gmail.com">
                     </li>
                     <li>
                         <label for="password">비밀번호: </label>
@@ -156,42 +167,105 @@
             </div>
         </div>
     </div>
-
-
 </div>
 
 <div th:insert="/common/footer.html"></div>
 
+
 </body>
+
+<!--여기가 회원정보 들어갈 곳-->
+<script>
+
+
+
+
+</script>
+
 
 <!-- 그래프 스크립트 -->
 <script>
-    const ctx = document.getElementById('progressChart').getContext('2d');
-    const progressChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['12월 14일', '12월 21일', '12월 28일', '12월 31일', '1월 2일', '1월 3일', '1월 4일'], // X축 레이블
-            datasets: [{
-                label: '몸무게,혈당,혈압 등',
-                data: [80, 79, 78, 76, 76.1, 75.2, 75.1,], // 데이터 값
-                borderColor: '#6495ED', // 선 색상
-                backgroundColor: 'rgba(100,149,237,0.2)', // 배경색
-                tension: 0.1, // 곡선 정도
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {display: true},
-                tooltip: {enabled: true}
-            },
-            scales: {
-                x: {title: {display: true, text: '날짜'}},
-                y: {title: {display: true, text: '수치'}, min: 0, max: 150}
-            }
+    document.addEventListener("DOMContentLoaded", function () {
+        const userPk = document.getElementById('userPk').value; // HTML에서 값 가져오기
+        if (userPk) {
+            loadGraphData(userPk);
+        } else {
+            console.error("로그인한 사용자의 userPk를 찾을 수 없습니다.");
         }
     });
+
+    function loadGraphData(userPk) {
+        fetch(`/graph/${userPk}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!Array.isArray(data) || data.length === 0) {
+                    document.getElementById('progressChart').style.display = 'none';
+                    document.getElementById('noDataMessage').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('progressChart').style.display = 'block';
+                document.getElementById('noDataMessage').style.display = 'none';
+
+                const labels = data.map(entry => new Date(entry.regDate).toLocaleDateString());
+                const weights = data.map(entry => entry.weight);
+                const bloodPressures = data.map(entry => entry.bloodPress);
+                const bloodSugars = data.map(entry => entry.bloodSugar);
+
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: '몸무게 (kg)',
+                                data: weights,
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 8,
+                                tension: 0.4
+                            },
+                            {
+                                label: '혈압',
+                                data: bloodPressures,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 8,
+                                tension: 0.4
+                            },
+                            {
+                                label: '혈당',
+                                data: bloodSugars,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 8,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { title: { display: true, text: '날짜' } },
+                            y: { title: { display: true, text: '수치' } }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching graph data:', error));
+    }
+
+
 </script>
+
+
 <script>
     $(function () {
         // 모든 탭 콘텐츠 숨기기
@@ -216,7 +290,6 @@
 
 
 </script>
-
 <script>
     // 모달 열기/닫기 기능
     document.addEventListener("DOMContentLoaded", function () {
@@ -247,4 +320,6 @@
 
 
 </script>
+
+
 </html>

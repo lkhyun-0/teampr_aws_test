@@ -114,7 +114,7 @@
 <main>
     <section class="registration-form">
         <h1>회원가입</h1>
-        <form name="frm" action="/user/userSignUp" method="post">
+        <form name="signUpfm" id="signUpfm" action="/user/userSignUp" method="post">
             <input type="hidden" id="authLevel" name="authLevel" value=3>
             <input type="hidden" id="socialLoginStatus" name="socialLoginStatus" value=0>
             <div class="form-group">
@@ -150,26 +150,22 @@
 
             <div class="form-group">
                 <label>전화번호</label>
-                <input type="tel" id="phone" name="phone" placeholder="전화번호를 입력하세요" required>
+                <input type="tel" id="phone" name="phone" maxlength="11" placeholder="ex)01012341234" required >
             </div>
 
             <div class="form-group">
                 <label>이메일</label>
-                <input type="email" id="email" name="email" placeholder="이메일을 입력하세요" required>
+                <input type="email" id="email" name="email" placeholder="ex)exam@example.com" required>
             </div>
 
-            <button class="join-btn" type="button" onClick="joinCheck();">회원가입하기</button>
+            <button class="join-btn" type="button" onClick="signUp();">회원가입하기</button>
         </form>
     </section>
 </main>
 
 <div th:insert="/common/footer.html"></div>
-
 <!-- jQuery 및 JavaScript 파일 로드 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/js/validation.js"></script>
-
-
+<script src="/js/signUp.js"></script>
 </body>
-
 </html>
