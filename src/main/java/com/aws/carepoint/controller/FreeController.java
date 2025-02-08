@@ -1,20 +1,56 @@
 package com.aws.carepoint.controller;
 
+import com.aws.carepoint.dto.FreeDto;
+import com.aws.carepoint.service.FreeService;
+import com.aws.carepoint.util.SearchCriteria;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+import java.util.Map;
+
 @Controller
+@RequestMapping("/free")
 public class FreeController {
 
-    @RequestMapping("/free/freeList")
-    public String freeList() {return "free/freeList";}
+    @Autowired
+    private FreeService freeService;
 
-    @RequestMapping("/free/freeContents")
-    public String freeContents() {return "free/freeContents";}
+    @RequestMapping("/freeList")
+    public String freeList(
+            @ModelAttribute("scri") SearchCriteria scri,
+            Model model) {
 
-    @RequestMapping("/free/freeWrite")
-    public String freeWrite() {return "free/freeWrite";}
+        Map<String, Object> result = freeService.getFreeList(scri);
+        model.addAllAttributes(result);
 
-    @RequestMapping("/free/freeModify")
-    public String freeModify() {return "free/freeModify";}
+        return "free/freeList";
+    }
+
+    @RequestMapping("/freeContents/{id}")
+    public String freeContents(
+            @PathVariable("id") int articlePk,
+            Model model) {
+
+        freeService.addviewcnt(articlePk);
+        FreeDto free = freeService.getFreeContent(articlePk);
+
+        model.addAttribute("free", free);
+
+        return "free/freeContents";
+    }
+
+    @RequestMapping("/freeWrite")
+    public String freeWrite() {
+        return "free/freeWrite";
+    }
+
+    @RequestMapping("/freeModify")
+    public String freeModify() {
+        return "free/freeModify";
+    }
 }
