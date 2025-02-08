@@ -225,7 +225,3 @@ WHERE food_pk IN (
 DELETE FROM food
 WHERE select_date = '2025-02-07' AND foodtype = 'L';
 
-SET FOREIGN_KEY_CHECKS = 0; -- 외래 키 제약 해제
-DROP TABLE IF EXISTS article;
-DROP TABLE IF EXISTS board;
-SET FOREIGN_KEY_CHECKS = 1; -- 외래 키 제약 다시 활성화
