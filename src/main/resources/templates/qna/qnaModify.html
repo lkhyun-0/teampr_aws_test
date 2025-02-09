@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Q&A 글 수정</title>
+    <link href="/css/qna/write.css" rel="stylesheet">
+    <script>
+      function validataForm() {
+        let subject = document.getElementById("subject").value.trim();
+        let content = document.getElementById("content").value.trim();
+
+        if (subject === "") {
+          alert("제목을 입력해주세요.");
+          document.getElementById("subject").focus();
+          return false;
+        }
+
+        if (content === "") {
+          alert("내용을 입력해주세요.");
+          document.getElementById("content").focus();
+          return false;
+        }
+
+        return confirm("정말 수정하시겠습니까?");
+      }
+    </script>
+</head>
+<body>
+<div th:insert="/common/header.html"></div>
+<section class="main">
+  <h2>문의글 수정</h2>
+  <div class="edit-container">
+    <form name="frm" action="/qna/qnaModifyAction" method="post" onsubmit="return validataForm()">
+      <input type="hidden" name="articlePk" th:value="${qna.articlePk}" />
+      <input type="hidden" name="userPk" th:value="${qna.userPk}" />
+      <input type="hidden" name="boardPk" th:value="${qna.boardPk}" />
+
+      <div class="form-group">
+        <label for="subject">제목</label>
+        <input type="text" id="subject" name="title" th:value="${qna.title}">
+      </div>
+
+      <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" name="content" th:text="${qna.content}"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>📁첨부파일</label>
+        <input type="file" id="attachfile" name="attachfile">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="save-button">저장</button>
+        <button type="button" class="cancle-button" onclick="history.back();">취소</button>
+      </div>
+    </form>
+  </div>
+</section>
+<div th:insert="/common/footer.html"></div>
+</body>
+</html>

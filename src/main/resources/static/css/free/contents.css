@@ -17,6 +17,10 @@
     margin: 0 10px 10px;
 }
 
+.top-section {
+    background-color: #fff;
+}
+
 /* 작성 정보와 통계 */
 .info-bar {
     display: flex;

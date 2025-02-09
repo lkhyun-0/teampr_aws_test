@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입페이지</title>
+    <link href="/css/user/join.css" type="text/css" rel="stylesheet">
+
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body>
+<!--<script>
+
+    window.onload = function () {
+        document.getElementById("termsModal").style.display = "block";
+    };
+
+    // 모달 닫기
+    function closeModal() {
+        document.getElementById("termsModal").style.display = "none";
+    }
+
+    // 약관 동의 시 회원가입 폼 보이기
+    function agreeTerms() {
+
+        // 모든 체크박스 요소 가져오기
+        let checkboxes = document.querySelectorAll("#termsModal input[type='checkbox']");
+        let allChecked = true;
+
+        // 모든 체크박스가 체크되었는지 확인
+        checkboxes.forEach(function (checkbox) {
+            if (!checkbox.checked) {
+                allChecked = false;
+            }
+        });
+
+        if (!allChecked) {
+            alert("모든 필수 약관에 동의해야 합니다.");
+            return; // 함수 종료
+        }
+
+        closeModal();  // 모달 닫기
+        document.getElementById("signupForm").style.display = "block";  // 회원가입 폼 보이기
+    }
+
+    function declineTerms() {
+        alert("약관에 동의하지 않으면 회원가입이 불가능합니다.");
+
+    }
+
+
+</script>&lt;!&ndash;모달 팝업 띄우기&ndash;&gt;--> <!-- 모달팝업 나중에 주석풀어야함 todo-->
+
+<div th:insert="/common/header.html"></div>
+
+<!-- 약관 동의 모달 팝업 -->
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>약관 동의</h2>
+        </div>
+        <div class="modal-body">
+            <br><br>
+            <label>
+                <input type="checkbox">
+                개인정보 수집 및 이용약관 동의 (<span style="color: red;">필수</span>)
+            </label>
+            <div class="terms-container">
+
+                <div class="terms-box">
+                    <p><strong>1. 수집 목적</strong></p>
+                    <p>회원 서비스 제공 및 관리</p>
+                    <p><strong>2. 수집 항목</strong></p>
+                    <ul>
+                        <li>필수: 성명, 아이디, 비밀번호, 닉네임, 이메일, 질병상세정보</li>
+                        <li>선택: 이메일 수신 여부, 카카오톡 수신 여부</li>
+                        <li>자동 수집: 서비스 이용 기록, 접속 로그, 쿠키, 접속 IP 정보</li>
+                    </ul>
+                    <p><strong>3. 개인정보의 보유 및 이용기간</strong></p>
+                    <p>회원 탈퇴 시 즉시 삭제 (법령에 따라 일부 정보 보관 가능)</p>
+                    <p><strong>4. 개인정보의 파기절차 및 방법</strong></p>
+                    <p>전자적 파일: 기술적 삭제, 종이 문서: 분쇄 또는 소각</p>
+                    <p><strong>5. 동의 철회 및 회원 탈퇴 방법</strong></p>
+                    <p>홈페이지 내 회원 탈퇴 기능 이용 가능</p>
+                    <p><strong>6. 개인정보 자동 수집 거부 설정</strong></p>
+                    <p>브라우저 설정을 통해 쿠키 수집 거부 가능</p>
+                    <p><strong>7. 개인정보관리책임자</strong></p>
+                    <div class="contact">
+                        <p><strong>이름:</strong> 이인아</p>
+                        <p><strong>직위:</strong> carepoint</p>
+                        <p><strong>전화번호:</strong> 042-872-2360</p>
+                    </div>
+                    <p><strong>공고일자:</strong> 2025년 2월 3일</p>
+                    <p><strong>시행일자:</strong> 2025년 2월 3일</p>
+                </div> <!--개인정보 동의 약관 1-->
+            </div>
+            <br>
+
+            <label>
+                <input type="checkbox">
+                카카오톡, 이메일 수신 동의 (<span style="color: red;">필수</span>)
+            </label>
+            <div class="terms-box">
+                <p>개인정보 활용 동의 내용<br>1. 수집목적<br>2. 수집항목</p>
+            </div><!--개인정보 동의 약관 2--><!--todo-->
+        </div>
+
+        <div class="modal-footer">
+            <button class="modal-button" onclick="declineTerms()">취소</button>
+            <button class="modal-button" onclick="agreeTerms()">회원가입하기</button>
+        </div>
+    </div>
+</div>
+<!-- 회원가입 폼 -->
+<main>
+    <section class="registration-form">
+        <h1>회원가입</h1>
+        <form name="signUpfm" id="signUpfm" action="/user/userSignUp" method="post">
+            <input type="hidden" id="authLevel" name="authLevel" value=3>
+            <input type="hidden" id="socialLoginStatus" name="socialLoginStatus" value=0>
+            <div class="form-group">
+                <label>이름</label>
+                <input type="text" id="userName" name="userName" placeholder="이름을 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+                <label>닉네임</label>
+                <div class="check">
+                    <input type="text" id="userNick" name="userNick" placeholder="닉네임을 입력하세요" required>
+                    <button type="button" id="nick-btn" class="check-btn" value="N" onclick="checkNickname();">중복확인</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>아이디</label>
+                <div class="check">
+                    <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요" required>
+                    <button type="button" id="id-btn" class="check-btn" value="N" onclick="checkUserId();">중복확인</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>비밀번호</label>
+                <input type="password" id="userPwd" name="userPwd" placeholder="비밀번호를 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+                <label>비밀번호 확인</label>
+                <input type="password" id="userpwd2" name="userpwd2" placeholder="비밀번호를 확인해주세요" required>
+            </div>
+
+            <div class="form-group">
+                <label>전화번호</label>
+                <input type="tel" id="phone" name="phone" maxlength="11" placeholder="ex)01012341234" required >
+            </div>
+
+            <div class="form-group">
+                <label>이메일</label>
+                <input type="email" id="email" name="email" placeholder="ex)exam@example.com" required>
+            </div>
+
+            <button class="join-btn" type="button" onClick="signUp();">회원가입하기</button>
+        </form>
+    </section>
+</main>
+
+<div th:insert="/common/footer.html"></div>
+<!-- jQuery 및 JavaScript 파일 로드 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/signUp.js"></script>
+</body>
+</html>

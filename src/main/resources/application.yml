@@ -2,8 +2,7 @@ server:
   port: 8081
 
 spring:
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  config:
+    import: classpath:application-DB.yml  # DB 설정을 application-DB.yml에서 불러옴
+  profiles:
+    active: local  # 기본 환경을 local로 설정 (선택 사항)

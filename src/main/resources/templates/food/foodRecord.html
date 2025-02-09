@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>식단 기록</title>
-  <link rel="stylesheet" href="/css/common/header-footer.css"> <!-- 헤더/푸터 CSS -->
   <link rel="stylesheet" href="/css/food/foodRecord.css">
   <!-- 제이쿼리 불러오기 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
 
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 
 <div class="container">
   <!-- 상단 탭 -->
@@ -68,31 +68,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>닭가슴살</td>
-          <td>106kcal</td>
-          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
-        </tr>
-        <tr>
-          <td>닭가슴살닭가슴살닭가슴살</td>
-          <td>106kcal</td>
-          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
-        </tr>
-        <tr>
-          <td>닭가슴살</td>
-          <td>106kcal</td>
-          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
-        </tr>
-        <tr>
-          <td>닭</td>
-          <td>106kcal</td>
-          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
-        </tr>
-        <tr>
-          <td>닭가슴살닭가슴살</td>
-          <td>106kcal</td>
-          <td>지방: 0.48g | 탄수화물: 31.02g | 단백질: 2.72g</td>
-        </tr>
+        <!-- 검색 결과가 여기에 추가될 예정 -->
         </tbody>
       </table>
     </div>
@@ -112,71 +88,147 @@
 
 
 <!--footer-->
-<div th:insert="/common/footer.html"></div>
+<div th:insert="~{/common/footer.html}"></div>
 
 <script>
   $(document).ready(function () {
     let activeSlot = null; // 현재 활성화된 슬롯
+    let selectedFoodType = ""; // 현재 선택된 식사 타입 (아침, 점심, 저녁)
 
-    // 팝업 열기
+    // 팝업 열기 + 식사 타입 설정
     $('.plus-button').click(function () {
-      $('.popup-overlay').fadeIn(); // 배경 투명도 나타남
-      $('.popup1').fadeIn(); // 팝업 나타남
+      $('.popup-overlay').fadeIn();
+      $('.popup1').fadeIn();
+
+      // 클릭된 카드에서 식사 타입(아침, 점심, 저녁) 가져오기
+      let parentCard = $(this).closest(".card");
+      selectedFoodType = parentCard.find(".title").text().trim(); // "아침", "점심", "저녁"
     });
 
     // 팝업 닫기 (오버레이 또는 닫기 버튼 클릭)
     $('.popup-overlay, .popup-close-btn').click(function () {
-      $('.popup-overlay').fadeOut(); // 배경 투명도 사라짐
-      $('.popup1').fadeOut(); // 팝업 사라짐
+      $('.popup-overlay').fadeOut();
+      $('.popup1').fadeOut();
     });
 
-    // 팝업 내부 클릭 시 닫히지 않도록 방지
+    // 팝업 내부 클릭 시 닫히지 않도록 방지 (❗ 원래 코드에서 빠졌던 부분 추가)
     $('.popup1').on('click', function (event) {
-      event.stopPropagation(); // 부모(오버레이)로 이벤트 전파 방지
+      event.stopPropagation();
     });
 
-    // 검색 결과 표시
-    $('.search-bar').on('input', function () {
-      if ($(this).val().trim() !== '') {
-        $('.search-results').fadeIn(); // 검색 결과 표시
+    // 검색 버튼 클릭 시 API 호출
+    $(".search-button").click(function () {
+      let query = $(".search-bar").val().trim();
+      if (query === "") return;
+
+      $.ajax({
+        url: "/food/search",
+        type: "GET",
+        data: { query: query },
+        success: function (response) {
+          let tableBody = $(".search-results tbody");
+          tableBody.empty(); // 기존 검색 결과 초기화
+
+          response.forEach(food => {
+            let row = `
+                        <tr data-menu="${food.menu}" data-kcal="${food.kcal}"
+                            data-protein="${food.protein}" data-carb="${food.carbohydrate}"
+                            data-fat="${food.fat}">
+                            <td>${food.menu}</td>
+                            <td>${food.kcal} kcal</td>
+                            <td>단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</td>
+                        </tr>
+                    `;
+            tableBody.append(row);
+          });
+
+          $(".search-results").fadeIn();
+        },
+        error: function () {
+          alert("음식 검색에 실패했습니다.");
+        }
+      });
+    });
+
+    // 검색 결과 클릭 시 선택 메뉴에 추가
+    $(".search-results").on("click", "tr", function () {
+      let foodName = $(this).data("menu");
+      let kcal = $(this).data("kcal");
+      let protein = $(this).data("protein");
+      let carbohydrate = $(this).data("carb");
+      let fat = $(this).data("fat");
+
+      const selectedText = `
+            <span>${foodName}</span>
+            <span>${kcal} kcal</span>
+            <span class="small-text">단백질: ${protein}g | 탄수화물: ${carbohydrate}g | 지방: ${fat}g</span>
+        `;
+
+      if (activeSlot) {
+        activeSlot.html(selectedText);
+        activeSlot = null;
       } else {
-        $('.search-results').fadeOut(); // 검색 결과 숨기기
+        const emptySlot = $(".selected-menu li:empty").first();
+        if (emptySlot.length > 0) {
+          emptySlot.html(selectedText);
+        }
       }
     });
 
     // 선택된 슬롯 클릭 시 활성화
-    $('.selected-menu li').click(function () {
-      $('.selected-menu li').removeClass('selected'); // 기존 선택 해제
-      $(this).addClass('selected'); // 현재 슬롯에 클래스 추가
-      activeSlot = $(this); // 현재 활성화된 슬롯 설정
+    $(".selected-menu li").click(function () {
+      $(".selected-menu li").removeClass("selected");
+      $(this).addClass("selected");
+      activeSlot = $(this);
     });
 
-    // 메뉴 선택 시 추가 (음식명, 칼로리, 영양정보 모두 추가)
-    $('.search-results table tbody tr').click(function () {
-      const selectedFood = $(this).children('td').eq(0).text(); // 음식명
-      const selectedCalories = $(this).children('td').eq(1).text(); // 칼로리
-      const selectedNutrients = $(this).children('td').eq(2).text(); // 영양정보
+    // 기록하기 버튼 클릭 이벤트
+    $(".record-button").click(function () {
+      let selectedFoods = [];
+      let foodTypeCode = selectedFoodType === "아침" ? "B" : selectedFoodType === "점심" ? "L" : "D"; // B: 아침, L: 점심, D: 저녁
 
-      // HTML 구조로 추가 (영양정보에 별도 스타일)
-      const selectedText = `
-      <span>${selectedFood}</span>
-      <span>${selectedCalories}</span>
-      <span class="small-text">${selectedNutrients}</span>
-    `;
-
-      if (activeSlot) {
-        // 활성화된 슬롯에 덮어쓰기
-        activeSlot.html(selectedText);
-        activeSlot = null; // 덮어씌운 후 활성화된 슬롯 초기화
-      } else {
-        // 빈 슬롯에 추가
-        const emptySlot = $('.selected-menu li:empty').first();
-        if (emptySlot.length > 0) {
-          emptySlot.html(selectedText); // 선택된 HTML을 슬롯에 추가
+      $(".selected-menu li").each(function () {
+        if ($(this).html().trim() !== "") {
+          let foodData = {
+            menu: $(this).find("span:nth-child(1)").text(),
+            kcal: parseInt($(this).find("span:nth-child(2)").text().replace(" kcal", "")),
+            protein: parseFloat($(this).find(".small-text").text().match(/단백질: ([0-9.]+)g/)[1]),
+            carbohydrate: parseFloat($(this).find(".small-text").text().match(/탄수화물: ([0-9.]+)g/)[1]),
+            fat: parseFloat($(this).find(".small-text").text().match(/지방: ([0-9.]+)g/)[1])
+          };
+          selectedFoods.push(foodData);
         }
+      });
+
+      if (selectedFoods.length === 0) {
+        alert("선택된 음식이 없습니다.");
+        return;
       }
+
+      let requestData = {
+        selectDate: new Date().toISOString().split("T")[0], // 현재 날짜
+        foodType: foodTypeCode, // 정확한 식사 타입 반영
+        userPk: 1, // TODO: 로그인 사용자 ID로 변경
+        foodList: selectedFoods
+      };
+
+      $.ajax({
+        url: "/food/record",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestData),
+        success: function (response) {
+          alert("식단이 성공적으로 저장되었습니다.");
+          $(".selected-menu li").empty(); // UI 초기화
+        },
+        error: function () {
+          alert("식단 저장에 실패했습니다.");
+        }
+      });
     });
+
   });
+
 </script>
 
 </body>

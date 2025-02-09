@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diet Tracker</title>
     <link rel="stylesheet" href="/css/food/foodList.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 
 <div class="container">
     <!-- 상단 탭 -->
@@ -43,50 +45,8 @@
                     <th>저녁</th>
                 </tr>
                 </thead>
-                <tbody>
-                <!-- 더미 데이터 -->
-                <tr onclick="location.href='/food/detail/1'">
-                    <td class="date">2025.01.17</td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
-                </tr>
-                <tr onclick="location.href='/food/detail/2'">
-                    <td class="date">2025.01.16</td>
-                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                </tr>
-                <tr onclick="location.href='/food/detail/3'">
-                    <td class="date">2025.01.16</td>
-                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                </tr>
-                <tr onclick="location.href='/food/detail/4'">
-                    <td class="date">2025.01.16</td>
-                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                </tr>
-                <tr onclick="location.href='/food/detail/5'">
-                    <td class="date">2025.01.16</td>
-                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                </tr>
-                <tr onclick="location.href='/food/detail/6'">
-                    <td class="date">2025.01.16</td>
-                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                </tr>
-                <tr onclick="location.href='/food/detail/7'">
-                    <td class="date">2025.01.16</td>
-                    <td><img src="/images/not-eaten.png" alt="안 먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                    <td><img src="/images/eaten.png" alt="먹었어요" class="icon"></td>
-                </tr>
+                <tbody id="food-list">
+                <!-- 동적 데이터가 삽입될 공간 -->
                 </tbody>
             </table>
         </div>
@@ -94,22 +54,90 @@
         <!-- 페이지네이션 -->
         <div class="pagination">
             <a href="#" class="prev">◀</a>
-            <a href="#" class="page active">1</a>
-            <a href="#" class="page">2</a>
-            <a href="#" class="page">3</a>
-            <a href="#" class="page">4</a>
-            <a href="#" class="page">5</a>
-            <a href="#" class="page">6</a>
-            <a href="#" class="page">7</a>
-            <a href="#" class="page">8</a>
-            <a href="#" class="page">9</a>
+            <span id="page-numbers"></span>
             <a href="#" class="next">▶</a>
         </div>
     </div>
 </div>
 
 <!--footer-->
-<div th:insert="/common/footer.html"></div>
+<div th:insert="~{/common/footer.html}"></div>
+
+<script>
+    $(document).ready(function () {
+        let userPk = 1; // 로그인된 사용자 ID
+        let currentPage = 1;
+        let itemsPerPage = 7; // 한 페이지당 표시할 데이터 수
+
+        function loadFoodList() {
+            $.ajax({
+                url: "/food/foodList/data",
+                type: "GET",
+                data: { userPk: userPk },
+                success: function (response) {
+                    renderFoodTable(response);
+                },
+                error: function () {
+                    alert("식단 목록을 불러오는 데 실패했습니다.");
+                }
+            });
+        }
+
+        function renderFoodTable(data) {
+            let tableBody = $("#food-list");
+            tableBody.empty();
+
+            let startIdx = (currentPage - 1) * itemsPerPage;
+            let endIdx = startIdx + itemsPerPage;
+            let paginatedData = data.slice(startIdx, endIdx);
+
+            paginatedData.forEach(item => {
+
+                console.log("넘어가는 날짜:", item.selectDate); // 디버깅용 로그 추가
+
+                let breakfastIcon = item.breakfast ? '<img src="/images/eaten.png" alt="먹었어요" class="icon">' : '<img src="/images/not-eaten.png" alt="안 먹었어요" class="icon">';
+                let lunchIcon = item.lunch ? '<img src="/images/eaten.png" alt="먹었어요" class="icon">' : '<img src="/images/not-eaten.png" alt="안 먹었어요" class="icon">';
+                let dinnerIcon = item.dinner ? '<img src="/images/eaten.png" alt="먹었어요" class="icon">' : '<img src="/images/not-eaten.png" alt="안 먹었어요" class="icon">';
+
+                let row = `<tr data-date="${item.selectDate}">
+                    <td class="date">${item.selectDate}</td>
+                    <td>${breakfastIcon}</td>
+                    <td>${lunchIcon}</td>
+                    <td>${dinnerIcon}</td>
+               </tr>`;
+                tableBody.append(row);
+            });
+
+            //  이벤트 위임 방식으로 클릭 이벤트 추가
+            $(document).on("click", "#food-list tr", function () {
+                let selectedDate = $(this).data("date");
+                console.log("클릭한 날짜:", selectedDate); // 디버깅용 로그 추가
+                window.location.href = `/food/detail?date=${selectedDate}`;
+            });
+
+            renderPagination(data.length);
+        }
+
+        function renderPagination(totalItems) {
+            let totalPages = Math.ceil(totalItems / itemsPerPage);
+            let paginationContainer = $("#page-numbers");
+            paginationContainer.empty();
+
+            for (let i = 1; i <= totalPages; i++) {
+                let pageLink = `<a href="#" class="page ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</a>`;
+                paginationContainer.append(pageLink);
+            }
+        }
+
+        $(document).on("click", ".pagination .page", function (event) {
+            event.preventDefault();
+            currentPage = parseInt($(this).data("page"));
+            loadFoodList();
+        });
+
+        loadFoodList();
+    });
+</script>
 
 </body>
 </html>

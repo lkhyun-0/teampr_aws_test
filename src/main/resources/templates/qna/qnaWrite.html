@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Q&A 글 작성</title>
+    <link href="/css/qna/write.css" rel="stylesheet">
+    <script>
+      function validataForm() {
+        let subject = document.getElementById("subject").value.trim();
+        let content = document.getElementById("content").value.trim();
+
+        if (subject === "") {
+          alert("제목을 입력해주세요.");
+          document.getElementById("subject").focus();
+          return false;
+        }
+
+        if (content === "") {
+          alert("내용을 입력해주세요.");
+          document.getElementById("content").focus();
+          return false;
+        }
+
+        return confirm("저장하시겠습니까?");
+      }
+    </script>
+</head>
+<body>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
+<section class="main">
+  <h2 class="main-title">Q&A</h2>
+  <p class="sub-title">궁금한 점을 물어보세요!</p>
+  <div class="edit-container">
+    <form name="frm" action="/qna/qnaWriteAction" method="post" onsubmit="return validataForm()">
+
+      <div class="form-group">
+        <label for="subject">제목</label>
+        <input type="text" id="subject" name="title" placeholder="제목을 입력해주세요" >
+      </div>
+
+      <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" name="content" placeholder="문의할 내용을 입력해주세요"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>📁첨부파일</label>
+        <input type="file" id="attachfile" name="attachfile">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="save-button">저장</button>
+        <button type="button" class="cancle-button" onclick="history.back();">취소</button>
+      </div>
+    </form>
+  </div>
+</section>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
+</body>
+</html>
