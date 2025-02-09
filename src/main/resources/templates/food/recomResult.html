@@ -11,6 +11,15 @@
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
+<div id="loading" style="display: none;">
+    <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+        <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+    </svg>
+    <p>AI가 식단을 추천 중입니다...</p>
+</div>
+
+
+
 <div class="wrapper">
     <h1 id="goal-title">AI가 추천하는 3가지 식단</h1>
 
@@ -119,26 +128,46 @@
 
         const data = {
             breakfast: [],
+            breakfastNutrition: [],
+            breakfastTip: [],
             lunch: [],
+            lunchNutrition: [],
+            lunchTip: [],
             dinner: [],
-            tip: []
+            dinnerNutrition: [],
+            dinnerTip: []
         };
 
         for (let line of lines) {
             if (line.startsWith("### ")) {
                 continue; // "### 식단 1:"은 건너뜀
             }
-            if (line.startsWith("**아침")) {
+            if (line.startsWith("**아침**")) {
                 currentSection = "breakfast";
                 continue;
-            } else if (line.startsWith("**점심")) {
+            } else if (line.startsWith("**아침 영양 정보**")) {
+                currentSection = "breakfastNutrition";
+                continue;
+            } else if (line.startsWith("**아침 영양 팁**")) {
+                currentSection = "breakfastTip";
+                continue;
+            } else if (line.startsWith("**점심**")) {
                 currentSection = "lunch";
                 continue;
-            } else if (line.startsWith("**저녁")) {
+            } else if (line.startsWith("**점심 영양 정보**")) {
+                currentSection = "lunchNutrition";
+                continue;
+            } else if (line.startsWith("**점심 영양 팁**")) {
+                currentSection = "lunchTip";
+                continue;
+            } else if (line.startsWith("**저녁**")) {
                 currentSection = "dinner";
                 continue;
-            } else if (line.startsWith("**영양 팁")) {
-                currentSection = "tip";
+            } else if (line.startsWith("**저녁 영양 정보**")) {
+                currentSection = "dinnerNutrition";
+                continue;
+            } else if (line.startsWith("**저녁 영양 팁**")) {
+                currentSection = "dinnerTip";
                 continue;
             }
 
@@ -153,47 +182,33 @@
         return data;
     }
 
-    // 하드코딩된 표에 내용 채워넣기
     function renderDietToHTML(dietData, tabIndex) {
         // 아침
-        const bfUl = $(`#tab${tabIndex}-breakfast`);
-        bfUl.empty();
-        dietData.breakfast.forEach(item => {
-            bfUl.append(`<li>${item}</li>`);
-        });
-
-        // 여기서는 "영양정보" 영역을 별도로 안 나눴고, 예제상 tip만 표시
-        // 필요하다면 식품명과 [g, kcal]을 구분 파싱해서 왼쪽/오른쪽 칸에 나눌 수도 있음
-        const bfTip = $(`#tab${tabIndex}-breakfast-tip`);
-        bfTip.text(dietData.tip.join(" "));
+        $(`#tab${tabIndex}-breakfast`).empty().append(dietData.breakfast.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-breakfast-nutrition`).empty().append(dietData.breakfastNutrition.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-breakfast-tip`).text(dietData.breakfastTip.join(" "));
 
         // 점심
-        const lunchUl = $(`#tab${tabIndex}-lunch`);
-        lunchUl.empty();
-        dietData.lunch.forEach(item => {
-            lunchUl.append(`<li>${item}</li>`);
-        });
-        const lunchTip = $(`#tab${tabIndex}-lunch-tip`);
-        lunchTip.text(dietData.tip.join(" "));
+        $(`#tab${tabIndex}-lunch`).empty().append(dietData.lunch.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-lunch-nutrition`).empty().append(dietData.lunchNutrition.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-lunch-tip`).text(dietData.lunchTip.join(" "));
 
         // 저녁
-        const dinnerUl = $(`#tab${tabIndex}-dinner`);
-        dinnerUl.empty();
-        dietData.dinner.forEach(item => {
-            dinnerUl.append(`<li>${item}</li>`);
-        });
-        const dinnerTip = $(`#tab${tabIndex}-dinner-tip`);
-        dinnerTip.text(dietData.tip.join(" "));
+        $(`#tab${tabIndex}-dinner`).empty().append(dietData.dinner.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-dinner-nutrition`).empty().append(dietData.dinnerNutrition.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-dinner-tip`).text(dietData.dinnerTip.join(" "));
     }
 
     $(document).ready(function(){
+        $("#loading").show();  // 로딩 시작
+
         const goal = localStorage.getItem("goal");
         if (!goal) {
             alert("추천받은 식단이 없습니다. 다시 추천을 받아주세요.");
             window.location.href = "/food/recom";
             return;
         }
-        $("#goal-title").text(`${goal}을(를) 위한 AI 추천 식단`);
+        $("#goal-title").text(`${goal}를 위한 AI 추천 식단`);
 
         // 서버로부터 식단 응답
         $.ajax({
@@ -201,6 +216,7 @@
             type: "GET",
             data: { goal: goal },
             success: function(response) {
+                $("#loading").hide();  // 로딩 숨김
                 const mealOptions = response.meal_options;
                 // mealOptions[0] = 식단 1, mealOptions[1] = 식단 2, mealOptions[2] = 식단 3
                 if (mealOptions && mealOptions.length >= 3) {
