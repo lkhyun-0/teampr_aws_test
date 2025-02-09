@@ -53,13 +53,13 @@ public class NoticeController {
     }
 
 
-//    @PostMapping("/noticeDeleteAction/{id}")
-//    public String noticeDeleteAction(@PathVariable("id") int articlePk, RedirectAttributes rttr) {
-//        NoticeDto notice = noticeService.getNoticeDetail(articlePk);
-//        noticeService.deleteNotice(notice);
-//        rttr.addFlashAttribute("msg", "게시글이 삭제 되었습니다.");
-//        return "redirect:/notice/noticeList";
-//    }
+    @PostMapping("/noticeDeleteAction/{id}")
+    public String noticeDeleteAction(@PathVariable("id") int articlePk, RedirectAttributes rttr) {
+        NoticeDto notice = noticeService.getNoticeDetail(articlePk);
+        noticeService.deleteNotice(notice);
+        rttr.addFlashAttribute("msg", "게시글이 삭제 되었습니다.");
+        return "redirect:/notice/noticeList";
+    }
 
 
     @GetMapping("/noticeModify/{id}")

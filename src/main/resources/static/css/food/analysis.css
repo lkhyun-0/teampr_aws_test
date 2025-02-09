@@ -118,6 +118,7 @@
 
 /* 하단 큰 카드 스타일 */
 .card.large {
+    position: relative; /* 중앙 텍스트 배치에 필요 */
     flex: 1;
     max-width: 450px; /* 하단 카드 최대 너비 */
     padding: 0 20px;
@@ -193,20 +194,19 @@
 #caloriesChart {
     width: 250px !important; /* 강제 너비 설정 */
     height: auto !important; /* 강제 높이 설정 */
-    position: relative; /* 중앙 텍스트 배치에 필요 */
     margin: 0 auto; /* 캔버스 중앙 정렬 */
-    margin-top: -70px;
+    margin-top: -90px;
 }
 
-/* 링 중앙 텍스트 */
 .chart-center-text {
     position: absolute;
-    top: 77%;
-    left: 38%;
-    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
     text-align: center;
     font-size: 38px;
     color: #555;
     pointer-events: none; /* 클릭 방해 방지 */
 }
+
 

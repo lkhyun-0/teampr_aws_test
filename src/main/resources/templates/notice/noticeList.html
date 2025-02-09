@@ -21,20 +21,16 @@
         </tr>
         </thead>
         <tbody>
-        <tbody>
-        <tr th:each="notice, stat : ${noticeList}">
-            <td th:text="${totalCount - (stat.index + (scri.page - 1) * scri.perPageNum)}"></td>
-            <td>
-                <a th:href="@{/notice/detail/{id}(id=${notice.articlePk})}" th:text="${notice.title}"></a>
-            </td>
-            <td>[관리자]</td>
-            <td th:text="${#temporals.format(notice.regDate, 'yyyy-MM-dd')}"></td>
-        </tr>
+            <tr th:each="notice, noticeStat : ${noticeList}">
+                <td class="No" th:text="${pageMaker.totalCount - ((noticeStat != null ? noticeStat.index : 0) + ((scri.page != null ? scri.page : 1) - 1) * (scri.perPageNum != null ? scri.perPageNum : 10))}"></td>
+                <td class="subject"><a th:href="@{/notice/noticeContent/{id}(id=${notice.articlePk})}" th:text="${notice.title}"></a></td>
+                <td class="writer">[관리자]</td>
+                <td class="writeday" th:text="${#temporals.format(notice.regDate, 'yyyy-MM-dd')}"></td>
+            </tr>
         </tbody>
-
         <tr class="write-tr">
             <td class="write-td" colspan="4">
-                <a href="/ntice/noticeWrite"><button>글 작성</button></a>
+                <a href="/notice/noticeWrite"><button>글 작성</button></a>
             </td>
         </tr>
     </table>

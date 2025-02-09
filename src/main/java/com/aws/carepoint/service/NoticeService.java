@@ -56,10 +56,10 @@ public class NoticeService {
     }
 
 
-//    public int deleteNotice(NoticeDto notice) {
-//        int value = noticeMapper.updateDelStatus(notice);
-//        return value;
-//    }
+    public int deleteNotice(NoticeDto notice) {
+        int value = noticeMapper.updateDelStatus(notice);
+        return value;
+    }
 
     // 게시글 수정
     public void updateNotice(NoticeDto notice) {

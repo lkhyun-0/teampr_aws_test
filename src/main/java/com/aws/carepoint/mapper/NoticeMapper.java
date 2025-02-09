@@ -62,6 +62,11 @@ public interface NoticeMapper {
     @ResultMap("noticeResultMap")
     void updateNotice(NoticeDto notice);
 
+
+    // 게시글 삭제
+    @ResultMap("noticeResultMap")
+    int updateDelStatus(NoticeDto notice);
+
 }
 
 
