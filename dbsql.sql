@@ -2,6 +2,14 @@ DROP DATABASE IF EXISTS `carepoint`;
 CREATE DATABASE `carepoint`;
 USE `carepoint`;
 
+<<<<<<< HEAD
+CREATE TABLE exercise_API (
+                              exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
+                              exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
+                              MET INT DEFAULT 0 NOT NULL -- MET 지수
+);
+=======
+
 CREATE TABLE users (
                        user_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                        auth_level SMALLINT(2) NOT NULL, -- 권한 레벨 (3=일반, 7=관리자)
@@ -40,14 +48,16 @@ CREATE TABLE user_detail (
 CREATE TABLE board (
                        board_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                        board_type CHAR(1) NOT NULL, -- 게시판종류 (Q : Q&A, F : Free, N : Notice)
+                       title VARCHAR(100) NOT NULL, -- 제목
                        reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
                        update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
-                       del_status TINYINT(1) DEFAULT 0 NOT NULL -- 삭제 여부 (0=삭제 전, 1=삭제 후)
+                       del_status TINYINT(1) DEFAULT 0 NOT NULL, -- 삭제 여부 (0=삭제 전, 1=삭제 후)
+                       user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
+                       CONSTRAINT fk_board_users FOREIGN KEY (user_pk) REFERENCES users (user_pk) -- 외래 키 설정
 );
 
 CREATE TABLE article (
                          article_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
-                         title VARCHAR(100) NOT NULL, -- 제목
                          content TEXT NOT NULL, -- 내용
                          filename VARCHAR(200), -- 파일이름
                          recom INT DEFAULT 0, -- 추천수
@@ -56,10 +66,7 @@ CREATE TABLE article (
                          level_ INT DEFAULT 0, -- 답변레벨
                          reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
                          update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
-                         del_status TINYINT(1) DEFAULT 0 NOT NULL, -- 삭제 여부 (0=삭제 전, 1=삭제 후)
-                         user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
                          board_pk INT NOT NULL, -- 외래 키 (board 테이블의 board_pk 참조)
-                         CONSTRAINT fk_article_users FOREIGN KEY (user_pk) REFERENCES users (user_pk), -- 외래 키 설정
                          CONSTRAINT fk_article_board FOREIGN KEY (board_pk) REFERENCES board (board_pk) -- 외래 키 설정
 );
 
@@ -156,13 +163,15 @@ CREATE TABLE exercise_API (
                               exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                               exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
                               MET INT DEFAULT 0 NOT NULL, -- MET 지수
+                              exercise_img VARCHAR(100) NOT NULL -- 이미지
 );
 
 CREATE TABLE medicine (
                           medicine_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
-                          check_status TINYINT(1) DEFAULT 0 NOT NULL, -- 즐겨찾기 등록 여부 ( 0= 등록 전, 1= 등록 후)
                           medicine_name VARCHAR(50) NOT NULL, -- 약 이름
                           medicine_type SMALLINT(2) NOT NULL, -- 약 유형 (1 = 경구약, 2 = 주사)
+                          start_date DATE NOT NULL, -- 시작일
+                          end_date DATE NOT NULL, -- 끝일
                           reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
                           update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
                           user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
@@ -171,8 +180,6 @@ CREATE TABLE medicine (
 
 CREATE TABLE medicine_plan (
                                medicine_plan_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
-                               start_date DATE NOT NULL, -- 시작일
-                               end_date DATE NOT NULL, -- 끝일
                                `hour` INT DEFAULT 0, -- 시간
                                `minute` INT DEFAULT 0, -- 분
                                medicine_pk INT NOT NULL, -- 외래 키 (medicine 테이블의 medicine_pk 참조)
@@ -203,76 +210,17 @@ CREATE TABLE hospital_plan (
                                CONSTRAINT fk_hospital_plan_hospital FOREIGN KEY (hospital_pk) REFERENCES hospital (hospital_pk) -- 외래 키 설정
 );
 
-======= users 샘플데이터 =======
-INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
-VALUES (7, 0, '22na', '1234', '이인아', '22na', '010-1111-1111', '22na@naver.com');
+
 
 INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
-VALUES (3, 0, 'hong', '1234', '홍길동', 'hong', '010-2222-2222', 'hong@naver.com');
+VALUES (3, 0, 'testuser', 'testpassword', '홍길동', '길동이', '010-1234-5678', 'testuser@example.com');
 
-INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
-VALUES (3, 0, 'pupu', '1234', '김푸푸', 'pupu', '010-3333-3333', 'pupu@gmail.com');
 
-INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
-VALUES (3, 0, 'mimi', '1234', '최미미', 'mimi', '010-4444-4444', 'mimi@gmail.com');
+SELECT * FROM users;
 
-SELECT *
-FROM users;
+SELECT * FROM food;
+SELECT * FROM foodlist;
 
-======= board 샘플데이터 =======
-INSERT INTO board (board_type)
-VALUES ('Q');
-INSERT INTO board (board_type)
-VALUES ('F');
-INSERT INTO board (board_type)
-VALUES ('N');
 
-SELECT *
-FROM board;
 
-========= article 프로시저 =========
-DELIMITER $$
-
-CREATE PROCEDURE InsertArticleProc (
-    IN PARAM_NAME VARCHAR(20) -- IN 키워드 추가 (SQLyog 호환)
-)
-BEGIN
-    DECLARE i INT DEFAULT 1; -- 초기값 설정 방법 변경
-
-    WHILE i <= 300 DO
-        INSERT INTO article (title, content, user_pk, board_pk)
-        VALUES (CONCAT(PARAM_NAME, i), CONCAT('게시글 내용', i), 2, 2);
-
-        SET i = i + 1;
-    END WHILE;
-END $$
-
-DELIMITER ;
-
-========= 프로시저 호출 =========
-CALL InsertArticleProc('게시글 제목');
-
-SELECT *
-FROM article;
-
-========= 이 부분은 쓰실 분들만 쓰세요 =========
-UPDATE article
-SET user_pk = 3
-WHERE article_pk BETWEEN 101 AND 200;
-
-UPDATE article
-SET user_pk = 4
-WHERE article_pk BETWEEN 201 AND 300;
-
-UPDATE article
-SET origin_num = article_pk;
-
-========= 데이터 리셋할 때 =========
-DELETE
-FROM article;
-
-DELETE
-FROM board;
-
-ALTER TABLE article AUTO_INCREMENT = 1;
-ALTER TABLE board AUTO_INCREMENT = 1;
+>>>>>>> df4d74ac3d213e01b1040c5f42d112331dd328d1

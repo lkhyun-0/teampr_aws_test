@@ -29,7 +29,6 @@ img {
 }
 
 
-
 /* main 태그 스타일 설정 */
 main {
     margin-top: 250px; /* 헤더 높이만큼 여백 추가 */
@@ -42,8 +41,8 @@ main {
     background-color: #fff; /* 배경색 추가 (선택 사항) */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 (선택 사항) */
     border-radius: 8px; /* 모서리를 둥글게 처리 (선택 사항) */
+    border-top: 1px solid #dddddd;
 }
-
 
 
 .registration-form {
@@ -92,7 +91,8 @@ main {
 
 .form-group .check > input {
 
- }
+}
+
 .check {
     position: relative; /* 부모 요소를 기준으로 자식 요소의 위치 조정 */
 
@@ -111,23 +111,19 @@ main {
 }
 
 
-
-
 .form-group input::placeholder {
     color: #aaa;
 }
 
 .join-btn {
-    color:white ;
-    padding :10px;
-    border-radius :5px ;
-    border:none ;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
     align-self: center; /* 버튼을 중앙 정렬 */
     margin-top: auto; /* 위쪽 여백 자동 설정 */
     background-color: #4169E1;
 }
-
-
 
 
 /*----------------팝업스타일-----------------------*/
@@ -190,5 +186,3 @@ main {
     background-color: #4169E1; /* 회원가입 버튼 */
     color: white;
 }
-
-

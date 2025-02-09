@@ -121,26 +121,35 @@
 
 <script>
     $(document).ready(function () {
-        let selectedDate = "2025-02-06"; // 선택한 날짜
+        //  URL에서 날짜 가져오기
+        let urlParams = new URLSearchParams(window.location.search);
+        let selectedDate = urlParams.get("date"); // URL에서 date 파라미터 가져오기
         let userPk = 1;  // 로그인된 사용자 ID
         let mealTypes = ["breakfast", "lunch", "dinner"]; // 아침, 점심, 저녁
         let selectedMealType = ""; // 현재 선택된 식사 타입
         let activeSlot = null; // 현재 활성화된 슬롯
 
-        // ✅ 날짜 변환 함수 (YYYY-MM-DD → M월 D일)
+        // 날짜 변환 함수 (YYYY-MM-DD → M월 D일)
         function formatDate(dateStr) {
             if (!dateStr) return "날짜 없음";
             let dateParts = dateStr.split("-");
             return `${parseInt(dateParts[1])}월 ${parseInt(dateParts[2])}일`;
         }
 
-        // ✅ 특정 날짜의 식단 불러오기
-        function loadDietRecords() {
+        console.log("불러온 날짜:", selectedDate);
+        $("#diet-date").text(`${selectedDate} 식단 기록표`); // 제목 업데이트
+
+        // 기존 하드코딩된 `selectedDate` 제거 후 동적으로 반영
+        loadDietRecords(selectedDate);
+
+        // 특정 날짜의 식단 불러오기
+        function loadDietRecords(data) {
             $.ajax({
                 url: "/food/detail/data",
                 type: "GET",
-                data: { userPk: userPk, selectDate: selectedDate },
+                data: { userPk: userPk, selectDate: data },
                 success: function (response) {
+
                     $(".meal-list").each(function () {
                         $(this).find(".meal-menu").remove(); // 기존 음식 목록 삭제
                     });
@@ -184,22 +193,25 @@
                     $("#total-kcal").text(totalCalories);
                 },
                 error: function (xhr, status, error) {
-                    console.error("🚨 식단 정보를 불러오는 데 실패했습니다.", error);
+                    console.error("식단 정보를 불러오는 데 실패했습니다.", error);
                 }
             });
         }
 
-        // ✅ 식사 코드 변환 (B, L, D → breakfast, lunch, dinner)
+        // 식사 코드 변환 (B, L, D → breakfast, lunch, dinner)
         function getMealType(foodType) {
             return foodType === "B" ? "breakfast" : foodType === "L" ? "lunch" : "dinner";
         }
 
-        // ✅ 수정 팝업 열기
+        // 수정 팝업 열기
         $(".edit-icon").click(function () {
             $(".popup-overlay").fadeIn();
             $(".popup1").fadeIn();
 
             selectedMealType = $(this).closest(".meal-time").attr("id");
+
+            // foodList 배경 흐리게 만들기
+            $(".food-table").addClass("blur-background");
 
             $(".selected-menu li").empty();
 
@@ -214,20 +226,27 @@
                         $(".selected-menu li").eq(index).html(`
                         <span>${food.menu}</span>
                         <span>${food.kcal} kcal</span>
+                        <span class="small-text">단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</span>
                     `).attr("data-foodlistpk", food.foodListPk);
                     });
                 }
             });
         });
 
-        // ✅ 슬롯 클릭 이벤트
+        // 팝업 닫기 (x 버튼 클릭)
+        $(".popup-close-btn").click(function () {
+            $(".popup-overlay").fadeOut();
+            $(".popup1").fadeOut();
+        });
+
+        // 슬롯 클릭 이벤트
         $(document).on("click", ".selected-menu li", function () {
             $(".selected-menu li").removeClass("selected");
             $(this).addClass("selected");
             activeSlot = $(this);
         });
 
-        // ✅ 검색 버튼 클릭 시 API 호출
+        // 검색 버튼 클릭 시 API 호출
         $(".search-button").click(function () {
             let query = $(".search-bar").val().trim();
             if (query === "") return;
@@ -241,9 +260,12 @@
                     tableBody.empty();
 
                     response.forEach(food => {
-                        let row = `<tr data-menu="${food.menu}" data-kcal="${food.kcal}">
+                        let row = `<tr data-menu="${food.menu}" data-kcal="${food.kcal}"
+                        data-protein="${food.protein}" data-carb="${food.carbohydrate}"
+                        data-fat="${food.fat}">
                         <td>${food.menu}</td>
                         <td>${food.kcal} kcal</td>
+                        <td>단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</td>
                     </tr>`;
                         tableBody.append(row);
                     });
@@ -251,7 +273,7 @@
             });
         });
 
-        // ✅ 검색 결과 클릭 시 선택된 슬롯에 반영 (이벤트 위임 방식)
+        // 검색 결과 클릭 시 선택된 슬롯에 반영 (이벤트 위임 방식)
         $(document).on("click", ".search-results tr", function () {
             if (!activeSlot) {
                 alert("먼저 수정할 칸을 선택하세요!");
@@ -260,15 +282,19 @@
 
             let foodName = $(this).data("menu");
             let kcal = $(this).data("kcal");
+            let protein = $(this).data("protein");
+            let carbohydrate = $(this).data("carb");
+            let fat = $(this).data("fat");
 
             activeSlot.html(`
             <span>${foodName}</span>
             <span>${kcal} kcal</span>
+            <span class="small-text">단백질: ${protein}g | 탄수화물: ${carbohydrate}g | 지방: ${fat}g</span>
         `);
         });
 
-        // ✅ 수정 저장 (updateMeal)
-        $(".update-button").click(function () {
+        // 수정 저장 (updateMeal)
+        $(document).on("click", ".update-button", function () {
             let updatedFoods = [];
 
             $(".selected-menu li").each(function () {
@@ -276,26 +302,51 @@
                     let foodData = {
                         foodListPk: $(this).attr("data-foodlistpk") || null,
                         menu: $(this).find("span:nth-child(1)").text(),
-                        kcal: parseInt($(this).find("span:nth-child(2)").text().replace(" kcal", ""))
+                        kcal: parseInt($(this).find("span:nth-child(2)").text().replace(" kcal", "")),
+                        protein: parseFloat($(this).find(".small-text").text().match(/단백질: ([0-9.]+)g/)[1]),
+                        carbohydrate: parseFloat($(this).find(".small-text").text().match(/탄수화물: ([0-9.]+)g/)[1]),
+                        fat: parseFloat($(this).find(".small-text").text().match(/지방: ([0-9.]+)g/)[1])
                     };
                     updatedFoods.push(foodData);
                 }
             });
 
+            // 음식이 하나도 선택되지 않은 경우 경고 메시지 출력 후 중단
+            if (updatedFoods.length === 0) {
+                alert("수정할 음식을 선택해주세요.");
+                return;
+            }
+
+            // selectDate가 제대로 정의되어 있는지 확인하고 요청 보내기
+            if (!selectedDate) {
+                alert("날짜 정보가 없습니다.");
+                return;
+            }
+
             $.ajax({
                 url: "/food/updateMeal",
                 type: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({ userPk, selectDate, foodType: selectedMealType.toUpperCase().charAt(0), foodList: updatedFoods }),
+                data: JSON.stringify({
+                    userPk: userPk,
+                    selectDate: selectedDate, //여기에 확실하게 `selectedDate`를 넣기
+                    foodType: selectedMealType.toUpperCase().charAt(0),
+                    foodList: updatedFoods
+                }),
                 success: function () {
                     alert("식단이 수정되었습니다.");
                     $(".popup-overlay").fadeOut();
-                    loadDietRecords();
+
+                    // 수정된 데이터를 즉시 반영
+                    loadDietRecords(selectedDate);
+                },
+                error: function (xhr, status, error) {
+                    console.error("업데이트 실패:", error);
                 }
             });
         });
 
-        // ✅ 개별 음식 삭제
+// 개별 음식 삭제
         $(document).on("click", ".delete-icon", function () {
             let foodListPk = $(this).closest(".meal-menu").data("foodlistpk");
 
@@ -304,16 +355,25 @@
             $.ajax({
                 url: "/food/delete",
                 type: "DELETE",
-                data: { foodListPk: foodListPk },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    foodListPk: foodListPk,
+                    selectDate: selectedDate,  // 삭제 요청에 날짜 포함
+                    foodType: selectedMealType.toUpperCase().charAt(0), // 현재 식사 타입 포함
+                    userPk: userPk // 사용자 ID 포함
+                }),
                 success: function () {
                     alert("음식이 삭제되었습니다.");
-                    loadDietRecords();
+
+                    // 삭제 후 즉시 업데이트
+                    loadDietRecords(selectedDate);
+                    updateFoodList(); // 삭제 후 리스트 업데이트
+                },
+                error: function () {
+                    alert("음식 삭제에 실패했습니다.");
                 }
             });
         });
-
-        // ✅ 초기 데이터 로드
-        loadDietRecords();
     });
 
 </script>
