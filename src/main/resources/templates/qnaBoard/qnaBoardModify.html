@@ -6,7 +6,8 @@
     <link href="/css/board/boardWrite.css" rel="stylesheet">
 </head>
 <body>
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 <section class="main">
   <h2>문의글 수정</h2>
   <div class="edit-container">
@@ -35,6 +36,7 @@
     </form>
   </div>
 </section>
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 </body>
 </html>

@@ -12,8 +12,10 @@
 
 <body>
 
+
 <div th:insert="/common/header.html"></div>
 <input type="hidden" id="userPk" th:value="${session.userPk}">
+
 <div class="main-container">
     <div class="top-section">
         <!-- 회원정보 + 그래프 나타는 부분 -->
@@ -169,7 +171,8 @@
     </div>
 </div>
 
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 
 
 </body>

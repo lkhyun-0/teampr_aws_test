@@ -1,11 +1,12 @@
 .wrapper {
+    width: 740px;
+    height: 745px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    margin-top : 200px;
-    margin-bottom : 100px;
+    margin: 200px auto 100px auto;
 }
 
 h1 {
@@ -52,6 +53,7 @@ h1 {
 }
 
 table {
+    height: 800px;
     width: 100%;
     border-collapse: collapse;
     text-align: center;
