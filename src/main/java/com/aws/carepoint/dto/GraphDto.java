@@ -9,4 +9,5 @@ public class GraphDto {
     private int bloodPress;
     private int bloodSugar;
     private int userPk;
+    private String regDate;
 }

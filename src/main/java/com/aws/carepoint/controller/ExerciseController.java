@@ -1,19 +1,26 @@
 package com.aws.carepoint.controller;
 
+import com.aws.carepoint.dto.ExerciseApiDto;
 import com.aws.carepoint.dto.ExerciseDto;
 import com.aws.carepoint.dto.GraphDto;
+import com.aws.carepoint.dto.TargetDto;
 import com.aws.carepoint.service.ExerciseService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/exercise")
@@ -39,6 +46,53 @@ public class ExerciseController {
         return ResponseEntity.ok("오늘의 수치가 저장되었습니다.");
     }
 
+    @ResponseBody
+    @PostMapping("/saveTarget")
+    public ResponseEntity<Map<String, String>> saveTarget(@RequestBody TargetDto targetDto) {
+        exerciseService.saveTarget(targetDto);
+
+        // 응답을 JSON 형태로 반환
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "이번 주 목표가 저장되었습니다.");
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 운동 목록 불러오기 API
+    @ResponseBody
+    @GetMapping("/list")
+    public List<ExerciseApiDto> getExerciseList() {
+        return exerciseService.getExerciseList();
+    }
+
+    @ResponseBody
+    @PostMapping("/saveExercise")
+    public ResponseEntity<Map<String, String>> saveExercise(@RequestBody ExerciseDto exerciseDto) {
+        exerciseService.saveExercise(exerciseDto);
+
+        // JSON 응답으로 변경
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "운동 기록이 저장되었습니다!");
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 📌 저장된 운동 기록 가져오기 (캘린더에 반영)
+    @ResponseBody
+    @GetMapping("/getExerciseEvents")
+    public List<ExerciseDto> getExerciseEvents() {
+        return exerciseService.getAllExercises();
+    }
+
+    // 이번주 목표 데이터 가져오기
+    @GetMapping("/current-week")
+    public ResponseEntity<TargetDto> getCurrentWeekTarget(@RequestParam("userPk") int userPk) {
+        TargetDto targetDto = exerciseService.getCurrentWeekTarget(userPk);
+        if (targetDto == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(targetDto);
+    }
 
 
 
@@ -87,11 +141,11 @@ public class ExerciseController {
                 String exerciseName = object.optString("운동명", "Unknown");
                 String metValue = object.optString("MET 계수", "0.0");
 
-                ExerciseDto exerciseDto = new ExerciseDto();
-                exerciseDto.setExerciseName(exerciseName);
-                exerciseDto.setMetValue(metValue);
+                ExerciseApiDto exerciseApiDto = new ExerciseApiDto();
+                exerciseApiDto.setExerciseName(exerciseName);
+                exerciseApiDto.setMetValue(metValue);
 
-                exerciseService.save(exerciseDto);
+                exerciseService.save(exerciseApiDto);
             }
             return "✅ 데이터가 성공적으로 저장되었습니다.";
         } catch (Exception e) {
