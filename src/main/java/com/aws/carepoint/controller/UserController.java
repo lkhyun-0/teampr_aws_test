@@ -44,8 +44,8 @@ public class UserController {
 
     // 아이디 중복 체크
     @GetMapping("checkUserId")
-    public ResponseEntity<Boolean> checkUserId(@RequestParam("userId") String userid) {
-        boolean isDuplicate = userMapper.countByUserId(userid) > 0;
+    public ResponseEntity<Boolean> checkUserId(@RequestParam("userId") String userId) {
+        boolean isDuplicate = userMapper.countByUserId(userId) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
     // 닉네임 중복 체크
