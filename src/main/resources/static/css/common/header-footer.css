@@ -90,6 +90,7 @@ img {
     margin: 10px 20px;
 }
 
+
 /*카테고리*/
 .category-btn {
     background-color: #4169e1;
@@ -156,6 +157,7 @@ img {
 .popup__body > ul > li {
     margin-bottom: 20px;
 }
+
 .popup__body > ul > li > a {
     display: inline-block;
     margin-left: 40px;
