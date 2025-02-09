@@ -2,13 +2,11 @@ DROP DATABASE IF EXISTS `carepoint`;
 CREATE DATABASE `carepoint`;
 USE `carepoint`;
 
-<<<<<<< HEAD
 CREATE TABLE exercise_API (
                               exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                               exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
                               MET INT DEFAULT 0 NOT NULL -- MET 지수
 );
-=======
 
 CREATE TABLE users (
                        user_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
@@ -60,7 +58,7 @@ CREATE TABLE article (
                          article_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                          content TEXT NOT NULL, -- 내용
                          filename VARCHAR(200), -- 파일이름
-                         recom INT DEFAULT 0, -- 추천수
+                         freeContent INT DEFAULT 0, -- 추천수
                          viewcnt INT DEFAULT 0, -- 조회수
                          origin_num INT DEFAULT 0, -- 원글번호
                          level_ INT DEFAULT 0, -- 답변레벨
@@ -76,9 +74,9 @@ CREATE TABLE recommend (
                            reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
                            update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
                            user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
-                           board_pk INT NOT NULL, -- 외래 키 (board 테이블의 board_pk 참조)
+                           article_pk INT NOT NULL, -- 외래 키 (board 테이블의 board_pk 참조)
                            CONSTRAINT fk_recommend_users FOREIGN KEY (user_pk) REFERENCES users (user_pk), -- 외래 키 설정
-                           CONSTRAINT fk_recommend_board FOREIGN KEY (board_pk) REFERENCES board (board_pk) -- 외래 키 설정
+                           CONSTRAINT fk_recommend_article FOREIGN KEY (article_pk) REFERENCES article (article_pk) -- 외래 키 설정
 );
 
 CREATE TABLE comments (
@@ -159,13 +157,6 @@ CREATE TABLE exercise (
                           CONSTRAINT fk_exercise_target FOREIGN KEY (target_pk) REFERENCES target (target_pk) -- 외래 키 설정
 );
 
-CREATE TABLE exercise_API (
-                              exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
-                              exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
-                              MET INT DEFAULT 0 NOT NULL, -- MET 지수
-                              exercise_img VARCHAR(100) NOT NULL -- 이미지
-);
-
 CREATE TABLE medicine (
                           medicine_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                           medicine_name VARCHAR(50) NOT NULL, -- 약 이름
@@ -221,6 +212,4 @@ SELECT * FROM users;
 SELECT * FROM food;
 SELECT * FROM foodlist;
 
-
-
->>>>>>> df4d74ac3d213e01b1040c5f42d112331dd328d1
+ALTER TABLE recommend ADD CONSTRAINT unique_user_board UNIQUE (user_pk, board_pk);

@@ -6,3 +6,6 @@ spring:
     import: classpath:application-DB.yml  # DB 설정을 application-DB.yml에서 불러옴
   profiles:
     active: local  # 기본 환경을 local로 설정 (선택 사항)
+
+file:
+  upload-dir: uploads/  # 파일 업로드 디렉토리 설정
