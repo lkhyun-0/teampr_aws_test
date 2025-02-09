@@ -44,13 +44,13 @@ public class UserController {
 
     // 아이디 중복 체크
     @GetMapping("checkUserId")
-    public ResponseEntity<Boolean> checkUserId(@RequestParam String userid) {
+    public ResponseEntity<Boolean> checkUserId(@RequestParam("userId") String userid) {
         boolean isDuplicate = userMapper.countByUserId(userid) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
     // 닉네임 중복 체크
     @GetMapping("checkNickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam String userNick) {
+    public ResponseEntity<Boolean> checkNickname(@RequestParam("userNick") String userNick) {
         boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
@@ -198,30 +198,39 @@ public class UserController {
         Integer userPk = (Integer) session.getAttribute("userPk");
 
         // ✅ 세션 값이 제대로 저장되었는지 로그 확인
-        System.out.println("마이페이지 접근 userPk: " + userPk);
+        System.out.println("📢 [DEBUG] 마이페이지 접근 userPk: " + userPk);
 
         if (userPk == null) {
             return "redirect:/user/signIn"; // 세션이 없으면 로그인 페이지로 이동
         }
 
+        // ✅ 사용자 기본 정보 가져오기
         UsersDto userInfo = userMapper.getUserById(userPk);
-        // ✅ 사용자 추가 정보 (키, 체중 등) 가져오기
+        System.out.println("📢 [DEBUG] 조회된 사용자 정보: " + userInfo);
+
+        // ✅ 사용자 추가 정보 (키, 체중, 흡연 등) 가져오기
         DetailDto detailDto = detailMapper.getUserDetailById(userPk);
-        System.out.println("조회된 사용자 추가 정보: " + detailDto);
-
-        // ✅ DB에서 사용자 정보를 제대로 가져오는지 확인
-        System.out.println("조회된 사용자 정보: " + userInfo);
-
-        if (userInfo == null) {
-            return "redirect:/user/signIn"; // DB에서 조회 실패하면 로그인 페이지로 이동
+        if (detailDto == null) {
+            System.out.println("❌ [ERROR] userPk " + userPk + "에 대한 상세 정보가 없습니다. 기본값을 설정합니다.");
+            detailDto = new DetailDto();
+            detailDto.setUserPk(userPk);
         }
 
-        // ✅ 모델에 사용자 정보 추가
+        // ✅ 디버깅 코드 추가
+        System.out.println("📢 [DEBUG] 조회된 사용자 추가 정보: " + detailDto);
+        System.out.println("📢 [DEBUG] DetailDto userPk 확인: " + detailDto.getUserPk());
+        System.out.println("📢 [DEBUG] DetailDto height: " + detailDto.getHeight());
+        System.out.println("📢 [DEBUG] DetailDto weight: " + detailDto.getWeight());
+        System.out.println("📢 [DEBUG] DetailDto smoke: " + detailDto.getSmoke());
+        System.out.println("📢 [DEBUG] DetailDto drink: " + detailDto.getDrink());
+
+        // ✅ 모델에 데이터 추가
         model.addAttribute("userInfo", userInfo);
-        model.addAttribute("detailDto", detailDto); // 🛑 여기 추가!
+        model.addAttribute("detailDto", detailDto);
 
         return "user/myPage";
     }
+
 
 
 

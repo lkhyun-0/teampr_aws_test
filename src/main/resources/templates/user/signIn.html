@@ -25,7 +25,8 @@
     </script>       <!--비번찾기 팝업 스크립트-->
 </head>
 <body>
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 <main>
     <div class="overlay"></div>
     <!-- 팝업 필름 -->
@@ -77,7 +78,8 @@
 </main>
 
 
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 <script src="/js/signIn.js"></script>
 
 </body>

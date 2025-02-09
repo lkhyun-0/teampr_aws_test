@@ -419,3 +419,47 @@ img {
 .radio-group .radio-label:hover {
     background-color: #e6e6e6; /* 호버 시 배경색 변경 */
 }
+
+/* 라디오 버튼 숨기기 */
+.radio-group input[type="radio"] {
+    display: none;
+}
+
+/* 버튼 스타일 */
+.radio-label {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Yes 버튼 스타일 */
+.radio-label.yes-btn {
+    background-color: #ddd;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+/* No 버튼 스타일 */
+.radio-label.no-btn {
+    background-color: #ddd;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+/* 선택된 경우 */
+.radio-group input[type="radio"]:checked + .radio-label.yes-btn {
+    background-color: #4169E1;
+    color: white;
+    border-color: #4169E1;
+}
+
+.radio-group input[type="radio"]:checked + .radio-label.no-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border-color: #ff4d4d;
+}
