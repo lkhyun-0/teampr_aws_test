@@ -44,6 +44,7 @@
 .info-left span:last-child {
     font-size: 0.8em; /* 글씨 크기 축소 */
     color: #999; /* 연한 색상 */
+    margin-top: auto;
 }
 
 /* 본문 내용 */
