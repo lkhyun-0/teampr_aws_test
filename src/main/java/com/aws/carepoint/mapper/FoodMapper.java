@@ -2,6 +2,8 @@ package com.aws.carepoint.mapper;
 
 import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
+import com.aws.carepoint.dto.FoodDto;
+import com.aws.carepoint.dto.FoodListDto;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public interface FoodMapper {
     public void insertFoodList(FoodList foodList);
 
 
-    // 1️⃣ 특정 날짜의 식단 기록 조회
+    // 특정 날짜의 식단 기록 조회
     @Select("SELECT * FROM food f JOIN foodlist fl ON f.food_pk = fl.food_pk WHERE f.user_pk = #{userPk} AND f.select_date = #{selectDate}")
     @Results({
             @Result(property = "foodPk", column = "food_pk"),
@@ -36,12 +38,23 @@ public interface FoodMapper {
     })
     List<FoodList> getFoodByDate(@Param("userPk") int userPk, @Param("selectDate") String selectDate);
 
-    // 2️⃣ 개별 음식 삭제
+    // 개별 음식 삭제 (foodlist 테이블에서 삭제)
     @Delete("DELETE FROM foodlist WHERE foodlist_pk = #{foodListPk}")
     void deleteFood(@Param("foodListPk") int foodListPk);
 
-    @Update("UPDATE foodlist SET menu = #{menu}, kcal = #{kcal}, protein = #{protein}, carbohydrate = #{carbohydrate}, fat = #{fat} WHERE foodlist_pk = #{foodListPk}")
-    void updateFood(FoodList foodList);
+    // 특정 foodListPk에 해당하는 food_pk 가져오기
+    @Select("SELECT food_pk FROM foodlist WHERE foodlist_pk = #{foodListPk}")
+    Integer getFoodPkByFoodListPk(@Param("foodListPk") int foodListPk);
+
+    // 특정 food_pk에 남은 음식 개수 확인 (이 부분 추가!)
+    @Select("SELECT COUNT(*) FROM foodlist WHERE food_pk = #{foodPk}")
+    int countFoodListByFoodPk(@Param("foodPk") int foodPk);
+
+    // 특정 날짜와 식사 타입(B/L/D)의 모든 음식이 삭제되었을 경우 food 테이블에서도 삭제
+    @Delete("DELETE FROM food WHERE food_pk = #{foodPk} AND " +
+            "NOT EXISTS (SELECT 1 FROM foodlist WHERE foodlist.food_pk = food.food_pk)")
+    void deleteEmptyFood(@Param("foodPk") int foodPk);
+
 
     @Select("SELECT * FROM food f JOIN foodlist fl ON f.food_pk = fl.food_pk " +
             "WHERE f.user_pk = #{userPk} AND f.select_date = #{selectDate} AND f.foodtype = #{foodType}")
@@ -60,8 +73,27 @@ public interface FoodMapper {
     List<FoodList> getFoodByDateAndType(@Param("userPk") int userPk, @Param("selectDate") String selectDate, @Param("foodType") String foodType);
 
 
+    // 기존 음식 수정 (칼로리, 영양소 변경)
+    @Update("UPDATE foodlist SET menu = #{menu}, kcal = #{kcal}, protein = #{protein}, " +
+            "carbohydrate = #{carbohydrate}, fat = #{fat} WHERE foodlist_pk = #{foodListPk}")
+    void updateFood(FoodList foodList);
 
 
+    @Select("SELECT DISTINCT select_date, " +
+            "MAX(CASE WHEN foodtype = 'B' THEN 1 ELSE 0 END) AS breakfast, " +
+            "MAX(CASE WHEN foodtype = 'L' THEN 1 ELSE 0 END) AS lunch, " +
+            "MAX(CASE WHEN foodtype = 'D' THEN 1 ELSE 0 END) AS dinner " +
+            "FROM food " +
+            "WHERE user_pk = #{userPk} " +
+            "GROUP BY select_date " +
+            "ORDER BY select_date DESC")
+    @Results({
+            @Result(property = "selectDate", column = "select_date"),
+            @Result(property = "breakfast", column = "breakfast"),
+            @Result(property = "lunch", column = "lunch"),
+            @Result(property = "dinner", column = "dinner")
+    })
+    List<FoodListDto> getFoodList(@Param("userPk") int userPk);
 
 
 

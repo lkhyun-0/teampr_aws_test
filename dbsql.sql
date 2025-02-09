@@ -2,13 +2,11 @@ DROP DATABASE IF EXISTS `carepoint`;
 CREATE DATABASE `carepoint`;
 USE `carepoint`;
 
-<<<<<<< HEAD
 CREATE TABLE exercise_API (
                               exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                               exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
                               MET INT DEFAULT 0 NOT NULL -- MET 지수
 );
-=======
 
 CREATE TABLE users (
                        user_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
@@ -48,16 +46,14 @@ CREATE TABLE user_detail (
 CREATE TABLE board (
                        board_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                        board_type CHAR(1) NOT NULL, -- 게시판종류 (Q : Q&A, F : Free, N : Notice)
-                       title VARCHAR(100) NOT NULL, -- 제목
                        reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
                        update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
-                       del_status TINYINT(1) DEFAULT 0 NOT NULL, -- 삭제 여부 (0=삭제 전, 1=삭제 후)
-                       user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
-                       CONSTRAINT fk_board_users FOREIGN KEY (user_pk) REFERENCES users (user_pk) -- 외래 키 설정
+                       del_status TINYINT(1) DEFAULT 0 NOT NULL -- 삭제 여부 (0=삭제 전, 1=삭제 후)
 );
 
 CREATE TABLE article (
                          article_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
+                         title VARCHAR(100) NOT NULL, -- 제목
                          content TEXT NOT NULL, -- 내용
                          filename VARCHAR(200), -- 파일이름
                          recom INT DEFAULT 0, -- 추천수
@@ -66,7 +62,10 @@ CREATE TABLE article (
                          level_ INT DEFAULT 0, -- 답변레벨
                          reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
                          update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
+                         del_status TINYINT(1) DEFAULT 0 NOT NULL, -- 삭제 여부 (0=삭제 전, 1=삭제 후)
+                         user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
                          board_pk INT NOT NULL, -- 외래 키 (board 테이블의 board_pk 참조)
+                         CONSTRAINT fk_article_users FOREIGN KEY (user_pk) REFERENCES users (user_pk), -- 외래 키 설정
                          CONSTRAINT fk_article_board FOREIGN KEY (board_pk) REFERENCES board (board_pk) -- 외래 키 설정
 );
 
@@ -221,6 +220,12 @@ SELECT * FROM users;
 SELECT * FROM food;
 SELECT * FROM foodlist;
 
+DELETE FROM foodlist
+WHERE food_pk IN (
+    SELECT food_pk FROM food
+    WHERE select_date = '2025-02-07' AND foodtype = 'L'
+);
 
 
->>>>>>> df4d74ac3d213e01b1040c5f42d112331dd328d1
+DELETE FROM food
+WHERE select_date = '2025-02-07' AND foodtype = 'L';
