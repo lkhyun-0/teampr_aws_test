@@ -185,5 +185,4 @@ replay_pid*
 #로컬 DB 설정 파일 제외
 =======
 # 로컬 DB 설정 파일 제외
->>>>>>> df4d74ac3d213e01b1040c5f42d112331dd328d1
 /src/main/resources/application-DB.yml
