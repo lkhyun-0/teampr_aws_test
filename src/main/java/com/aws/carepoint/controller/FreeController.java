@@ -6,9 +6,8 @@ import com.aws.carepoint.util.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class FreeController {
     @Autowired
     private FreeService freeService;
 
-    @RequestMapping("/freeList")
+    @GetMapping("/freeList")
     public String freeList(
             @ModelAttribute("scri") SearchCriteria scri,
             Model model) {
@@ -31,7 +30,7 @@ public class FreeController {
         return "free/freeList";
     }
 
-    @RequestMapping("/freeContents/{id}")
+    @GetMapping("/freeContents/{id}")
     public String freeContents(
             @PathVariable("id") int articlePk,
             Model model) {
@@ -48,12 +47,28 @@ public class FreeController {
         return "free/freeContents";
     }
 
-    @RequestMapping("/freeWrite")
+    @GetMapping("/freeWrite")
     public String freeWrite() {
         return "free/freeWrite";
     }
 
-    @RequestMapping("/freeModify")
+    @PostMapping("/freeWriteAction")
+    public String freeWriteAction(
+            @ModelAttribute FreeDto freeDto,
+            RedirectAttributes rttr
+    ) {
+        int value = freeService.writeFree(freeDto);
+
+        if (value > 0) {
+            rttr.addFlashAttribute("msg", "게시글이 작성되었습니다.");
+        } else {
+            rttr.addFlashAttribute("msg", "게시글 작성이 안되었습니다.");
+        }
+
+        return "free/freeList";
+    }
+
+    @GetMapping("/freeModify")
     public String freeModify() {
         return "free/freeModify";
     }

@@ -32,7 +32,6 @@ public interface FreeMapper {
     @Results(id = "freeResultMap", value = {
             @Result(property = "articlePk", column = "article_pk"),
             @Result(property = "regDate", column = "reg_date"),
-            @Result(property = "updateDate", column = "update_date"),
             @Result(property = "boardPk", column = "board_pk"),
             @Result(property = "userPk", column = "user_pk"),
             @Result(property = "userNick", column = "usernick")
@@ -54,4 +53,10 @@ public interface FreeMapper {
             WHERE article_pk = #{articlePk}
             """)
     int addviewcnt(int articlePk);
+
+    @Insert("""
+            INSERT INTO article (title, content, filename, user_pk, board_pk)
+            VALUES (#{title}, #{content}, #{attachfile}, 1, 2)
+            """)
+    int writeFree(FreeDto freeDto);
 }

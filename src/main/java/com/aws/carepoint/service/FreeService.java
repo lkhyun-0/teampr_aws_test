@@ -48,8 +48,10 @@ public class FreeService {
     }
 
     public int addviewcnt(int articlePk) {
-        int value =  freeMapper.addviewcnt(articlePk);
+        return freeMapper.addviewcnt(articlePk);
+    }
 
-        return value;
+    public int writeFree(FreeDto freeDto) {
+        return freeMapper.writeFree(freeDto);
     }
 }

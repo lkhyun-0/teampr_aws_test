@@ -1,6 +1,7 @@
 package com.aws.carepoint.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -9,11 +10,10 @@ public class FreeDto {
     private int articlePk;
     private String title;
     private String content;
-    private String filename;
+    private String attachfile;
     private Integer recom;
     private Integer viewcnt;
     private LocalDateTime regDate;
-    private LocalDateTime updateDate;
     private String boardType;
     private String userNick;
     private int boardPk;
