@@ -6,9 +6,10 @@
     <title>자유게시판 작성</title>
 </head>
 <body>
-<script th:if="${msg}" th:inline="javascript">
-    alert([[${msg}]]);
+<script th:if="${msg != null}" th:inline="javascript">
+    alert('[[${msg}]]'); // 작은따옴표로 문자열로 처리
 </script>
+
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
