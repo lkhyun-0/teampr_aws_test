@@ -47,4 +47,11 @@ public interface FreeMapper {
             """)
     @ResultMap("freeResultMap")
     FreeDto getFreeContent(int articlePk);
+
+    @Update("""
+            UPDATE article
+            SET viewcnt = viewcnt+1
+            WHERE article_pk = #{articlePk}
+            """)
+    int addviewcnt(int articlePk);
 }

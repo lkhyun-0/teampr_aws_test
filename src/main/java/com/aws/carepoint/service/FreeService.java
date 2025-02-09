@@ -41,12 +41,15 @@ public class FreeService {
     }
 
     public FreeDto getFreeContent(int articlePk) {
+
         FreeDto free = freeMapper.getFreeContent(articlePk);
 
         return free;
     }
 
-    public void addviewcnt(int articlePk) {
+    public int addviewcnt(int articlePk) {
+        int value =  freeMapper.addviewcnt(articlePk);
 
+        return value;
     }
 }

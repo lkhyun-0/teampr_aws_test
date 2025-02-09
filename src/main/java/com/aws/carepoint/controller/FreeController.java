@@ -36,10 +36,14 @@ public class FreeController {
             @PathVariable("id") int articlePk,
             Model model) {
 
-        freeService.addviewcnt(articlePk);
-        FreeDto free = freeService.getFreeContent(articlePk);
+        int value = freeService.addviewcnt(articlePk);
 
-        model.addAttribute("free", free);
+        if (value > 0) {
+            FreeDto free = freeService.getFreeContent(articlePk);
+            model.addAttribute("free", free);
+        } else {
+            return "free/freeList";
+        }
 
         return "free/freeContents";
     }

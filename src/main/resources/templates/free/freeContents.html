@@ -24,7 +24,7 @@
     <div class="article-content">
         <span th:text="${free.content}"></span>
         <div class="recommend-button">
-            <button class="thumb-btn">
+            <button class="thumb-btn" onclick="recom();">
                 <i class="fa-solid fa-thumbs-up"></i>
             </button>
         </div>
@@ -76,6 +76,7 @@
     </div>
 </div>
 
+<script src="/js/recom.js"></script>
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
 </body>
