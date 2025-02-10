@@ -31,13 +31,6 @@ public class FoodController {
         return "food/foodRecord"; // templates/food/foodRecord.html
     }
 
-    // 📌 특정 사용자의 식단 목록 조회
-//    @GetMapping("/foodList")
-//    @ResponseBody
-//    public List<Food> getFoodList(@RequestParam("userPk") int userPk) {
-//        return foodService.getFoodList(userPk);
-//    }
-
     // 사용자가 브라우저에서 /food/foodList 방문 시, HTML 반환
     @GetMapping("/foodList")
     public String showListPage() {
@@ -85,7 +78,11 @@ public class FoodController {
     @PostMapping("/record")
     @ResponseBody
     public String recordFood(@RequestBody FoodRecordRequest request,
-                             @SessionAttribute("userPk") int userPk) {
+                             @SessionAttribute(name = "userPk", required = false) Integer userPk) {
+        if (userPk == null) {
+            return "Session userPk is null";
+        }
+
         try {
             request.setUserPk(userPk);
             foodService.recordFood(request);
@@ -94,6 +91,7 @@ public class FoodController {
             return "error";
         }
     }
+
 
 
     //특정 날짜의 식단 가져오기
