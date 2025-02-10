@@ -9,12 +9,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/graph")
-public class GraphController {
-    private final GraphService graphService;
+    public class GraphController {
+        private final GraphService graphService;
 
-    public GraphController(GraphService graphService) {
-        this.graphService = graphService;
-    }
+        public GraphController(GraphService graphService) {
+            this.graphService = graphService;
+        }
 
     @GetMapping("/{userPk}")
     public List<GraphDto> getGraphData(@PathVariable int userPk) {

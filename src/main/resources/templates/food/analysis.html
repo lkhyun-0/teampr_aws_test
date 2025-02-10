@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diet Tracker</title>
+    <title>내 식단 분석</title>
     <link rel="stylesheet" href="/css/food/analysis.css">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -22,17 +22,19 @@
     </div>
 
     <div class="outer-container">
+
+        <!-- 주간 범위 표시 -->
+        <div class="weekly-range">
+            <p id="date-range">주간 통계 로드 중...</p>
+        </div>
+
         <div class="inner-container">
-            <!-- WEEKLY CHECK -->
-<!--            <div class="weekly-check">
-                <p>2025.01.06-2025.01.12</p>
-            </div>-->
 
             <!-- 상단 카드 섹션 -->
             <div class="top-section">
                 <div class="card">
                     <p class="card-value">
-                        <span class="number">227</span>
+                        <span id="protein-value" class="number">0</span>
                         <span class="unit">g</span>
                     </p>
                     <p class="card-title">PROTEIN</p>
@@ -42,7 +44,7 @@
                 </div>
                 <div class="card">
                     <p class="card-value">
-                        <span class="number">175</span>
+                        <span id="carbs-value" class="number">0</span>
                         <span class="unit">g</span>
                     </p>
                     <p class="card-title">CARBOHYDRATES</p>
@@ -52,7 +54,7 @@
                 </div>
                 <div class="card">
                     <p class="card-value">
-                        <span class="number">89</span>
+                        <span id="fat-value" class="number">0</span>
                         <span class="unit">g</span>
                     </p>
                     <p class="card-title">FAT</p>
@@ -70,8 +72,7 @@
                 </div>
                 <div class="card large">
                     <p class="analysis-title">Improvement Tips</p>
-                    <p>⚡  이번주는 20대 단백질 권장 섭취량보다 5% 더 섭취 했습니다. </p>
-                    <p>💪 Protein intake is ideal. Keep it up!</p>
+                    <p id="tip-text">분석 데이터를 불러오는 중...</p>
                 </div>
             </div>
         </div>
@@ -81,50 +82,105 @@
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
 
-<script>
-    const ctx = document.getElementById('caloriesChart').getContext('2d');
+<script th:inline="javascript">
+    $(document).ready(function () {
+        let userPk = [[${session.userPk}]];
 
-    // Linear Gradient 생성
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, '#8364DF');
-    gradient.addColorStop(1, '#C084FC');
+        // 현재 날짜를 기준으로 최근 7일 범위 계산
+        let today = new Date();
+        let startDate = new Date();
+        startDate.setDate(today.getDate() - 6); // 7일 전 날짜 계산
 
-    // 도넛 그래프 생성
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            datasets: [
-                {
-                    data: [72, 28], // 목표 대비 비율
-                    backgroundColor: [gradient, '#E0E0E0'], // 색상 설정
-                    borderWidth: 0, // 외곽선 제거
-                    cutout: '75%', // 링 두께 조정
-                },
-            ],
-        },
-        options: {
-            plugins: {
-                legend: {
-                    display: false, // 범례 숨김
-                },
-                tooltip: {
-                    enabled: false, // 툴팁 숨김
-                },
+        let startStr = `${String(startDate.getMonth() + 1).padStart(2, '0')}월 ${String(startDate.getDate()).padStart(2, '0')}일`;
+        let endStr = `${String(today.getMonth() + 1).padStart(2, '0')}월 ${String(today.getDate()).padStart(2, '0')}일`;
+
+        $("#date-range").text(`${startStr} - ${endStr}`);
+
+        $.ajax({
+            url: "/food/weeklyStats",
+            type: "GET",
+            data: { userPk: userPk },
+            success: function (response) {
+                console.log("주간 통계 데이터:", response);
+
+                let totalProtein = 0, totalCarbs = 0, totalFat = 0, totalCalories = 0;
+
+                response.forEach(day => {
+                    totalProtein += day.totalProtein;
+                    totalCarbs += day.totalCarbohydrates;
+                    totalFat += day.totalFat;
+                    totalCalories += day.totalCalories;
+                });
+
+                $("#protein-value").text(totalProtein.toFixed(2));
+                $("#carbs-value").text(totalCarbs.toFixed(2));
+                $("#fat-value").text(totalFat.toFixed(2));
+
+                updateCaloriesChart(totalCalories);
+                updateImprovementTips(totalProtein, totalCarbs, totalFat);
             },
-            responsive: true,
-            maintainAspectRatio: false, // 비율 유지 해제
-        },
+            error: function (xhr, status, error) {
+                console.error("주간 통계 데이터를 불러오는 데 실패했습니다.", error);
+                $("#tip-text").text("주간 데이터를 불러올 수 없습니다.");
+            }
+        });
+
+        function updateCaloriesChart(totalCalories) {
+            const ctx = document.getElementById('caloriesChart').getContext('2d');
+
+            let targetCalories = 2800 * 7;
+            let percentage = (totalCalories / targetCalories) * 100;
+            let remainingPercentage = 100 - percentage;
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, '#8364DF');
+            gradient.addColorStop(1, '#C084FC');
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [
+                        {
+                            data: [percentage, remainingPercentage],
+                            backgroundColor: [gradient, '#E0E0E0'],
+                            borderWidth: 0,
+                            cutout: '75%',
+                        },
+                    ],
+                },
+                options: {
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                },
+            });
+
+            const textContainer = document.createElement('div');
+            textContainer.classList.add('chart-center-text');
+            textContainer.innerHTML = `
+            <p>${totalCalories} <span style="font-size: 14px; color: #999;">cal</span></p>`;
+            document.querySelector('#caloriesChart').parentElement.appendChild(textContainer);
+        }
+
+        function updateImprovementTips(protein, carbs, fat) {
+            let tip = "";
+
+            if (protein > 400) tip += " 단백질을 적절히 섭취 중입니다. 지속하세요!<br>";
+            else if (protein < 200) tip += "⚡ 단백질 섭취량이 부족합니다. 닭가슴살, 두부 추천!<br>";
+
+            if (carbs > 500) tip += " 탄수화물 섭취량이 많습니다. 밸런스를 유지하세요.<br>";
+            else if (carbs < 200) tip += "탄수화물 섭취가 적습니다. 현미밥, 감자 추가해보세요.<br>";
+
+            if (fat > 150) tip += " 지방 섭취량이 많습니다. 좋은 지방을 선택하세요.<br>";
+            else if (fat < 50) tip += "🍳 건강한 지방을 충분히 섭취하세요. 견과류, 올리브오일 추천!<br>";
+
+            $("#tip-text").html(tip || " 이번 주 영양 섭취가 적절합니다! 계속 유지하세요!");
+        }
     });
-
-    // 링 중앙에 텍스트 삽입
-    const textContainer = document.createElement('div');
-    textContainer.classList.add('chart-center-text');
-    textContainer.innerHTML = `
-    <p>2032 <span style="font-size: 14px; color: #999;">cal</span></p>`;
-    document.querySelector('#caloriesChart').parentElement.appendChild(textContainer);
-
 </script>
-
 
 </body>
 </html>

@@ -63,7 +63,8 @@ function checkUserId() {
         return;
     }
 
-    fetch(`/user/checkUserId?userid=${encodeURIComponent(userId)}`)
+    fetch(`/user/checkUserId?userId=${encodeURIComponent(userId)}`)
+
         .then(response => response.json())
         .then(isDuplicate => {
             console.log(isDuplicate + "중복확인 값 확인");

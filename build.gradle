@@ -42,7 +42,11 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.json:json:20210307'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'  // ✅ 카카오 로그인 추가
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'        // ✅ WebClient 지원 (API 호출용)
+    implementation 'org.json:json:20210307'                                      // ✅ JSON 파싱 지원
+
+
 }
 
 tasks.named('test') {
