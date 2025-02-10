@@ -24,7 +24,6 @@
             <div class="user-info">
                 <button id="openModal" class="modify-btn">수정하기</button>
                 <ul>
-
                         <li>닉네임 : <span th:text="${userInfo != null ? userInfo.userNick : '정보 없음'}"></span></li>
                         <li>아이디 : <span th:text="${userInfo != null ? userInfo.userId : '정보 없음'}"></span></li>
                         <li>이메일 : <span th:text="${userInfo != null ? userInfo.email : '정보 없음'}"></span></li>
@@ -123,41 +122,52 @@
                 <ul>
                     <li>
                         <label>전화번호:</label>
-                        <input type="text" id="modal-phone" value="010-1111-1111">
+                        <input type="text" id="modal-phone" name="phone"
+                               th:value="${userInfo != null ? userInfo.phone : ''}">
                     </li>
                     <li>
                         <label>이메일:</label>
-                        <input type="email" id="modal-email" value="hi@gmail.com">
+                        <input type="email" id="modal-email" name="email"
+                               th:value="${userInfo != null ? userInfo.email : ''}">
                     </li>
                     <li>
                         <label for="password">비밀번호: </label>
-                        <input type="password" id="password" value="******">
-
+                        <input type="password" id="password" name="password" th:value="${userInfo != null ? userInfo.userPwd : ''}">
                     </li>
                     <li>
                         <label for="height">신장(cm):</label>
-                        <input type="number" id="height" value="165">
+                        <input type="number" id="height" name="height"
+                               th:value="${detailDto != null ? detailDto.height : ''}">
                     </li>
                     <li>
                         <label for="weight">체중(kg):</label>
-                        <input type="number" id="weight" value="58">
+                        <input type="number" id="weight" name="weight"
+                               th:value="${detailDto != null ? detailDto.weight : ''}">
                     </li>
+
                     <li>
                         <label>흡연:</label>
                         <div class="radio-group">
-                            <input type="radio" id="smoke-yes" name="smoke" value="yes">
-                            <label for="smoke-yes" class="radio-label">Yes</label>
-                            <input type="radio" id="smoke-no" name="smoke" value="no" checked>
-                            <label for="smoke-no" class="radio-label">No</label>
+                            <input type="radio" id="smoke-yes" name="smoke" value="1"
+                                   th:checked="${detailDto != null and detailDto.smoke == 1}">
+                            <label for="smoke-yes" class="radio-label yes-btn">Yes</label>
+
+                            <input type="radio" id="smoke-no" name="smoke" value="0"
+                                   th:checked="${detailDto != null and detailDto.smoke == 0}">
+                            <label for="smoke-no" class="radio-label no-btn">No</label>
                         </div>
                     </li>
+
                     <li>
                         <label>음주:</label>
                         <div class="radio-group">
-                            <input type="radio" id="drink-yes" name="drink" value="yes">
-                            <label for="drink-yes" class="radio-label">Yes</label>
-                            <input type="radio" id="drink-no" name="drink" value="no" checked>
-                            <label for="drink-no" class="radio-label">No</label>
+                            <input type="radio" id="drink-yes" name="drink" value="1"
+                                   th:checked="${detailDto != null and detailDto.drink == 1}">
+                            <label for="drink-yes" class="radio-label yes-btn">Yes</label>
+
+                            <input type="radio" id="drink-no" name="drink" value="0"
+                                   th:checked="${detailDto != null and detailDto.drink == 0}">
+                            <label for="drink-no" class="radio-label no-btn">No</label>
                         </div>
                     </li>
 
@@ -165,22 +175,84 @@
             </div>
             <div class="modal-footer">
                 <button class="modal-btn delete-btn">탈퇴하기</button>
-                <button class="modal-btn save-btn">수정하기</button>
+                <button class="modal-btn save-btn" onclick="updateUserInfo();">수정하기</button>
             </div>
         </div>
     </div>
 </div>
 
-<!--footer-->
-<div th:insert="~{/common/footer.html}"></div>
 
-
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 </body>
 
-<!--여기가 회원정보 들어갈 곳-->
+<!--회원정보 수정하기 흡연 음주 동적 스크립트-->
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const radioButtons = document.querySelectorAll(".radio-group input[type='radio']");
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener("change", function () {
+                // 모든 라벨 초기화
+                document.querySelectorAll(".radio-label").forEach(label => {
+                    label.classList.remove("active");
+                });
+
+                // 선택된 라벨에 active 스타일 적용
+                const selectedLabel = document.querySelector("label[for='" + this.id + "']");
+                if (selectedLabel) {
+                    selectedLabel.classList.add("active");
+                }
+            });
+        });
+    });
 
 
+
+
+
+</script>
+
+<script>
+    function updateUserInfo() {
+        const userPk = document.getElementById("userPk").value; // 로그인된 사용자 PK 가져오기
+
+        // 사용자가 입력한 값 가져오기
+        const updatedData = {
+            userPk: userPk,
+            phone: document.getElementById("modal-phone").value,
+            email: document.getElementById("modal-email").value,
+            password: document.getElementById("password").value,
+            height: document.getElementById("height").value,
+            weight: document.getElementById("weight").value,
+            smoke: document.querySelector('input[name="smoke"]:checked').value, // 흡연 선택값
+            drink: document.querySelector('input[name="drink"]:checked').value  // 음주 선택값
+        };
+
+        console.log("📢 [DEBUG] 업데이트할 데이터:", updatedData); // 디버깅용 콘솔 로그
+
+        // 서버에 업데이트 요청 보내기
+        fetch("/detail/updateInfo", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("회원 정보가 성공적으로 수정되었습니다!");
+                    location.reload(); // 성공 시 페이지 새로고침
+                } else {
+                    alert("수정 실패: " + data.message);
+                }
+            })
+            .catch(error => console.error("❌ [ERROR] 회원정보 업데이트 실패:", error));
+    }
+
+    // "수정하기" 버튼 클릭 시 업데이트 실행
+    document.querySelector(".save-btn").addEventListener("click", updateUserInfo);
 
 
 </script>
@@ -268,7 +340,7 @@
 
 </script>
 
-
+<!--회원게시글 보여주는 탭-->
 <script>
     $(function () {
         // 모든 탭 콘텐츠 숨기기
@@ -293,6 +365,7 @@
 
 
 </script>
+<!--회원정보 열기 닫기-->
 <script>
     // 모달 열기/닫기 기능
     document.addEventListener("DOMContentLoaded", function () {

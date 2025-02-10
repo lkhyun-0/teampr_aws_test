@@ -5,15 +5,16 @@ import com.aws.carepoint.dto.UsersDto;
 import com.aws.carepoint.mapper.DetailMapper;
 import com.aws.carepoint.mapper.UserMapper;
 import com.aws.carepoint.service.DetailService;
+import com.aws.carepoint.service.KakaoAuthService;
 import com.aws.carepoint.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -21,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller // @RestController= @Controller + @ResponseBody
+@Controller  // @RestController= @Controller + @ResponseBody
 @RequestMapping("/user/")
 public class UserController {
 
@@ -44,13 +45,13 @@ public class UserController {
 
     // 아이디 중복 체크
     @GetMapping("checkUserId")
-    public ResponseEntity<Boolean> checkUserId(@RequestParam("userid") String userid) {
-        boolean isDuplicate = userMapper.countByUserId(userid) > 0;
+    public ResponseEntity<Boolean> checkUserId(@RequestParam("userId") String userId) {
+        boolean isDuplicate = userMapper.countByUserId(userId) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
     // 닉네임 중복 체크
     @GetMapping("checkNickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam("userNick") String userNick) {
+    public ResponseEntity<Boolean> checkNickname(@RequestParam String userNick) {
         boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }

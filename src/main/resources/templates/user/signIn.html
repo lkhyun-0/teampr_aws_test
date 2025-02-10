@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인 페이지</title>
-    <link href="/css/user/login.css" type="text/css" rel="stylesheet"> <!-- css 링크 -->
+    <link rel="stylesheet" th:href="@{/css/user/login.css}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function popUp() {
@@ -23,9 +23,20 @@
         popUp();
         popupClose();
     </script>       <!--비번찾기 팝업 스크립트-->
+
+    <!-- ✅ 카카오 JavaScript SDK 불러오기 -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
+    <script>
+        // ✅ 여기에 JavaScript 키를 입력
+        Kakao.init("7a1f3fa6b1f368e13124b1f30d8601d8");
+        console.log("✅ Kakao SDK 초기화 완료:", Kakao.isInitialized()); // 정상 작동 확인
+    </script>
+
 </head>
 <body>
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 <main>
     <div class="overlay"></div>
     <!-- 팝업 필름 -->
@@ -70,15 +81,16 @@
             </div>
             <div class="options">
                 <a href="findPwd" class="find-pwd">비밀번호 찾기</a>  <!--비번찾기 구현하기-->
-                <a href="userJoin" class="register">회원가입</a>    <!-- 회원가입 페이지로 보내기 -->
+                <a href="signUp" class="register">회원가입</a>    <!-- 회원가입 페이지로 보내기 -->
             </div>
         </form>
     </div>
 </main>
 
 
-<div th:insert="/common/footer.html"></div>
-<script src="/js/signIn.js"></script>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
+<script th:src="@{/js/signIn.js}"></script>  <!-- Thymeleaf 경로 바인딩 -->
 
 </body>
 </html>
