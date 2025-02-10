@@ -9,8 +9,13 @@ function recom(element) {
         dataType: 'json',
         success: function(response) {
             // 추천 수 업데이트
-            alert('추천되었습니다.');
-            $('#recomCount').text("추천 수: " + response.count);
+            if(response.recomStatus == 0) {
+                alert('추천이 취소 되었습니다.');
+                $('#recomCount').text("추천 수: " + response.count);
+            } else {
+                alert('추천되었습니다.');
+                $('#recomCount').text("추천 수: " + response.count);
+            }
         },
         error: function(xhr, status, error) {
             if (xhr.status === 401) {
@@ -21,6 +26,7 @@ function recom(element) {
         }
     });
 }
+
 
 function deleteArticle(element) {
     const articlePk = element.getAttribute("data-id");

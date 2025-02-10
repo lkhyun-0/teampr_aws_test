@@ -1,19 +1,11 @@
 package com.aws.carepoint.service;
 
-import com.aws.carepoint.dto.FreeDto;
 import com.aws.carepoint.dto.RecommendDto;
-import com.aws.carepoint.mapper.FreeMapper;
-import com.aws.carepoint.mapper.sql.RecommendMapper;
-import com.aws.carepoint.util.PageMaker;
-import com.aws.carepoint.util.SearchCriteria;
+import com.aws.carepoint.mapper.RecommendMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +25,12 @@ public class RecommendService {
         if (recommendDto == null) {
             newStatus = 1;
             recommendMapper.insertRecommend(userPk, articlePk, newStatus);
-
         } else {
             newStatus = (recommendDto.getRecomStatus() == 1) ? 0 : 1;
             recommendMapper.updateRecommendStatus(userPk, articlePk, newStatus);
         }
+
+        RecommendDto updatedRecommend = recommendMapper.findByUserAndBoard(userPk, articlePk);
 
         int count = recommendMapper.countRecommend(articlePk);
 
@@ -48,5 +41,10 @@ public class RecommendService {
         result.setCount(count);
 
         return result;
+    }
+
+    public int getRecommendCount(int articlePk) {
+        int count = recommendMapper.countRecommend(articlePk);
+        return count;
     }
 }

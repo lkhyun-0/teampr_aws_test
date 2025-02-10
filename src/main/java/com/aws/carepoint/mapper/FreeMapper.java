@@ -56,7 +56,7 @@ public interface FreeMapper {
 
     @Insert("""
             INSERT INTO article (title, content, filename, user_pk, board_pk)
-            VALUES (#{title}, #{content}, #{filename}, 1, 2)
+            VALUES (#{title}, #{content}, #{filename}, #{userPk}, 2)
             """)
     int writeFree(FreeDto freeDto);
 

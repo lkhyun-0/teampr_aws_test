@@ -39,7 +39,7 @@
                 <td class="No" th:text="${pageMaker.totalCount - (freeStat.index + (scri.page - 1) * scri.perPageNum)}"></td>
                 <td class="subject"><a th:href="@{/free/freeContent/{id}(id=${free.articlePk})}" th:text="${free.title}"></a></td>
                 <td class="writer" th:text = "${free.userNick}"></td>
-                <td class="writeday" th:text = "${free.regDate}"></td>
+                <td class="writeday" th:text = "${#temporals.format(free.regDate, 'yyyy-MM-dd')}"></td>
             </tr>
 
         </table>

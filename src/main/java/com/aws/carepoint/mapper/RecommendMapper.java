@@ -1,11 +1,7 @@
-package com.aws.carepoint.mapper.sql;
+package com.aws.carepoint.mapper;
 
-import com.aws.carepoint.dto.FreeDto;
 import com.aws.carepoint.dto.RecommendDto;
-import com.aws.carepoint.util.SearchCriteria;
 import org.apache.ibatis.annotations.*;
-
-import java.util.List;
 
 
 @Mapper
@@ -16,7 +12,13 @@ public interface RecommendMapper {
             FROM recommend
             WHERE user_pk = #{userPk} AND article_pk = #{articlePk}
             """)
+    @Results(id = "recommedMap", value = {
+            @Result(property = "articlePk", column = "article_pk"),
+            @Result(property = "recomStatus", column = "recom_status"),
+            @Result(property = "userPk", column = "user_pk"),
+    })
     RecommendDto findByUserAndBoard(@Param("userPk") int userPk, @Param("articlePk") int articlePk);
+
 
     @Insert("""
             INSERT INTO recommend(recom_status, user_pk, article_pk)
@@ -34,7 +36,7 @@ public interface RecommendMapper {
     @Select("""
             SELECT count(*)
             FROM recommend
-            WHERE article_pk = #{articlePk}
+            WHERE article_pk = #{articlePk} AND recom_status = 1
             """)
     int countRecommend(@Param("articlePk") int articlePk);
 }

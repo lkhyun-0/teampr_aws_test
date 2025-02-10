@@ -2,7 +2,9 @@ package com.aws.carepoint.controller;
 
 import com.aws.carepoint.dto.FreeDto;
 import com.aws.carepoint.service.FreeService;
+import com.aws.carepoint.service.RecommendService;
 import com.aws.carepoint.util.SearchCriteria;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,9 @@ public class FreeController {
     @Autowired
     private FreeService freeService;
 
+    @Autowired
+    private RecommendService recommendService;
+
     @Value("${file.upload-dir}") // application.yml에서 설정 값 가져오기
     private String uploadDir;
 
@@ -50,8 +55,11 @@ public class FreeController {
         int value = freeService.addviewcnt(articlePk);
 
         if (value > 0) {
+            int count = recommendService.getRecommendCount(articlePk);
             FreeDto free = freeService.getFreeDetail(articlePk);
+
             model.addAttribute("free", free);
+            model.addAttribute("count", count);
         } else {
             return "free/freeList";
         }
@@ -60,7 +68,18 @@ public class FreeController {
     }
 
     @GetMapping("/freeWrite")
-    public String freeWrite() {
+    public String freeWrite(
+            HttpSession session,
+            RedirectAttributes rttr
+            ) {
+        // 세션에서 사용자 정보 가져오기
+        Integer userPk = (Integer) session.getAttribute("userPk");
+
+        if (userPk == null || userPk < 1) {
+            rttr.addFlashAttribute("msg", "로그인해야 가능합니다.");
+            return "redirect:/free/freeList";
+        }
+
         return "free/freeWrite";
     }
 
@@ -68,9 +87,10 @@ public class FreeController {
     public String freeWriteAction(
             @ModelAttribute FreeDto freeDto,
             @RequestParam("attachfile") MultipartFile attachfile,
+            HttpSession session,
             RedirectAttributes rttr
     ) {
-        String uploadDir = "C:/KIS_project/uploads";
+        String uploadDir = System.getProperty("user.dir") + File.separator + "uploads";
 
         if (!attachfile.isEmpty()) {
             try {
@@ -100,6 +120,9 @@ public class FreeController {
                 return "redirect:/free/freeWrite";
             }
         }
+
+        Integer userPk = (Integer) session.getAttribute("userPk");
+        freeDto.setUserPk(userPk);
 
         int value = freeService.writeFree(freeDto);
 
