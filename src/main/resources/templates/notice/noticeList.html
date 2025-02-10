@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 게시글 목록</title>
+    <link href="/css/qna/list.css?v=1.0" rel="stylesheet">
+    <script th:if="${msg}">
+        alert("[[${msg}]]");
+    </script>
+</head>
+<body>
+<div th:insert="/common/header.html"></div>
+<div class="qnaListDiv">
+    <table class="listTable">
+        <thead>
+        <tr>
+            <th>No</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="notice, noticeStat : ${noticeList}">
+                <td class="No" th:text="${pageMaker.totalCount - ((noticeStat != null ? noticeStat.index : 0) + ((scri.page != null ? scri.page : 1) - 1) * (scri.perPageNum != null ? scri.perPageNum : 10))}"></td>
+                <td class="subject"><a th:href="@{/notice/noticeContent/{id}(id=${notice.articlePk})}" th:text="${notice.title}"></a></td>
+                <td class="writer">[관리자]</td>
+                <td class="writeday" th:text="${#temporals.format(notice.regDate, 'yyyy-MM-dd')}"></td>
+            </tr>
+        </tbody>
+        <tr class="write-tr">
+            <td class="write-td" colspan="4">
+                <a href="/notice/noticeWrite"><button>글 작성</button></a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="page">
+    <ul>
+        <!-- 이전 페이지 버튼 -->
+        <li th:if="${pageMaker.prev}">
+            <a class="prev" th:href="@{/notice/noticeList(page=${pageMaker.startPage - 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">◀</a>
+        </li>
+
+        <!-- 페이지 번호 (1~10까지) -->
+        <li th:each="i : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}"
+            th:classappend="${i == scri.page} ? 'on' : ''">
+            <a th:href="@{/notice/noticeList(page=${i}, keyword=${scri.keyword}, searchType=${scri.searchType})}" th:text="${i}"></a>
+        </li>
+
+        <!-- 다음 페이지 버튼 -->
+        <li th:if="${pageMaker.next}">
+            <a class="next" th:href="@{/notice/noticeList(page=${pageMaker.endPage + 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">▶</a>
+        </li>
+    </ul>
+</div>
+
+<div th:insert="/common/footer.html"></div>
+</body>
+</html>

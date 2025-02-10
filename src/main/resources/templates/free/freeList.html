@@ -6,6 +6,10 @@
     <title>자유게시판 목록</title>
 </head>
 <body>
+<script th:if="${msg != null}" th:inline="javascript">
+    alert('[[${msg}]]'); // 작은따옴표로 문자열로 처리
+</script>
+
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
@@ -33,9 +37,9 @@
 
             <tr th:each="free : ${freeList}">
                 <td class="No" th:text="${pageMaker.totalCount - (freeStat.index + (scri.page - 1) * scri.perPageNum)}"></td>
-                <td class="subject"><a th:href="@{/free/freeContents/{id}(id=${free.articlePk})}" th:text="${free.title}"></a></td>
+                <td class="subject"><a th:href="@{/free/freeContent/{id}(id=${free.articlePk})}" th:text="${free.title}"></a></td>
                 <td class="writer" th:text = "${free.userNick}"></td>
-                <td class="writeday" th:text = "${free.regDate}"></td>
+                <td class="writeday" th:text = "${#temporals.format(free.regDate, 'yyyy-MM-dd')}"></td>
             </tr>
 
         </table>

@@ -4,34 +4,62 @@
     <meta charset="UTF-8">
     <link href="/css/notice/noticeContent.css" type="text/css" rel="stylesheet">
     <title>공지사항 내용</title>
+    <script th:if="${msg}">
+        alert("[[${msg}]]");
+    </script>
 </head>
 <body>
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
 <div class="article-container">
-    <div class="article-title">12월 1일 긴급 점검 있습니다.</div>
+    <div class="article-title" th:text="${notice.title}"></div>
+
     <div class="info-bar">
         <div class="info-left">
             <span>[관리자] |</span>
-            <span>2024-12-26 18:10:48</span>
+            <span th:text="${#temporals.format(notice.regDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
         </div>
     </div>
-    <div class="article-content">
-        점검 있습니다. 다들 접속하지 마세요
-    </div>
+    <div class="article-content" th:text="${notice.content}"></div>
+
     <div class="actions">
         <!-- 목록으로 버튼 -->
-        <a href="#" class="btn btn-left">목록</a>
-        <!-- 수정 및 삭제 버튼 -->
-        <div class="btn-group">
-            <a href="#" class="btn">수정</a>
-            <a href="#" class="btn">삭제</a>
+        <a href="/notice/noticeList" class="btn btn-left">목록</a>
+        <!-- 수정 및 삭제 버튼 (작성자만 보이도록 설정) -->
+        <div class="btn-group" th:if="${notice.userPk == session.userPk}">
+            <a th:href="@{/notice/noticeModify/{id}(id=${notice.articlePk})}" class="btn">수정</a>
+            <button type="button" class="btn del-btn" onclick="deleteNotice([[${notice.articlePk}]])">삭제</button>
         </div>
     </div>
 </div>
 
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
+
+<script>
+    function deleteNotice(articlePk) {
+        if (!confirm("정말 삭제하시겠습니까?")) {
+            return;
+        }
+
+        fetch(`/notice/noticeDeleteAction/${articlePk}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("게시글이 삭제되었습니다.");
+                    window.location.href = "/notice/noticeList";
+                } else {
+                    alert(data.message);
+                }
+            }).catch(error => {
+            alert("오류 발생: " + error);
+        });
+    }
+</script>
 </body>
 </html>

@@ -119,12 +119,12 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
     $(document).ready(function () {
         //  URL에서 날짜 가져오기
         let urlParams = new URLSearchParams(window.location.search);
         let selectedDate = urlParams.get("date"); // URL에서 date 파라미터 가져오기
-        let userPk = 1;  // 로그인된 사용자 ID
+        let userPk = [[${session.userPk}]];  // 로그인된 사용자 ID
         let mealTypes = ["breakfast", "lunch", "dinner"]; // 아침, 점심, 저녁
         let selectedMealType = ""; // 현재 선택된 식사 타입
         let activeSlot = null; // 현재 활성화된 슬롯

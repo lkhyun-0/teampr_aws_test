@@ -25,6 +25,9 @@ public class DetailDto {
     @NotNull(message = "신장은 필수 입력값입니다.") // ✅ null 허용 안 하지만 빈 문자열 허용
     private String height;
 
+    @NotNull(message = "성별은 필수 입력값입니다.") // ✅ null 허용 안 하지만 빈 문자열 허용
+    private String gender;
+
     @NotBlank(message = "질병 정보는 필수 입력값입니다.") // ✅ 필수 입력
     private String sickType;
 

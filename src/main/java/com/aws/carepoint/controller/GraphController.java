@@ -1,11 +1,11 @@
 package com.aws.carepoint.controller;
 
-
 import com.aws.carepoint.dto.GraphDto;
 import com.aws.carepoint.service.GraphService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/graph")

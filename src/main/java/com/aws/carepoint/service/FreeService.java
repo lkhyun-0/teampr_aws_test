@@ -40,9 +40,9 @@ public class FreeService {
         return result;
     }
 
-    public FreeDto getFreeContent(int articlePk) {
+    public FreeDto getFreeDetail(int articlePk) {
 
-        FreeDto free = freeMapper.getFreeContent(articlePk);
+        FreeDto free = freeMapper.getFreeDetail(articlePk);
 
         return free;
     }
@@ -53,5 +53,13 @@ public class FreeService {
 
     public int writeFree(FreeDto freeDto) {
         return freeMapper.writeFree(freeDto);
+    }
+
+    public int modifyFree(FreeDto freeDto) {
+        return freeMapper.modifyFree(freeDto);
+    }
+
+    public int deleteArticle(int articlePk) {
+        return freeMapper.deleteArticle(articlePk);
     }
 }
