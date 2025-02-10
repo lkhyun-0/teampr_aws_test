@@ -2,7 +2,6 @@ DROP DATABASE IF EXISTS `carepoint`;
 CREATE DATABASE `carepoint`;
 USE `carepoint`;
 
-<<<<<<< HEAD
 CREATE TABLE exercise_API (
                               exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                               exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
@@ -220,6 +219,3 @@ SELECT * FROM users;
 SELECT * FROM food;
 SELECT * FROM foodlist;
 
-
-
->>>>>>> df4d74ac3d213e01b1040c5f42d112331dd328d1

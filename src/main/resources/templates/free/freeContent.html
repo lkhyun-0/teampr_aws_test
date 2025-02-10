@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="/css/free/contents.css" type="text/css" rel="stylesheet">
+    <link href="/css/free/content.css" type="text/css" rel="stylesheet">
     <title>공지사항 내용</title>
 </head>
 <body>
+<script th:if="${msg != null}" th:inline="javascript">
+    alert('[[${msg}]]'); // 작은따옴표로 문자열로 처리
+</script>
+
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
@@ -17,14 +21,17 @@
             <span th:text="${#temporals.format(free.regDate, 'yy-MM-dd HH:mm:ss')}"></span>
         </div>
         <div class="info-right">
-            <span th:text="|추천 수: ${free.recom}|"></span>
+            <span id="recomCount" th:text="|추천 수: ${count}|"></span>
             <span th:text="|조회 수: ${free.viewcnt}|"></span>
         </div>
     </div>
     <div class="article-content">
+        <div class="uploaded-image" th:if="${not #strings.isEmpty(free.filename) and free.filename != 'null'}">
+            <img th:src="@{/uploads/{filename}(filename=${free.filename})}" alt="첨부된 이미지">
+        </div>
         <span th:text="${free.content}"></span>
         <div class="recommend-button">
-            <button class="thumb-btn" onclick="recom();">
+            <button class="thumb-btn" th:attr="data-id = ${free.articlePk}" onclick="recom(this);">
                 <i class="fa-solid fa-thumbs-up"></i>
             </button>
         </div>
@@ -33,9 +40,9 @@
         <!-- 목록으로 버튼 -->
         <a href="/free/freeList" class="btn btn-left">목록</a>
         <!-- 수정 및 삭제 버튼 -->
-        <div class="btn-group">
-            <a href="free/freeModify" class="btn">수정</a>
-            <a href="#" class="btn">삭제</a>
+        <div class="btn-group" th:if="${session.userPk == free.userPk}">
+            <a class="btn" th:href="@{/free/freeModify/{id}(id=${free.articlePk})}">수정</a>
+            <button class="btn" th:attr="data-id = ${free.articlePk}" onclick="deleteArticle(this)">삭제</button>
         </div>
     </div>
     <div class="comment-count">
@@ -76,7 +83,7 @@
     </div>
 </div>
 
-<script src="/js/recom.js"></script>
+<script src="/js/freeContent.js"></script>
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
 </body>

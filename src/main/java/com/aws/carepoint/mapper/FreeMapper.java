@@ -45,7 +45,7 @@ public interface FreeMapper {
             AND a.article_pk = #{articlePk}
             """)
     @ResultMap("freeResultMap")
-    FreeDto getFreeContent(int articlePk);
+    FreeDto getFreeDetail(int articlePk);
 
     @Update("""
             UPDATE article
@@ -56,7 +56,28 @@ public interface FreeMapper {
 
     @Insert("""
             INSERT INTO article (title, content, filename, user_pk, board_pk)
-            VALUES (#{title}, #{content}, #{attachfile}, 1, 2)
+            VALUES (#{title}, #{content}, #{filename}, #{userPk}, 2)
             """)
     int writeFree(FreeDto freeDto);
+
+    // 동적으로 처리하기 위해서
+    @Update("""
+                <script>
+                    UPDATE article
+                    <set>
+                        title = #{title},
+                        content = #{content},
+                        filename = COALESCE(#{filename}, 'null')
+                    </set>
+                    WHERE article_pk = #{articlePk}
+                </script>
+            """)
+    int modifyFree(FreeDto freeDto);
+
+    @Update("""
+            UPDATE article
+            SET del_status = 1
+            WHERE article_pk = #{articlePk}
+            """)
+    int deleteArticle(int articlePk);
 }
