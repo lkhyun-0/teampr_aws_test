@@ -193,9 +193,8 @@ CREATE TABLE medicine_plan
 (
     medicine_plan_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL,                                        -- 기본키
     start_date       DATE                           NOT NULL,                                        -- 시작일
-    end_date         DATE                           NOT NULL,                                        -- 끝일
-    `hour`           INT DEFAULT 0,                                                                  -- 시간
-    `minute`         INT DEFAULT 0,                                                                  -- 분
+    end_date         DATE                           NOT NULL,                                        -- 선택일
+    select_time      TIME                           NOT NULL,                                        -- 분
     medicine_pk      INT                            NOT NULL,                                        -- 외래 키 (medicine 테이블의 medicine_pk 참조)
     CONSTRAINT fk_medicine_plan_medicine FOREIGN KEY (medicine_pk) REFERENCES medicine (medicine_pk) -- 외래 키 설정
 );
@@ -206,7 +205,7 @@ CREATE TABLE hospital
     hospital_name VARCHAR(50)                         NOT NULL,                    -- 병원 이름
     latitude      VARCHAR(20),                                                     -- 위도(x)
     longitude     VARCHAR(20),                                                     -- 경도(y)
-    adress        TEXT,                                                            -- 병원 주소
+    address        TEXT,                                                            -- 병원 주소
     reg_date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,                    -- 작성일
     update_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
     user_pk       INT                                 NOT NULL,                    -- 외래 키 (users 테이블의 user_pk 참조)
@@ -217,8 +216,7 @@ CREATE TABLE hospital_plan
 (
     hospital_plan_pk INT AUTO_INCREMENT PRIMARY KEY      NOT NULL,                                   -- 기본키
     select_date      DATE                                NOT NULL,                                   -- 선택일
-    `hour`           INT       DEFAULT 0,                                                            -- 시간
-    `minute`         INT       DEFAULT 0,                                                            -- 분
+    select_time      TIME                                NOT NULL,                                   -- 분
     reg_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,                                   -- 작성일
     update_date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,                -- 수정일
     hospital_pk      INT                                 NOT NULL,                                   -- 외래 키 (hospital 테이블의 hospital_pk 참조)

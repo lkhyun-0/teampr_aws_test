@@ -38,24 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }, 0);
         },
-        events: [
-            // 예시 일정 데이터
-            {
-                title: '병원 방문',
-                start: '2025-02-10',
-                color: '#87CEEB'
-            },
-            {
-                title: '병원 방문',
-                start: '2025-02-15',
-                color: '#87CEEB'
-            },
-            {
-                title: '약 복용',
-                start: '2025-02-15',
-                end: '2025-02-20'
-            }
-        ],
+        events: "/plan/getAllPlansAjax",
         selectable: true,
         select: function (info) {
             // 상세일정 모달팝업
@@ -67,14 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let startDate = new Date(event.startStr); // 시작 날짜
                 let endDate = event.endStr ? new Date(event.endStr) : startDate; // 종료 날짜 (없으면 시작 날짜)
 
-                // 🔥 FullCalendar 특성 반영: 종료 날짜가 존재하면 하루 빼기 (표시 범위 조정)
-                if (event.endStr) {
-                    endDate.setDate(endDate.getDate() - 1);
-                }
-
-                // ✅ 정확한 범위 비교: startDate와 일치하거나, (startDate ≤ selectDate ≤ endDate)
-                return selectDate.getTime() === startDate.getTime() ||
-                    (selectDate >= startDate && selectDate <= endDate);
+                return selectDate >= startDate && selectDate < endDate;
             });
 
             if (hasEvent) {
@@ -92,12 +68,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     calendar.render();
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            $('.detail-popup').css({
-                'opacity': '0',
-                'visibility': 'hidden'
-            });
+    loadHospitalPlans(calendar);
+});
+
+// 일정 목록을 풀캘린더에 업데이트하는 함수
+function loadHospitalPlans(calendar) {
+    $.ajax({
+        url: "/plan/getAllPlansAjax",
+        type: "GET",
+        success: function (data) {
+            calendar.removeAllEvents(); // 기존 일정 제거
+            calendar.addEventSource(data); // 새로운 일정 추가
+            calendar.refetchEvents(); // 풀캘린더 새로고침
+        },
+        error: function () {
+            alert("일정 목록을 불러오는 데 실패했습니다.");
         }
     });
-});
+}

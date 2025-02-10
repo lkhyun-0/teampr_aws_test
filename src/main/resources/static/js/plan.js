@@ -21,7 +21,7 @@ function initMap() {
             error => {
                 console.error("위치 정보를 가져올 수 없습니다.", error);
             },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            {enableHighAccuracy: true, timeout: 10000, maximumAge: 0}
         );
     } else {
         alert("위치 정보를 사용할 수 없습니다.");
@@ -47,11 +47,11 @@ $("#search-button").on("click", function () {
     $.ajax({
         url: "/hospital/search",
         type: "GET",
-        data: { name: hospitalName },
+        data: {name: hospitalName},
         success: function (data) {
-            if (data.length === 0) { // ✅ 검색 결과가 빈 배열인지 확인
-                alert("해당 검색어로 병원을 찾을 수 없습니다."); // 경고창 띄우기
-                return; // 빈 결과이므로 이후 코드 실행 중단
+            if (data.length === 0) {
+                alert("검색 결과 없습니다.");
+                return;
             }
 
             console.log("검색 결과:", data);
@@ -74,12 +74,15 @@ function showHospitalList(hospitals) {
     }
 
     // 각 병원 정보를 리스트 아이템(li)로 생성
-    hospitals.forEach(function(hospital) {
+    hospitals.forEach(function (hospital) {
         // hospital 객체의 'name' 프로퍼티 사용 (서버에서 반환하는 데이터 구조에 맞게 수정)
         var $li = $('<li></li>').text(hospital.name);
         // 아이템 클릭 시 입력란에 병원명 설정 후 리스트 숨김 처리
-        $li.on('click', function() {
-            $('#hospital-info').val(hospital.name);
+        $li.on('click', function () {
+            $("#hospital-info").val(hospital.name);
+            $("#hospital-lat").val(hospital.latitude);
+            $("#hospital-lng").val(hospital.longitude);
+            $("#hospital-address").val(hospital.address);
             $list.hide();
             displayHospitalOnMap(hospital);
         });
@@ -114,6 +117,15 @@ function displayHospitalOnMap(hospital) {
     });
     infoWindow.open(map);
 }
+
+$("#hospital-info").on("blur", function () {
+    if ($("#hospital-lat").val() === "") {  // 병원 좌표가 저장되지 않았다면
+        console.log("검색되지 않은 병원: 이름만 저장");
+        $("#hospital-lat").val(null);
+        $("#hospital-lng").val(null);
+        $("#hospital-address").val(null);
+    }
+});
 
 $(".medicine-type").click(function () {
     $(".medicine-type").removeClass("selected");
@@ -151,6 +163,65 @@ $(".add-time").click(function () {
         $(this).closest(".time-list").remove();
     });
 });
+
+function hospitalSave(event) {
+    event.preventDefault(); // 기본 폼 제출 방지 (페이지 새로고침 X)
+
+    const form = document.forms["form1"];
+
+    // 유효성 검사 실행
+    if (!form.checkValidity()) {
+        return false; // 유효성 검사 실패 시 폼 제출 중단
+    }
+
+    const hospitalData = {
+        selectDate: $("#select-date").val(),
+        selectTime: $("#select-time").val(),
+        hospitalName: $("#hospital-info").val(),
+        latitude: $("#hospital-lat").val() || null,
+        longitude: $("#hospital-lng").val() || null,
+        address: $("#hospital-address").val() || null
+    };
+
+    $.ajax({
+        url: "/plan/saveHospital",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(hospitalData),
+        success: function (response) {
+            alert("일정이 등록되었습니다.");
+            let calendarEl = document.getElementById('calendar');
+            let calendar = FullCalendar.getCalendar(calendarEl);
+            loadHospitalPlans(calendar);
+        },
+        error: function (xhr) {
+            console.log("오류 상태 코드:", xhr.status);
+            console.log("오류 메시지:", xhr.responseText);
+
+            if (xhr.status === 401) {
+                alert("로그인이 필요합니다.");
+            } else {
+                alert("등록을 실패하였습니다.");
+            }
+        }
+    });
+
+    return false; // ✅ 폼 새로고침 방지
+}
+
+function loadHospitalPlans() {
+    $.ajax({
+        url: "/plan/getAllPlans", // 서버에서 최신 일정 목록 가져오기
+        type: "GET",
+        success: function (data) {
+            console.log("서버에서 받은 일정 데이터:", data);
+            updateFullCalendar(data); // ✅ 풀캘린더에 일정 업데이트
+        },
+        error: function () {
+            alert("일정 목록을 불러오는 데 실패했습니다.");
+        }
+    });
+}
 
 // 모달 닫기 함수
 window.closeModal = function () {
