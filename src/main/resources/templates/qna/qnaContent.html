@@ -15,7 +15,8 @@
     </script>
 </head>
 <body>
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 <div class="article-container">
   <div class="article-title" th:text="${qna.title}"></div>
 
@@ -45,7 +46,8 @@
     </div>
   </div>
 </div>
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 
 
 </body>

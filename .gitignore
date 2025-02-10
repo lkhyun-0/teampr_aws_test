@@ -179,5 +179,8 @@ fabric.properties
 hs_err_pid*
 replay_pid*
 
+# End of https://www.toptal.com/developers/gitignore/api/intellij,java
+
 # 로컬 DB 설정 파일 제외
 /src/main/resources/application-DB.yml
+
