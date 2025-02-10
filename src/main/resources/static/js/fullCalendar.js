@@ -67,7 +67,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 let startDate = new Date(event.startStr); // 시작 날짜
                 let endDate = event.endStr ? new Date(event.endStr) : startDate; // 종료 날짜 (없으면 시작 날짜)
 
-                return selectDate >= startDate && selectDate < endDate;
+                // 🔥 FullCalendar 특성 반영: 종료 날짜가 존재하면 하루 빼기 (표시 범위 조정)
+                if (event.endStr) {
+                    endDate.setDate(endDate.getDate() - 1);
+                }
+
+                // ✅ 정확한 범위 비교: startDate와 일치하거나, (startDate ≤ selectDate ≤ endDate)
+                return selectDate.getTime() === startDate.getTime() ||
+                    (selectDate >= startDate && selectDate <= endDate);
             });
 
             if (hasEvent) {
@@ -85,4 +92,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     calendar.render();
 
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            $('.detail-popup').css({
+                'opacity': '0',
+                'visibility': 'hidden'
+            });
+        }
+    });
 });

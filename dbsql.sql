@@ -180,14 +180,13 @@ CREATE TABLE exercise_API
 
 CREATE TABLE medicine
 (
-    medicine_pk   INT AUTO_INCREMENT PRIMARY KEY       NOT NULL,                    -- 기본키
-    check_status  TINYINT(1) DEFAULT 0                 NOT NULL,                    -- 즐겨찾기 등록 여부 ( 0= 등록 전, 1= 등록 후)
-    medicine_name VARCHAR(50)                          NOT NULL,                    -- 약 이름
-    medicine_type SMALLINT(2)                          NOT NULL,                    -- 약 유형 (1 = 경구약, 2 = 주사)
-    reg_date      TIMESTAMP  DEFAULT CURRENT_TIMESTAMP NOT NULL,                    -- 작성일
-    update_date   TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
-    user_pk       INT                                  NOT NULL,                    -- 외래 키 (users 테이블의 user_pk 참조)
-    CONSTRAINT fk_medicine_users FOREIGN KEY (user_pk) REFERENCES users (user_pk)   -- 외래 키 설정
+    medicine_pk   INT AUTO_INCREMENT PRIMARY KEY      NOT NULL,                    -- 기본키
+    medicine_name VARCHAR(50)                         NOT NULL,                    -- 약 이름
+    medicine_type SMALLINT(2)                         NOT NULL,                    -- 약 유형 (1 = 경구약, 2 = 주사)
+    reg_date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,                    -- 작성일
+    update_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
+    user_pk       INT                                 NOT NULL,                    -- 외래 키 (users 테이블의 user_pk 참조)
+    CONSTRAINT fk_medicine_users FOREIGN KEY (user_pk) REFERENCES users (user_pk)  -- 외래 키 설정
 );
 
 CREATE TABLE medicine_plan
@@ -203,16 +202,15 @@ CREATE TABLE medicine_plan
 
 CREATE TABLE hospital
 (
-    hospital_pk   INT AUTO_INCREMENT PRIMARY KEY       NOT NULL,                    -- 기본키
-    check_status  TINYINT(1) DEFAULT 0                 NOT NULL,                    -- 즐겨찾기 등록 여부 ( 0= 등록 전, 1= 등록 후)
-    hospital_name VARCHAR(50)                          NOT NULL,                    -- 병원 이름
-    latitude      VARCHAR(20),                                                      -- 위도(x)
-    longitude     VARCHAR(20),                                                      -- 경도(y)
-    adress        TEXT,                                                             -- 병원 주소
-    reg_date      TIMESTAMP  DEFAULT CURRENT_TIMESTAMP NOT NULL,                    -- 작성일
-    update_date   TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
-    user_pk       INT                                  NOT NULL,                    -- 외래 키 (users 테이블의 user_pk 참조)
-    CONSTRAINT fk_hospital_users FOREIGN KEY (user_pk) REFERENCES users (user_pk)   -- 외래 키 설정
+    hospital_pk   INT AUTO_INCREMENT PRIMARY KEY      NOT NULL,                    -- 기본키
+    hospital_name VARCHAR(50)                         NOT NULL,                    -- 병원 이름
+    latitude      VARCHAR(20),                                                     -- 위도(x)
+    longitude     VARCHAR(20),                                                     -- 경도(y)
+    adress        TEXT,                                                            -- 병원 주소
+    reg_date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,                    -- 작성일
+    update_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
+    user_pk       INT                                 NOT NULL,                    -- 외래 키 (users 테이블의 user_pk 참조)
+    CONSTRAINT fk_hospital_users FOREIGN KEY (user_pk) REFERENCES users (user_pk)  -- 외래 키 설정
 );
 
 CREATE TABLE hospital_plan
@@ -221,12 +219,21 @@ CREATE TABLE hospital_plan
     select_date      DATE                                NOT NULL,                                   -- 선택일
     `hour`           INT       DEFAULT 0,                                                            -- 시간
     `minute`         INT       DEFAULT 0,                                                            -- 분
-    reg_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,                                -- 작성일
-    update_date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,           -- 수정일
+    reg_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,                                   -- 작성일
+    update_date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,                -- 수정일
     hospital_pk      INT                                 NOT NULL,                                   -- 외래 키 (hospital 테이블의 hospital_pk 참조)
     CONSTRAINT fk_hospital_plan_hospital FOREIGN KEY (hospital_pk) REFERENCES hospital (hospital_pk) -- 외래 키 설정
 );
 
+CREATE TABLE hospital_api
+(
+    hospital_api_pk INT AUTO_INCREMENT PRIMARY KEY,
+    hospital_name   VARCHAR(255) NOT NULL,
+    address         VARCHAR(500),
+    latitude        DECIMAL(10, 8),
+    longitude       DECIMAL(11, 8),
+    place_id        VARCHAR(255) UNIQUE
+);
 ======= users 샘플데이터 =======
 INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
 VALUES (7, 0, '22na', '1234', '이인아', '22na', '010-1111-1111', '22na@naver.com');

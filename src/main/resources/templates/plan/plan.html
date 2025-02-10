@@ -31,7 +31,7 @@
                 </tr>
                 <tr>
                     <th>병원 위치</th>
-                    <td><div id="map"></div></td>
+                    <td><div id="hospital-map"></div></td>
                 </tr>
             </table>
             <button class="btn delete-btn" onclick="">삭제</button>
@@ -74,12 +74,12 @@
             <div class="plan-title">🏥 병원 일정 입력하기</div>
             <div class="plan-content">
                 <div class="plan-favorite">
-                    즐겨찾기 <img class="star" src="/images/star.jpg" alt="">
+                    최근 일정 <img class="star" src="/images/star.jpg" alt="">
                 </div>
                 <div class="favorite-list">
-                    <a href="#">대전우리병원</a>
-                    <a href="#">대전센텀병원</a>
-                    <a href="#">대전을지대학교병원</a>
+                    <button>대전우리병원</button>
+                    <button>대전센텀병원</button>
+                    <button>대전을지대학교병원</button>
                 </div>
                 <div class="plan-input">
                     <form name="form1" action="">
@@ -89,13 +89,16 @@
                         </div>
                         <div class="time-input">
                             <label for="select-time">시간 :</label>
-                            <input type="time" id="select-time" name="select-time" step="900" required>
+                            <input type="time" id="select-time" name="select-time" required>
                         </div>
                         <div class="info-input">
                             <label for="hospital-info">병원정보 :</label>
                             <input type="text" id="hospital-info" name="hospital-info" placeholder="병원 이름 입력" required>
+                            <button type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            <div><ul id="hospital-list" style="display:none;"></ul></div>
+                            <div id="map" style="width: 100%; height: 300px; margin-top: 10px;"></div>
                         </div>
-                        <button class="btn" onclick="save();">저장</button>
+                        <button class="btn" onclick="hospitalSave();">등록</button>
                     </form>
                 </div>
             </div>
@@ -104,11 +107,11 @@
             <div class="plan-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 약 일정 입력하기</div>
             <div class="plan-content">
                 <div class="plan-favorite">
-                    즐겨찾기 <img src="/images/star.jpg" alt="">
+                    최근 일정 <img src="/images/star.jpg" alt="">
                 </div>
                 <div class="favorite-list">
-                    <a href="#">당뇨약</a>
-                    <a href="#">감기약</a>
+                    <button>당뇨약</button>
+                    <button>감기약</button>
                 </div>
                 <div class="plan-input">
                     <form name="form2" action="">
@@ -125,18 +128,18 @@
                             <div class="time-container"></div>
                         </div>
                         <div class="name-input">
-                            <label for="medicine-name">약이름 :</label>
+                            <label for="medicine-name">약 이름 :</label>
                             <input type="text" id="medicine-name" name="medicine-name" placeholder="약 이름 입력" required>
                         </div>
                         <div class="type-input">
-                            <label>약유형 :</label>
+                            <label>약 유형 :</label>
                             <input type="hidden" id="medicineType" name="medicineType">
                             <div class="medicine-types">
                                 <img src="/images/medicine.jpg" alt="약" class="medicine-type" data-type="medicine">
                                 <img src="/images/syringe.jpg" alt="주사기" class="medicine-type" data-type="syringe">
                             </div>
                         </div>
-                        <button class="btn" type="submit" onclick="save();">저장</button>
+                        <button class="btn" type="submit" onclick="medicineSave();">등록</button>
                     </form>
                 </div>
             </div>
@@ -150,7 +153,10 @@
 <!--js-->
 <script src="/js/fullCalendar.js"></script>
 <script src="/js/plan.js"></script>
-<script src="/js/hospital.js"></script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8Lr0W0_S0gchFmLITwOCGGDrjiZCav1E&libraries=places&callback=initMap">
+</script>
 
 </body>
 </html>
