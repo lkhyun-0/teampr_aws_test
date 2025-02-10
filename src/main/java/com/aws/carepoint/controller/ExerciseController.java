@@ -33,38 +33,21 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
+    // 운동 메인페이지
     @GetMapping("/exerciseMain")
     public String exerciseMain() {
 
         return "exercise/exerciseMain";
     }
 
-    @ResponseBody
-    @PostMapping("/saveGraph")
-    public ResponseEntity<String> saveGraph(@RequestBody GraphDto graphDto) {
-        exerciseService.saveGraph(graphDto);
-        return ResponseEntity.ok("오늘의 수치가 저장되었습니다.");
-    }
-
-    @ResponseBody
-    @PostMapping("/saveTarget")
-    public ResponseEntity<Map<String, String>> saveTarget(@RequestBody TargetDto targetDto) {
-        exerciseService.saveTarget(targetDto);
-
-        // 응답을 JSON 형태로 반환
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "이번 주 목표가 저장되었습니다.");
-
-        return ResponseEntity.ok(response);
-    }
-
     // 운동 목록 불러오기 API
     @ResponseBody
-    @GetMapping("/list")
-    public List<ExerciseApiDto> getExerciseList() {
-        return exerciseService.getExerciseList();
+    @GetMapping("/apiList")
+    public List<ExerciseApiDto> apiList() {
+        return exerciseService.getExerciseApiList();
     }
 
+    // 운동 정보 저장하기
     @ResponseBody
     @PostMapping("/saveExercise")
     public ResponseEntity<Map<String, String>> saveExercise(@RequestBody ExerciseDto exerciseDto) {
@@ -84,14 +67,11 @@ public class ExerciseController {
         return exerciseService.getAllExercises();
     }
 
-    // 이번주 목표 데이터 가져오기
-    @GetMapping("/current-week")
-    public ResponseEntity<TargetDto> getCurrentWeekTarget(@RequestParam("userPk") int userPk) {
-        TargetDto targetDto = exerciseService.getCurrentWeekTarget(userPk);
-        if (targetDto == null) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(targetDto);
+    // 해당 회원이 운동 기록한 횟수 가져오기
+    @ResponseBody
+    @GetMapping("/count")
+    public int getExerciseCount(@RequestParam("userPk") int userPk) {
+        return exerciseService.getExerciseCount(userPk);
     }
 
 

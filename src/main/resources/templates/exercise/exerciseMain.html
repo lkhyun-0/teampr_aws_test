@@ -186,7 +186,8 @@
           .then(exerciseList => {
             exerciseList.forEach(exercise => {
               calendar.addEvent({
-                title: `운동 종목: ${exercise.exerciseName}<br>운동 시간: ${exercise.hour}시간 ${exercise.minute}분<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal`,
+                title: `운동 종목: ${exercise.exerciseName}<br>운동 시간: ${exercise.hour}시간 ${exercise.minute}분<br>`+
+                        `총 소모 칼로리: <b class="highlight-kcal">${exercise.kcal}</b>kcal`,
                 start: exercise.regDate,
                 extendedProps: {
                   icon: '/images/운동일러.jpg',
@@ -224,29 +225,50 @@
         const exerciseTimeHour = document.querySelector("#hour");
         const exerciseTimeMinute = document.querySelector("#minute");
         const saveExerciseBtn = document.querySelector(".exercise-save");
+        const exerciseSearchInput = document.querySelector("#exercise-search");
         let selectedExercise = "";
         let selectedMet = 0; // MET 저장 변수
+        let exerciseList = []; // 운동 리스트 저장
 
         // 📌 운동명 리스트 가져오기 (API 호출)
-        fetch('/exercise/list')
+        fetch('/exercise/apiList')
                 .then(response => response.json())
-                .then(exerciseList => {
-                  const exerciseContainer = document.querySelector(".exercise-type-popup__body");
-                  exerciseContainer.innerHTML = "";
-
-                  exerciseList.forEach(exercise => {
-                    const exerciseDiv = document.createElement("div");
-                    exerciseDiv.classList.add("exercise-item");
-                    exerciseDiv.innerHTML =
-                            `<div>${exercise.exerciseName}</div>
-                    <input type="hidden" value="${exercise.metValue}">`;
-                    // 클릭 시 선택된 운동 저장
-                    exerciseDiv.dataset.exerciseName = exercise.exerciseName;
-                    exerciseDiv.dataset.metValue = exercise.metValue;
-                    exerciseContainer.appendChild(exerciseDiv);
-                  });
+                .then(data => {
+                  exerciseList = data; // 전체 리스트 저장
+                  renderExerciseList(""); // 초기 전체 목록 표시
                 })
                 .catch(error => console.error("Error fetching exercises:", error));
+
+        // 📌 운동 목록을 화면에 렌더링하는 함수
+        function renderExerciseList(searchTerm) {
+          const exerciseContainer = document.querySelector(".exercise-type-popup__body");
+          exerciseContainer.innerHTML = "";
+
+          // 검색어 필터링
+          const filteredExercises = exerciseList.filter(exercise =>
+                  exercise.exerciseName.includes(searchTerm) // 검색어가 포함된 운동만 필터링
+          );
+
+          // 필터링된 운동 리스트 표시
+          filteredExercises.forEach(exercise => {
+            const exerciseDiv = document.createElement("div");
+            exerciseDiv.classList.add("exercise-item");
+            exerciseDiv.innerHTML =
+                    `<div>${exercise.exerciseName}</div>
+                     <input type="hidden" value="${exercise.metValue}">`;
+
+            // 클릭 시 선택된 운동 저장
+            exerciseDiv.dataset.exerciseName = exercise.exerciseName;
+            exerciseDiv.dataset.metValue = exercise.metValue;
+
+            exerciseContainer.appendChild(exerciseDiv);
+          });
+        }
+
+        // 📌 운동 검색 기능 (입력할 때마다 필터링)
+        exerciseSearchInput.addEventListener("input", function () {
+          renderExerciseList(this.value.trim());
+        });
 
         // 📌 운동 클릭 시 선택
         document.querySelector(".exercise-type-popup__body").addEventListener("click", function (event) {
@@ -314,7 +336,8 @@
 
             // ✅ 새로운 이벤트 객체 생성
             let newEvent = {
-              title: `운동 종목: ${selectedExercise}<br>운동 시간: ${hour}시간 ${minute}분<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal`,
+              title: `운동 종목: ${selectedExercise}<br>운동 시간: ${hour}시간 ${minute}분<br>`+
+                      `총 소모 칼로리: <b class="highlight-kcal">${exercise.kcal}</b>kcal`,
               start: today,
               extendedProps: {
                 icon: '/images/운동일러.jpg',
@@ -332,7 +355,8 @@
                     .then(exerciseList => {
                       exerciseList.forEach(exercise => {
                         calendar.addEvent({
-                          title: `운동 종목: ${exercise.exerciseName}<br>운동 시간: ${exercise.hour}시간 ${exercise.minute}분<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal`,
+                          title: `운동 종목: ${exercise.exerciseName}<br>운동 시간: ${exercise.hour}시간 ${exercise.minute}분<br>`+
+                                  `총 소모 칼로리: <b class="highlight-kcal">742</b>kcal`,
                           start: exercise.regDate,
                           extendedProps: {
                             icon: '/images/운동일러.jpg',
@@ -397,7 +421,7 @@
         };
 
         // 서버로 데이터 전송
-        fetch('/exercise/saveGraph', {
+        fetch('/graph/saveGraph', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -456,7 +480,7 @@
         };
 
         // 서버로 데이터 전송
-        fetch('/exercise/saveTarget', {
+        fetch('/target/saveTarget', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -478,35 +502,45 @@
         .catch(error => console.error('Error:', error));
       }
 
+      // 이번주 목표 받아오기
       document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("target-form").addEventListener("submit", targetSaveCheck);
         const userPk = 2; // 현재 사용자 ID (실제 구현 시 세션에서 가져오기)
-        fetch(`/exercise/current-week?userPk=${userPk}`)
-                .then(response => {
-                  if (!response.ok) throw new Error("No target data available");
-                  return response.json();
+
+        // ✅ 운동 기록 횟수 가져오기
+        fetch(`/exercise/count?userPk=${userPk}`)
+                .then(response => response.json())
+                .then(count => {
+                  document.getElementById("exercise-count").textContent = `${count}회`; // 운동 기록 횟수 업데이트
                 })
-                .then(data => {
-                  if (!data) return;
+                .catch(error => console.error("Error fetching exercise count:", error));
 
-                  // ✅ 운동 횟수 반영
-                  document.querySelector(".target-1 .current").textContent = `${data.exerciseCount}회`;
-                  document.querySelector(".target-1 .goal").textContent = `${data.exerciseTarget}회`;
+        fetch(`/target/current-week?userPk=${userPk}`)
+          .then(response => {
+            if (!response.ok) throw new Error("No target data available");
+            return response.json();
+          })
+          .then(data => {
+            if (!data) return;
 
-                  // ✅ 수치 기록 횟수 반영
-                  document.querySelector(".target-2 .current").textContent = `${data.valueCount}회`;
-                  document.querySelector(".target-2 .goal").textContent = `${data.valueTarget}회`;
+            // ✅ 운동 횟수 반영
+            document.querySelector(".target-1 .current").textContent = `${data.exerciseCount.toLocaleString()}회`;
+            document.querySelector(".target-1 .goal").textContent = `${data.exerciseTarget.toLocaleString()}회`;
 
-                  // ✅ 칼로리 소모량 반영
-                  document.querySelector(".target-3 .current").textContent = `${data.kcalSum}kcal`;
-                  document.querySelector(".target-3 .goal").textContent = `${data.kcalTarget}kcal`;
+            // ✅ 수치 기록 횟수 반영
+            document.querySelector(".target-2 .current").textContent = `${data.valueCount.toLocaleString()}회`;
+            document.querySelector(".target-2 .goal").textContent = `${data.valueTarget.toLocaleString()}회`;
 
-                  // ✅ 진행 바 업데이트
-                  updateProgress(".target-1 .target-progress", data.exerciseCount, data.exerciseTarget);
-                  updateProgress(".target-2 .target-progress", data.valueCount, data.valueTarget);
-                  updateProgress(".target-3 .target-progress", data.kcalSum, data.kcalTarget);
-                })
-                .catch(error => console.error("Error loading target data:", error));
+            // ✅ 칼로리 소모량 반영 (천 단위 쉼표 포함)
+            document.querySelector(".target-3 .current").textContent = `${data.kcalSum.toLocaleString()}kcal`;
+            document.querySelector(".target-3 .goal").textContent = `${data.kcalTarget.toLocaleString()}kcal`;
+
+            // ✅ 진행 바 업데이트
+            updateProgress(".target-1 .target-progress", data.exerciseCount, data.exerciseTarget);
+            updateProgress(".target-2 .target-progress", data.valueCount, data.valueTarget);
+            updateProgress(".target-3 .target-progress", data.kcalSum, data.kcalTarget);
+          })
+          .catch(error => console.error("Error loading target data:", error));
       });
 
       // ✅ 목표 진행 바 업데이트 함수
@@ -517,6 +551,9 @@
         const percentage = goal === 0 ? 0 : (current / goal) * 100;
         progressBar.style.width = `${percentage}%`;
       }
+
+      // 특정 회원이 운동 기록한 횟수 가져오기
+
     </script>
 </head>
 <body>
@@ -544,7 +581,8 @@
             <input type="number" name="value_target" min="0" step="1"> 회
           </li>
           <li>
-            이번 주 소모 칼로리 목표 : <input type="number" name="kcal_target" min="0" step="1"> kcal
+            이번 주 소모 칼로리 목표 :
+            <input type="number" name="kcal_target" min="0" step="1"> kcal
           </li>
         </ul>
         <button type="submit" class="target-save-btn" onclick="targetSaveCheck()">저 장</button>
@@ -581,11 +619,12 @@
           <div><span>이번 주 운동 횟수</span></div>
           <div>
             <div class="target-values">
-              <span class="current">1회</span>
-              <span class="goal">3회</span>
+              <span class="current">0회</span>
+              <span class="goal">0회</span>
             </div>
             <div class="target-bar">
               <div class="target-progress"></div>
+              <div class="success-stamp">SUCCESS</div> <!-- ✅ 도장 효과 추가 -->
             </div>
           </div>
         </div>
@@ -593,11 +632,12 @@
           <div><span>이번 주 수치 기록 횟수</span></div>
           <div>
             <div class="target-values">
-              <span class="current">1회</span>
-              <span class="goal">3회</span>
+              <span class="current">0회</span>
+              <span class="goal">0회</span>
             </div>
             <div class="target-bar">
               <div class="target-progress"></div>
+              <div class="success-stamp">SUCCESS</div> <!-- ✅ 도장 효과 추가 -->
             </div>
           </div>
         </div>
@@ -605,11 +645,12 @@
           <div><span>이번 주 칼로리 소모량</span></div>
           <div>
             <div class="target-values">
-              <span class="current">742kcal</span>
-              <span class="goal">2,000kcal</span>
+              <span class="current">0kcal</span>
+              <span class="goal">0kcal</span>
             </div>
             <div class="target-bar">
               <div class="target-progress"></div>
+              <div class="success-stamp">SUCCESS</div> <!-- ✅ 도장 효과 추가 -->
             </div>
           </div>
         </div>
@@ -621,9 +662,9 @@
       <div class="graph">
         <form name="graph-frm">
           <ul>
-            <li>혈당 <input type="text" id="blood_sugar" name="blood_sugar" required> mg/dL</li>
-            <li>혈압 <input type="text" id="blood_press" name="blood_press" required> mmHg</li>
-            <li>몸무게 <input type="text" id="weight" name="weight" class="weight" required> kg</li>
+            <li>혈당 <input type="number" id="blood_sugar" name="blood_sugar" required> mg/dL</li>
+            <li>혈압 <input type="number" id="blood_press" name="blood_press" required> mmHg</li>
+            <li>몸무게 <input type="number" id="weight" name="weight" class="weight" required> kg</li>
           </ul>
           <button type="button" class="save-button" onclick="graphSaveCheck()">저 장</button>
         </form>
@@ -634,8 +675,8 @@
           <span>내가 운동 기록한 횟수 <i class="fa-solid fa-medal"></i> </span>
         </div>
         <div class="cumulative-total">
-          <span>32회</span>
-          <span>151회</span>
+          <span id="weekly-goal-count">32회</span>
+          <span id="exercise-count">0회</span>
         </div>
       </div>
     </div>
