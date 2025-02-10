@@ -21,7 +21,7 @@
             <span th:text="${#temporals.format(free.regDate, 'yy-MM-dd HH:mm:ss')}"></span>
         </div>
         <div class="info-right">
-            <span id="recomCount" th:text="|추천 수: ${count}|"></span>
+            <span id="recomCount" th:text="|추천 수: ${recomcount}|"></span>
             <span th:text="|조회 수: ${free.viewcnt}|"></span>
         </div>
     </div>
@@ -45,45 +45,39 @@
             <button class="btn" th:attr="data-id = ${free.articlePk}" onclick="deleteArticle(this)">삭제</button>
         </div>
     </div>
-    <div class="comment-count">
-        전체 댓글 (15개)
-    </div>
-    <form action="">
-        <div class="comment-writer">작성자</div>
+    <div class="comment-count" th:text="|전체 댓글(${cmtcount}개)|"></div>
+    <form name="commentForm">
+        <div class="comment-writer" th:text="${session.userPk != null ? session.userNick : '작성자'}"></div>
         <div class="comment-box">
             <input type="text" class="comment-input" placeholder="댓글을 입력하세요">
-            <button class="comment-submit">등록</button>
+            <button type="button" id="comment-submit" class="comment-submit">등록</button>
         </div>
     </form>
     <div class="comment-list">
-        <div class="comment-item">
+        <div class="comment-item" th:each="clist : ${clist}">
             <!-- 왼쪽: 작성자와 내용 -->
             <div class="comment-left">
-                <div class="comment-author">유진</div>
-                <div class="comment-text">저도 건강 챙기면서 ...</div>
+                <div class="comment-author" th:text="${clist.userNick}"></div>
+                <div class="comment-text" th:text="${clist.content}"></div>
             </div>
             <!-- 오른쪽: 작성일과 삭제 버튼 -->
             <div class="comment-right">
-                <div class="comment-date">2024-12-26 13:48:55</div>
-                <button class="comment-delete">×</button>
-            </div>
-        </div>
-        <div class="comment-item">
-            <!-- 왼쪽: 작성자와 내용 -->
-            <div class="comment-left">
-                <div class="comment-author">아영</div>
-                <div class="comment-text">화이팅입니다!</div>
-            </div>
-            <!-- 오른쪽: 작성일과 삭제 버튼 -->
-            <div class="comment-right">
-                <div class="comment-date">2024-12-26 13:48:55</div>
-                <button class="comment-delete">×</button>
+                <div class="comment-date" th:text="${#temporals.format(clist.regDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
+                <button class="comment-delete" th:if="${session.userPk == clist.userPk}" th:attr="data-id = ${clist.commentPk}" onclick="deleteComment(this)">×</button>
             </div>
         </div>
     </div>
 </div>
 
+<script th:inline="javascript">
+    window.articlePk = [[${free.articlePk}]]; // 게시물 ID
+    window.userPk = [[${session.userPk != null ? session.userPk : 'null'}]]; // 사용자 ID
+</script>
+
+<!--js-->
 <script src="/js/freeContent.js"></script>
+<script src="/js/comment.js"></script>
+
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
 </body>

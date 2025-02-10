@@ -1,6 +1,8 @@
 package com.aws.carepoint.controller;
 
+import com.aws.carepoint.dto.CommentDto;
 import com.aws.carepoint.dto.FreeDto;
+import com.aws.carepoint.service.CommentService;
 import com.aws.carepoint.service.FreeService;
 import com.aws.carepoint.service.RecommendService;
 import com.aws.carepoint.util.SearchCriteria;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,6 +35,9 @@ public class FreeController {
 
     @Autowired
     private RecommendService recommendService;
+
+    @Autowired
+    private CommentService commentService;
 
     @Value("${file.upload-dir}") // application.yml에서 설정 값 가져오기
     private String uploadDir;
@@ -55,11 +61,20 @@ public class FreeController {
         int value = freeService.addviewcnt(articlePk);
 
         if (value > 0) {
-            int count = recommendService.getRecommendCount(articlePk);
+            //추천
+            int recomcount = recommendService.getRecommendCount(articlePk);
+
+            // 댓글
+            List<CommentDto> clist = commentService.getComment(articlePk);
+            int cmtcount = clist.size();
+
+            // 게시글
             FreeDto free = freeService.getFreeDetail(articlePk);
 
             model.addAttribute("free", free);
-            model.addAttribute("count", count);
+            model.addAttribute("clist", clist);
+            model.addAttribute("cmtcount", cmtcount);
+            model.addAttribute("recomcount", recomcount);
         } else {
             return "free/freeList";
         }
