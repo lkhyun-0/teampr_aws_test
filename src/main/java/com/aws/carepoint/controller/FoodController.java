@@ -31,13 +31,6 @@ public class FoodController {
         return "food/foodRecord"; // templates/food/foodRecord.html
     }
 
-    // 📌 특정 사용자의 식단 목록 조회
-//    @GetMapping("/foodList")
-//    @ResponseBody
-//    public List<Food> getFoodList(@RequestParam("userPk") int userPk) {
-//        return foodService.getFoodList(userPk);
-//    }
-
     // 사용자가 브라우저에서 /food/foodList 방문 시, HTML 반환
     @GetMapping("/foodList")
     public String showListPage() {

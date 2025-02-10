@@ -65,6 +65,7 @@
           <th>음식명</th>
           <th>칼로리</th>
           <th>영양정보</th>
+          <th>g</th>
         </tr>
         </thead>
         <tbody>
@@ -157,6 +158,10 @@
                             <td>${food.menu}</td>
                             <td>${food.kcal} kcal</td>
                             <td>단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</td>
+                            <td>
+                                <input type="number" class="food-amount" value="100" min="1" step="10"> g
+                            </td>
+                            <td><button class="add-food">추가</button></td>
                         </tr>
                     `;
             tableBody.append(row);
@@ -171,27 +176,31 @@
     });
 
     // 검색 결과 클릭 시 선택 메뉴에 추가
-    $(".search-results").on("click", "tr", function () {
-      let foodName = $(this).data("menu");
-      let kcal = $(this).data("kcal");
-      let protein = $(this).data("protein");
-      let carbohydrate = $(this).data("carb");
-      let fat = $(this).data("fat");
+    $(".search-results").on("click", ".add-food", function () {
+      let row = $(this).closest("tr");
+      let foodName = row.data("menu");
+      let kcalPer100g = row.data("kcal");
+      let proteinPer100g = row.data("protein");
+      let carbohydratePer100g = row.data("carb");
+      let fatPer100g = row.data("fat");
+
+      let userAmount = row.find(".food-amount").val(); // 사용자가 입력한 g 단위
+      let ratio = userAmount / 100; // 100g 대비 비율 계산
+
+      let kcal = (kcalPer100g * ratio).toFixed(1);
+      let protein = (proteinPer100g * ratio).toFixed(1);
+      let carbohydrate = (carbohydratePer100g * ratio).toFixed(1);
+      let fat = (fatPer100g * ratio).toFixed(1);
 
       const selectedText = `
-            <span>${foodName}</span>
-            <span>${kcal} kcal</span>
-            <span class="small-text">단백질: ${protein}g | 탄수화물: ${carbohydrate}g | 지방: ${fat}g</span>
-        `;
+        <span>${foodName} (${userAmount}g)</span>
+        <span>${kcal} kcal</span>
+        <span class="small-text">단백질: ${protein}g | 탄수화물: ${carbohydrate}g | 지방: ${fat}g</span>
+    `;
 
-      if (activeSlot) {
-        activeSlot.html(selectedText);
-        activeSlot = null;
-      } else {
-        const emptySlot = $(".selected-menu li:empty").first();
-        if (emptySlot.length > 0) {
-          emptySlot.html(selectedText);
-        }
+      const emptySlot = $(".selected-menu li:empty").first();
+      if (emptySlot.length > 0) {
+        emptySlot.html(selectedText);
       }
     });
 
@@ -210,11 +219,12 @@
       $(".selected-menu li").each(function () {
         if ($(this).html().trim() !== "") {
           let foodData = {
-            menu: $(this).find("span:nth-child(1)").text(),
-            kcal: parseInt($(this).find("span:nth-child(2)").text().replace(" kcal", "")),
+            menu: $(this).find("span:nth-child(1)").text().split(" (")[0], // 음식명
+            amount: parseFloat($(this).find("span:nth-child(1)").text().match(/\((\d+)g\)/)[1]), // 입력한 g 수량
+            kcal: parseFloat($(this).find("span:nth-child(2)").text().replace(" kcal", "")),
             protein: parseFloat($(this).find(".small-text").text().match(/단백질: ([0-9.]+)g/)[1]),
             carbohydrate: parseFloat($(this).find(".small-text").text().match(/탄수화물: ([0-9.]+)g/)[1]),
-            fat: parseFloat($(this).find(".small-text").text().match(/지방: ([0-9.]+)g/)[1])
+            fat: parseFloat($(this).find(".small-text").text().match(/지방: ([0-9.]+)g/)[1]),
           };
           selectedFoods.push(foodData);
         }
