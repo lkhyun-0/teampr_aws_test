@@ -15,14 +15,24 @@
     <div class="header-container">
         <div class="header-logo">
             <!-- 로고 -->
-            <a href="/index.html">
+            <a href="/user/mainPage">
                 <img src="/images/logo.jpg" class="logo-img">
             </a>
         </div>
         <div class="header-menu">
-            <ul>
-                <li><a href="#">회원가입</a></li>
-                <li><a href="#">로그인</a></li>
+            <ul id="header-menu-list">
+
+                <li id="signup-menu"><a href="/user/signUp">회원가입</a></li>
+                <li id="login-menu"><a href="/user/signIn">로그인</a></li>
+
+                <!-- 로그인한 경우에만 마이페이지 & 로그아웃 버튼 표시 -->
+                <li id="mypage-menu" style="display: none;"><a href="/user/myPage">마이페이지</a></li>
+                <li id="logout-menu" style="display: none;">
+                    <a href="#" id="logout-btn">로그아웃</a>
+                </li>
+
+
+
                 <li>
                     <button class="category-btn">
                         <i class="fa-solid fa-bars"></i>
@@ -30,6 +40,7 @@
                 </li>
             </ul>
         </div>
+
     </div>
 </section>
 
@@ -46,7 +57,7 @@
                 <li><a href="#">운동</a></li>
                 <li><a href="#">식단</a></li>
                 <li><a href="#">병원/약 일정 관리</a></li>
-                <li><a href="#">질병 자가진단</a></li>
+                <li><a href="user/selfCheckList">질병 자가진단</a></li>
                 <li><a href="#">가까운 병원 찾기</a></li>
                 <li><a href="#">자유게시판</a></li>
                 <li><a href="#">Q&A</a></li>
@@ -54,7 +65,7 @@
             </ul>
         </div>
         <div class="popup__foot">
-            <a href="#">로그인</a> / <a href="#">회원가입</a>
+            <a href="/user/signIn" id="category-login">로그인</a> / <a href="/user/signUp" id="category-signup">회원가입</a>
         </div>
     </div>
 </div>
@@ -83,5 +94,6 @@
     });
 
 </script>
+<script src="/js/header-footer.js"></script>
 </body>
 </html>

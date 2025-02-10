@@ -150,7 +150,7 @@
     width: 165px;
     height: 25px;
     margin-left: 60px; /* 텍스트와 입력 필드 사이 간격 */
-    border: 1px solid lightgray; /* 기본 테두리 색상 */
+    border: 2px solid lightgray; /* 기본 테두리 색상 */
     border-radius: 5px; /* 모서리 둥글게 */
     padding: 5px;
     outline: none; /* 기본 outline 제거 */
@@ -285,39 +285,39 @@
     text-align: center;
 }
 
-.target-popup__body > ul {
+.target-popup__body ul {
     text-align: left;
 }
 
-.target-popup__body > ul > li {
+.target-popup__body ul li {
     margin-bottom: 50px;
     margin-left: 30px;
 }
 
-.target-popup__body > ul > li > input {
+.target-popup__body ul li input {
     width: 100px;
     height: 15px;
     margin-left: 30px; /* 텍스트와 입력 필드 사이 간격 */
-    border: 1px solid lightgray; /* 기본 테두리 색상 */
+    border: 2px solid lightgray; /* 기본 테두리 색상 */
     border-radius: 5px; /* 모서리 둥글게 */
     padding: 5px;
     outline: none; /* 기본 outline 제거 */
 }
 
-.target-popup__body > ul > li:nth-child(1) > input {
+.target-popup__body ul li:nth-child(1) input {
     margin-left: 65px;
 }
 
-.target-popup__body > ul > li:nth-child(3) > input {
+.target-popup__body ul li:nth-child(3) input {
     margin-left: 50px;
 }
 
-.target-popup__body > ul > li > input:focus {
+.target-popup__body ul li input:focus {
     border: 2px solid #A4A4A4; /* 포커스 시 테두리 색상 변경 */
     outline: none; /* 기본 포커스 라인 제거 */
 }
 
-.target-popup__body > .target-save-btn {
+.target-popup__body .target-save-btn {
     width: 100px;
     height: 30px;
 }
@@ -358,6 +358,16 @@
     border-radius: 50%;
     cursor: pointer;
     font-weight: lighter;
+}
+
+#selected-exercise {
+    margin-left: 20px;
+    font-weight: bold;
+    background-color: #6495ED;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px 5px 10px;
+    display: none;
 }
 
 .exercise-time {
@@ -472,41 +482,51 @@
 }
 
 .exercise-type-popup__body {
-    text-align: center;
+    text-align: left;
+    max-height: 305px; /* 팝업 내부 최대 높이 설정 */
+    overflow-y: auto; /* 세로 스크롤 허용 */
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
 }
 
-.exercise-container {
-    border: 1px solid lightgray;
-    width: 250px;
-    margin: 0 auto;
+.exercise-type-popup__body > div:nth-child(even) {
+    background-color: #F0F4FF; /* 연한 블루 */
 }
 
-.exercise-container > div {
-    border: 1px solid lightgray;
-    display: flex;
-    height: 50px;
+.exercise-type-popup__body > div:nth-child(odd) {
+    background-color: #FFFFFF; /* 연한 블루 */
 }
 
-.exercise-container > div > div:last-child {
-    margin-left: 20px;
+/* 마우스 호버 시 */
+.exercise-type-popup__body div:hover {
+    background-color: #BECEF6FF; /* 살짝 진한 블루 */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.exercise-item {
     display: flex;
     align-items: center;
-}
-
-.exercise-container > div > div {
+    font-size: 20px;
+    border-bottom: 1px solid lightgray;
+    padding-left: 10px;
+    height: 50px;
+    white-space: wrap;
     cursor: pointer;
 }
 
-.exercise-container > div > div > img {
-    height: 50px;
-    width: 50px;
-    margin: 0;
-    padding: 0;
-    border-right: 2px solid lightgray;
+/* ✅ 선택된 운동 강조 (클릭한 항목 스타일) */
+.exercise-item.selected {
+    background-color: #dde8ff;
+    border-left: 4px solid #3a8bff;
+    font-weight: bold;
 }
 
-.exercise-type-popup__body > button {
-    margin-top: 25px;
+.exercise-type-popup__foot {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.exercise-type-popup__foot > button {
     width: 100px;
     height: 30px;
 }
@@ -522,8 +542,8 @@
 
 /* 날짜에 마우스 올렸을 때 커서 변경 */
 .fc .fc-daygrid-day-frame {
-    height: 100px;
     cursor: pointer;
+    height: 100px;
 }
 
 /* 일요일 (red 계열) */
@@ -693,7 +713,7 @@
     position: relative;
     height: 150px; /* 기본값 */
     overflow: hidden;
-    transition: max-height 0.3s ease-in-out; /* 부드러운 애니메이션 */
+    transition: height 0.3s ease-in-out; /* 부드러운 애니메이션 */
 }
 
 /* 오늘 날짜 셀 배경을 노란색으로 지정 */

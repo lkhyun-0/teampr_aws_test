@@ -1,16 +1,17 @@
 package com.aws.carepoint.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class ExerciseDto {
-    @JsonProperty("운동명")
+    private int exercisePk;
     private String exerciseName;
-
-    @JsonProperty("MET 계수")
-    private String metValue;
-
+    private int kcal;
+    private double metValue;
+    private int valueStatus;
+    private String regDate;
+    private int hour;
+    private int minute;
+    private int userPk;
+    private int targetPk;
 }
