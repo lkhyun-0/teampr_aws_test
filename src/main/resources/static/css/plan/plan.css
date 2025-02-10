@@ -193,10 +193,6 @@ table {
     visibility: hidden;
 }
 
-.tab-buttons {
-
-}
-
 .tab {
     background-color: #fff;
     border-radius: 5px 5px 0 0;
@@ -206,12 +202,13 @@ table {
 .tab.active {
     background-color: #4169E1;
     color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .detail-content {
     display: none;
     width: 500px;
-    height: 500px;
+    min-height: 300px;
     background-color: #fff;
     border: 2px solid #ddd;
     position: relative;
@@ -219,6 +216,7 @@ table {
 
 .detail-content.active {
     display: block;
+    border: 2px solid #4169E1;
 }
 
 .content-title {
@@ -242,6 +240,7 @@ table {
 
 .content-info > table th {
     background-color: #6495ED;
+    padding: 2px;
     color: white;
 }
 
@@ -296,4 +295,11 @@ table {
     color: red;
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+.delete-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 37%;
+    margin: 30px;
 }
