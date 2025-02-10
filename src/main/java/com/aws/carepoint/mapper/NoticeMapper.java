@@ -64,8 +64,9 @@ public interface NoticeMapper {
 
 
     // 게시글 삭제
-    @ResultMap("noticeResultMap")
-    int updateDelStatus(NoticeDto notice);
+    @Update("UPDATE article SET del_status = 1 WHERE article_pk = #{articlePk} AND user_pk = #{userPk}")
+    int updateDelStatus(@Param("articlePk") int articlePk, @Param("userPk") int userPk);
+
 
 }
 

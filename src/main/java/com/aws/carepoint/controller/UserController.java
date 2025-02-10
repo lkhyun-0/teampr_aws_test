@@ -44,13 +44,13 @@ public class UserController {
 
     // 아이디 중복 체크
     @GetMapping("checkUserId")
-    public ResponseEntity<Boolean> checkUserId(@RequestParam String userid) {
+    public ResponseEntity<Boolean> checkUserId(@RequestParam("userid") String userid) {
         boolean isDuplicate = userMapper.countByUserId(userid) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
     // 닉네임 중복 체크
     @GetMapping("checkNickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam String userNick) {
+    public ResponseEntity<Boolean> checkNickname(@RequestParam("userNick") String userNick) {
         boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }

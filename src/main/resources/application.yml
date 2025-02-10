@@ -6,4 +6,29 @@ spring:
     import: classpath:application-DB.yml  # DB 설정을 application-DB.yml에서 불러옴
   profiles:
     active: local  # 기본 환경을 local로 설정 (선택 사항)
+  web:
+    resources:
+      static-locations: classpath:/static/, classpath:/public/, classpath:/resources/, classpath:/META-INF/resources/
+  mvc:
+    static-path-pattern: "/**"  #  정적 자원 제공 설정 확인
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template-location: true
+    cache: false
 
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: "${kakao.client-id}"  # DB 파일에서 불러옴 (GitHub에 노출 X)
+            redirect-uri: "${kakao.redirect-uri}"
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email, phone_number
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: "${kakao.token-url}"
+            user-info-uri: "${kakao.user-info-url}"
+            user-name-attribute: id

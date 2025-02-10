@@ -4,6 +4,7 @@ import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
 import com.aws.carepoint.dto.FoodDto;
 import com.aws.carepoint.dto.FoodListDto;
+import com.aws.carepoint.dto.WeeklyFoodStatsDto;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -95,6 +96,31 @@ public interface FoodMapper {
     })
     List<FoodListDto> getFoodList(@Param("userPk") int userPk);
 
+
+    @Select("""
+        SELECT f.select_date,
+               COALESCE(SUM(fl.kcal), 0) AS total_calories,
+               COALESCE(SUM(fl.protein), 0) AS total_protein,
+               COALESCE(SUM(fl.carbohydrate), 0) AS total_carbohydrates,
+               COALESCE(SUM(fl.fat), 0) AS total_fat
+        FROM (SELECT DISTINCT select_date
+              FROM food
+              WHERE user_pk = #{userPk} 
+              AND select_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+             ) f
+        LEFT JOIN food fd ON f.select_date = fd.select_date AND fd.user_pk = #{userPk}
+        LEFT JOIN foodlist fl ON fd.food_pk = fl.food_pk
+        GROUP BY f.select_date
+        ORDER BY f.select_date ASC
+        """)
+    @Results({
+            @Result(property = "selectDate", column = "select_date"),
+            @Result(property = "totalCalories", column = "total_calories"),
+            @Result(property = "totalProtein", column = "total_protein"),
+            @Result(property = "totalCarbohydrates", column = "total_carbohydrates"),
+            @Result(property = "totalFat", column = "total_fat")
+    })
+    List<WeeklyFoodStatsDto> getWeeklyFoodStats(@Param("userPk") int userPk);
 
 
 

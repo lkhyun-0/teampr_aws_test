@@ -9,3 +9,11 @@ spring:
     mapper-locations: classpath:mapper/*.xml
     configuration:
       map-underscore-to-camel-case: true
+
+
+
+kakao:
+  client-id: "08c634745a5865601618fca8418a8d9e"
+  redirect-uri: "http://localhost:8081/user/kakao/callback"
+  token-url: "https://kauth.kakao.com/oauth/token"  # ✅ 추가
+  user-info-url: "https://kapi.kakao.com/v2/user/me"  # ✅ 추가 (사용자 정보 요청 URL)
