@@ -1,8 +1,6 @@
 package com.aws.carepoint.mapper;
 
 import com.aws.carepoint.dto.NoticeDto;
-import com.aws.carepoint.dto.QnaDto;
-import com.aws.carepoint.mapper.sql.QnaSqlProvider;
 import com.aws.carepoint.util.SearchCriteria;
 import org.apache.ibatis.annotations.*;
 
@@ -16,7 +14,7 @@ public interface NoticeMapper {
             "JOIN users u ON a.user_pk = u.user_pk " +
             "WHERE a.board_pk = 1 " +
             "AND a.del_status = 0 " +
-            "ORDER BY a.origin_num DESC, a.level_ ASC " +
+            "ORDER BY a.article_pk DESC " +
             "LIMIT #{pageStart}, #{perPageNum} ")
     @Results(id = "noticeResultMap", value = {
             @Result(property = "articlePk", column = "article_pk"),
@@ -27,6 +25,9 @@ public interface NoticeMapper {
     })
     List<NoticeDto> getNoticeList(SearchCriteria scri);
 
+    @Select("SELECT auth_level FROM users WHERE user_pk = #{userPk}")
+    Integer getAuthLevelByUserPk(int userPk);
+
 
     // 총 게시글 개수 조회 (검색 조건 포함)
     @Select("SELECT COUNT(*) " +
@@ -36,10 +37,11 @@ public interface NoticeMapper {
     int getTotalNoticeCount(SearchCriteria scri);
 
     // 게시글 작성
-    @Insert("INSERT INTO article (title, content, user_pk, board_pk)" +
-            "VALUES (#{title}, #{content}, 1, 1)")
-    @Options(useGeneratedKeys = true, keyProperty = "articlePk")
-    public int insertArticle(NoticeDto notice);
+    @Insert("""
+            INSERT INTO article (title, content, filename, user_pk, board_pk)
+            VALUES (#{title}, #{content}, #{filename}, #{userPk}, 1)
+            """)
+    int insertArticle(NoticeDto notice);
 
 
     // 상세보기 (article_pk 기준으로 조회)
@@ -51,21 +53,29 @@ public interface NoticeMapper {
     NoticeDto getNoticeDetail(int articlePk);
 
 
-    // 게시글 수정
-    @Update("UPDATE article " +
-            "SET content = #{content}, " +
-            "title = #{title}, " +
-            "update_date = NOW(), " +
-            "filename = #{filename} " +
-            "WHERE article_pk = #{articlePk} " +
-            "AND user_pk = #{userPk}")
-    @ResultMap("noticeResultMap")
-    void updateNotice(NoticeDto notice);
+    // 동적으로 처리하기 위해서
+    @Update("""
+                <script>
+                    UPDATE article
+                    <set>
+                        title = #{title},
+                        content = #{content},
+                        filename = COALESCE(#{filename}, 'null')
+                    </set>
+                    WHERE article_pk = #{articlePk}
+                </script>
+            """)
+    int updateNotice(NoticeDto notice);
 
 
-    // 게시글 삭제
-    @Update("UPDATE article SET del_status = 1 WHERE article_pk = #{articlePk} AND user_pk = #{userPk}")
-    int updateDelStatus(@Param("articlePk") int articlePk, @Param("userPk") int userPk);
+
+    @Update("""
+            UPDATE article
+            SET del_status = 1
+            WHERE article_pk = #{articlePk}
+            """)
+    int deleteNotice(int articlePk);
+
 
 
 }
