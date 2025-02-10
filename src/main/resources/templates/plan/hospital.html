@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가까운 병원 찾기</title>
+    <link href="/css/plan/hospital.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
+
+<section class="main">
+    <div class="search">
+        <div class="search-head">
+            <div class="search-title">
+                내 주변 병원
+            </div>
+            <div class="search-form">
+                <form action="">
+                    <label>
+                        <input type="text" placeholder="장소 검색하기">
+                    </label>
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="search-list">
+        </div>
+    </div>
+    <div id="map"></div>
+</section>
+
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
+
+<script src="/js/hospital.js"></script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8Lr0W0_S0gchFmLITwOCGGDrjiZCav1E&libraries=places&callback=initMap">
+</script>
+
+</body>
+</html>

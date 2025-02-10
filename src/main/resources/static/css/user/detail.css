@@ -116,3 +116,8 @@ select {
     gap: 7px;
 }
 
+.radio-btn.active {
+    background-color: #4169E1; /* 원하는 색상으로 변경 */
+    color: white;
+    border: 1px solid #4169E1;
+}

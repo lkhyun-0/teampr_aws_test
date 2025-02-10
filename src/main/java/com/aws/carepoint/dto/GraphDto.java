@@ -11,3 +11,4 @@ public class GraphDto {
     private int userPk;
     private String regDate;
 }
+

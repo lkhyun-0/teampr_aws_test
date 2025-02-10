@@ -1,0 +1,35 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>kakaoLogin</title>
+</head>
+<body>
+<a href = "javascript:kakaoLogin();">카카오계정 로그인 </a>
+<script src = "https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script>
+  //b229be0485b92d5f29d6139f1991d6c2
+  window.Kakao.init("b229be0485b92d5f29d6139f1991d6c2");// 자바스크립트 키 인식
+
+  function kakaoLogin() {
+    window.Kakao.Auth.login({
+      scope:'profile_nickname,profile_image',
+      success: function(authObj) {
+        console.log(authObj);
+        window.Kakao.API.request({
+          url:'/v2/user/me',
+          success : res => {
+            const kakao_account = res.kakao_account;
+            console.log(kakao_account);
+          }
+        });
+
+      }
+    });
+  }
+
+</script>
+
+</body>
+</html>-->

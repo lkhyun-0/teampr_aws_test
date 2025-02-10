@@ -3,6 +3,7 @@ package com.aws.carepoint.service;
 import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
 import com.aws.carepoint.dto.FoodDto;
+import com.aws.carepoint.dto.FoodListDto;
 import com.aws.carepoint.dto.FoodRecordRequest;
 import com.aws.carepoint.dto.UpdateMealRequest;
 import com.aws.carepoint.mapper.FoodMapper;
@@ -53,7 +54,7 @@ public class FoodService {
             String responseBody = restTemplate.getForObject(uri, String.class);
 
             // 응답 로그 확인
-            System.out.println("API 응답: " + responseBody);
+            //System.out.println("API 응답: " + responseBody);
 
             // JSON 파싱
             JsonNode root = objectMapper.readTree(responseBody);
@@ -85,14 +86,14 @@ public class FoodService {
 
     @Transactional
     public void recordFood(FoodRecordRequest request) {
-        // 1️⃣ `food` 테이블에 식단 기록 추가
+        // `food` 테이블에 식단 기록 추가
         Food food = new Food();
         food.setSelectDate(LocalDate.parse(request.getSelectDate()));
         food.setFoodType(request.getFoodType());
         food.setUserPk(request.getUserPk());
         foodMapper.insertFood(food); // `food_pk` 자동 생성됨
 
-        // 2️⃣ `foodlist` 테이블에 개별 음식 저장
+        // `foodlist` 테이블에 개별 음식 저장
         for (var foodDto : request.getFoodList()) {
             FoodList foodList = new FoodList();
             foodList.setMenu(foodDto.getMenu());
@@ -111,46 +112,86 @@ public class FoodService {
         return foodMapper.getFoodByDate(userPk, selectDate);
     }
 
-    // 개별 음식 삭제
-    public void deleteFood(int foodListPk) {
+    @Transactional
+    public void deleteFood(int foodListPk, String selectDate, String foodType, int userPk) {
+        // 삭제할 foodListPk의 food_pk 가져오기
+        Integer foodPk = foodMapper.getFoodPkByFoodListPk(foodListPk);
+        if (foodPk == null) {
+            return; // foodListPk가 존재하지 않으면 바로 종료
+        }
+
+        // foodlist에서 개별 음식 삭제
         foodMapper.deleteFood(foodListPk);
+
+        // 해당 food_pk의 남은 음식 개수 확인
+        int remainingCount = foodMapper.countFoodListByFoodPk(foodPk);
+
+        // 만약 해당 food_pk에 남은 음식이 없다면 food 테이블에서도 삭제
+        if (remainingCount == 0) {
+            foodMapper.deleteEmptyFood(foodPk);
+        }
     }
+
 
 
     @Transactional
     public void updateMeal(UpdateMealRequest request) {
+        // 기존 식단 기록 조회
         List<FoodList> existingFoods = foodMapper.getFoodByDateAndType(
                 request.getUserPk(), request.getSelectDate(), request.getFoodType()
         );
 
-        List<FoodDto> newFoodList = request.getFoodList(); // 클라이언트가 보낸 수정된 음식 리스트
+        // 클라이언트가 보낸 수정된 음식 리스트
+        List<FoodDto> newFoodList = request.getFoodList();
+
+        // 기존 식단이 없으면 새로운 food_pk 생성 (즉, 새로운 식사 기록 추가)
+        Integer foodPk;
+        if (existingFoods.isEmpty()) {
+            // 기존 기록이 없는 경우, 새로운 식단 기록 추가 (아침/점심/저녁 첫 기록)
+            Food newMeal = new Food();
+            newMeal.setSelectDate(LocalDate.parse(request.getSelectDate()));
+            newMeal.setFoodType(request.getFoodType());
+            newMeal.setUserPk(request.getUserPk());
+            foodMapper.insertFood(newMeal); // 새로운 food_pk 생성
+            foodPk = newMeal.getFoodPk();
+        } else {
+            // 기존 기록이 있으면 기존 foodPk 사용
+            foodPk = existingFoods.get(0).getFoodPk();
+        }
 
         for (int i = 0; i < newFoodList.size(); i++) {
-            if (i < existingFoods.size() && newFoodList.get(i).getFoodListPk() != null) {
-                // ✅ 기존 음식이면 업데이트
+            FoodDto foodDto = newFoodList.get(i);
+
+            if (foodDto.getFoodListPk() != null) {
+                // 🛠 기존 음식이면 UPDATE
                 FoodList updatedFood = new FoodList();
-                updatedFood.setFoodListPk(newFoodList.get(i).getFoodListPk());
-                updatedFood.setMenu(newFoodList.get(i).getMenu());
-                updatedFood.setKcal(newFoodList.get(i).getKcal());
-                updatedFood.setProtein(newFoodList.get(i).getProtein());
-                updatedFood.setCarbohydrate(newFoodList.get(i).getCarbohydrate());
-                updatedFood.setFat(newFoodList.get(i).getFat());
+                updatedFood.setFoodListPk(foodDto.getFoodListPk());
+                updatedFood.setMenu(foodDto.getMenu());
+                updatedFood.setKcal(foodDto.getKcal());
+                updatedFood.setProtein(foodDto.getProtein());
+                updatedFood.setCarbohydrate(foodDto.getCarbohydrate());
+                updatedFood.setFat(foodDto.getFat());
 
                 foodMapper.updateFood(updatedFood);
-            } else if (newFoodList.get(i).getFoodListPk() == null) {
-                // ✅ 새로운 음식이면 추가
+            } else {
+                // 🛠 새로운 음식이면 INSERT
                 FoodList newFood = new FoodList();
-                newFood.setMenu(newFoodList.get(i).getMenu());
-                newFood.setKcal(newFoodList.get(i).getKcal());
-                newFood.setProtein(newFoodList.get(i).getProtein());
-                newFood.setCarbohydrate(newFoodList.get(i).getCarbohydrate());
-                newFood.setFat(newFoodList.get(i).getFat());
-                newFood.setFoodPk(existingFoods.get(0).getFoodPk()); // 기존 식사와 연결된 foodPk 사용
+                newFood.setMenu(foodDto.getMenu());
+                newFood.setKcal(foodDto.getKcal());
+                newFood.setProtein(foodDto.getProtein());
+                newFood.setCarbohydrate(foodDto.getCarbohydrate());
+                newFood.setFat(foodDto.getFat());
+                newFood.setFoodPk(foodPk); // 기존 식사에 연결된 foodPk 사용
 
                 foodMapper.insertFoodList(newFood);
             }
         }
     }
+
+    public List<FoodListDto> getFoodList(int userPk) {
+        return foodMapper.getFoodList(userPk);
+    }
+
 
 
 
