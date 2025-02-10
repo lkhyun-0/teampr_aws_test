@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ DOM 로드 완료");
 
+
+
     function updateHeaderMenu() {
         console.log("🚀 updateHeaderMenu() 실행됨!");
 
@@ -25,11 +27,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (signupMenu) {
                         signupMenu.style.display = "none";
-                        console.log("❌ signupMenu 숨김");
+
                     }
                     if (loginMenu) {
                         loginMenu.style.display = "none";
-                        console.log("❌ loginMenu 숨김");
+
                     }
                     if (myPageMenu) {
                         myPageMenu.style.display = "block";
@@ -52,11 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     if (myPageMenu) {
                         myPageMenu.style.display = "none";
-                        console.log("❌ myPageMenu 숨김");
                     }
                     if (logoutMenu) {
                         logoutMenu.style.display = "none";
-                        console.log("❌ logoutMenu 숨김");
+
                     }
                 }
             })
