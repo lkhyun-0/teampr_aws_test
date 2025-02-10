@@ -198,8 +198,8 @@ public class UserController {
     public String myPage(HttpSession session, Model model) {
         Integer userPk = (Integer) session.getAttribute("userPk");
 
-        // ✅ 세션 값이 제대로 저장되었는지 로그 확인
-        System.out.println("마이페이지 접근 userPk: " + userPk);
+        // 세션 값이 제대로 저장되었는지 로그 확인
+        // System.out.println("마이페이지 접근 userPk: " + userPk);
 
         if (userPk == null) {
             return "redirect:/user/signIn"; // 세션이 없으면 로그인 페이지로 이동
@@ -219,7 +219,7 @@ public class UserController {
 
         // ✅ 모델에 사용자 정보 추가
         model.addAttribute("userInfo", userInfo);
-        model.addAttribute("detailDto", detailDto); // 🛑 여기 추가!
+        model.addAttribute("detailDto", detailDto); // 여기 추가!
 
         return "user/myPage";
     }

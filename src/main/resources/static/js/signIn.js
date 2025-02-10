@@ -42,7 +42,7 @@ function doSignIn() {
 
 // 카카오 로그인 동작 스크립트 수정
 function kakaoLogin() {
-    fetch("/user/kakao/auth-url")
+    fetch("/login/kakao/auth-url")
         .then(response => response.json()) // ✅ JSON으로 변환
         .then(data => {
             window.location.href = data.kakaoAuthUrl; // ✅ URL로 이동

@@ -30,7 +30,7 @@ public class KakaoAuthController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/kakao/auth-url")
+    @GetMapping("/login/kakao/auth-url")
     public ResponseEntity<Map<String, String>> getKakaoAuthUrl() {
         String kakaoUrl = "https://kauth.kakao.com/oauth/authorize" +
                 "?client_id=" + clientId +

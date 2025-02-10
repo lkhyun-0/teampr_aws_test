@@ -26,6 +26,7 @@ spring:
         registration:
           kakao:
             client-id: "${kakao.client-id}"  # ✅ DB 파일에서 불러옴 (GitHub에 노출 X)
+            client-secret: "${kakao.client-secret}"
             redirect-uri: "${kakao.redirect-uri}"
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email, phone_number

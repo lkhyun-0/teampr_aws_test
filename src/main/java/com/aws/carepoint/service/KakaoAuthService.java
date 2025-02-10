@@ -80,7 +80,7 @@ public class KakaoAuthService {
         String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken); // Bearer 인증 방식 사용
+        headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -91,28 +91,46 @@ public class KakaoAuthService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
 
-            // ✅ 1. 카카오에서 제공하는 사용자 정보 추출
-            String kakaoId = jsonNode.get("id").asText(); // 카카오 고유 ID
-            String email = jsonNode.get("kakao_account").get("email").asText(); // 이메일
-            String nickname = jsonNode.get("properties").get("nickname").asText(); // 닉네임
-            String name = jsonNode.get("kakao_account").get("profile").get("nickname").asText(); // 이름 (nickname과 같을 수 있음)
-            String phone = jsonNode.get("kakao_account").get("phone_number").asText(); // 전화번호
-
-            // ✅ 2. 랜덤 비밀번호 생성 (카카오 로그인용)
-            String randomPwd = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 12); // 12자리 랜덤 비밀번호
-
-            // ✅ 3. 사용자 정보를 Map에 저장
             Map<String, Object> userInfo = new HashMap<>();
-            userInfo.put("id", kakaoId);
-            userInfo.put("email", email);
-            userInfo.put("nickname", nickname);
-            userInfo.put("name", name);
-            userInfo.put("phone", phone);
-            userInfo.put("password", randomPwd); // 랜덤 비밀번호 추가
+
+            // ✅ 카카오 고유 ID
+            if (jsonNode.has("id")) {
+                userInfo.put("id", jsonNode.get("id").asText());
+            }
+
+            // ✅ 이메일 (비활성화된 경우 없을 수 있음)
+            if (jsonNode.has("kakao_account") && jsonNode.get("kakao_account").has("email")) {
+                userInfo.put("email", jsonNode.get("kakao_account").get("email").asText());
+            } else {
+                userInfo.put("email", "N/A"); // 이메일이 없을 경우 기본값 설정
+            }
+
+            // ✅ 닉네임
+            if (jsonNode.has("properties") && jsonNode.get("properties").has("nickname")) {
+                userInfo.put("nickname", jsonNode.get("properties").get("nickname").asText());
+            }
+
+            // ✅ 이름 (nickname과 동일할 수도 있음)
+            if (jsonNode.has("kakao_account") && jsonNode.get("kakao_account").has("profile") &&
+                    jsonNode.get("kakao_account").get("profile").has("nickname")) {
+                userInfo.put("name", jsonNode.get("kakao_account").get("profile").get("nickname").asText());
+            }
+
+            // ✅ 전화번호 (비활성화된 경우 없을 수 있음)
+            if (jsonNode.has("kakao_account") && jsonNode.get("kakao_account").has("phone_number")) {
+                userInfo.put("phone", jsonNode.get("kakao_account").get("phone_number").asText());
+            } else {
+                userInfo.put("phone", "N/A"); // 전화번호가 없을 경우 기본값 설정
+            }
+
+            // ✅ 랜덤 비밀번호 생성 (카카오 로그인용)
+            String randomPwd = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 12);
+            userInfo.put("password", randomPwd);
 
             return userInfo;
         } catch (Exception e) {
             throw new RuntimeException("카카오 유저 정보 요청 실패", e);
         }
     }
+
 }
