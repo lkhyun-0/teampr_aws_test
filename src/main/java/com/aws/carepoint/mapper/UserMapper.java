@@ -6,8 +6,8 @@ import org.apache.ibatis.annotations.*;
 public interface UserMapper {
 
     // ✅ 회원 가입 (ResultMap이 필요 없음)
-    @Insert("INSERT INTO users (userid, username, userpwd, usernick, phone, email, auth_level, social_login_status, del_status, delDate) " +
-            "VALUES (#{userId}, #{userName}, #{userPwd}, #{userNick}, #{phone}, #{email}, #{authLevel}, #{socialLoginStatus}, #{delStatus}, #{delDate})")
+    @Insert("INSERT INTO users (userid, username, userpwd, usernick, phone, email, auth_level, social_login_status, del_status) " +
+            "VALUES (#{userId}, #{userName}, #{userPwd}, #{userNick}, #{phone}, #{email}, #{authLevel}, #{socialLoginStatus}, #{delStatus})")
     @Options(useGeneratedKeys = true, keyProperty = "userPk", keyColumn = "user_pk")
     void insertUser(UsersDto usersDto);
 
@@ -42,4 +42,16 @@ public interface UserMapper {
     @Select("SELECT * FROM users WHERE user_pk = #{userPk}")
     @ResultMap("userResultMap")
     UsersDto getUserById(int userPk);
+
+    // 🔹 카카오 ID로 기존 회원 찾기
+    @Select("SELECT * FROM users WHERE userId = #{userId}")
+    UsersDto findBySocialId(String userId);
+
+    // 🔹 같은 이메일이 있는지 확인
+    @Select("SELECT * FROM users WHERE email = #{email}")
+    UsersDto findByEmail(String email);
+
+
+
+
 }

@@ -7,8 +7,8 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface DetailMapper {
     // 회원 상세정보 입력 !
-    @Insert("INSERT INTO user_detail (age, weight, height, sick_type, sick_detail, smoke, exercise_cnt, drink, target_count, reg_date, update_date, user_pk) " +
-            "VALUES (#{age}, #{weight}, #{height}, #{sickType}, #{sickDetail}, #{smoke}, #{exerciseCnt}, #{drink}, #{targetCount}, #{regDate}, #{updateDate}, #{userPk})")
+    @Insert("INSERT INTO user_detail (age, weight, height, gender, sick_type, sick_detail, smoke, exercise_cnt, drink, target_count, reg_date, update_date, user_pk) " +
+            "VALUES (#{age}, #{weight}, #{height}, #{gender}, #{sickType}, #{sickDetail}, #{smoke}, #{exerciseCnt}, #{drink}, #{targetCount}, #{regDate}, #{updateDate}, #{userPk})")
     @Options(useGeneratedKeys = true, keyProperty = "detailPk", keyColumn = "detail_pk")
     void insertDetail(DetailDto detailDto);
 
@@ -20,6 +20,7 @@ public interface DetailMapper {
             @Result(property = "detailPk", column = "detail_pk"),
             @Result(property = "age", column = "age"),
             @Result(property = "weight", column = "weight"),
+            @Result(property = "gender", column = "gender"),
             @Result(property = "height", column = "height"),
             @Result(property = "sickType", column = "sick_type"),
             @Result(property = "sickDetail", column = "sick_detail"),

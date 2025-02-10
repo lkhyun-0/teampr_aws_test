@@ -71,6 +71,15 @@
         </div>
 
         <div class="input-group radio-group">
+            <label>성별을 알려주세요</label>
+            <div class="aa">
+                <button type="button" class="radio-btn active" data-value="M">남성</button>
+                <button type="button" class="radio-btn" data-value="F">여성</button>
+            </div>
+            <input type="hidden" name="gender" id="gender" value="M">
+        </div>
+
+        <div class="input-group radio-group">
             <label>흡연 하시나요?</label>
             <div class="aa">
                 <button type="button" class="radio-btn active" data-value="0">비흡연</button>
@@ -87,6 +96,8 @@
             </div>
             <input type="hidden" name="drinking" id="drinking" value="0">
         </div>
+
+
 
 
         <button type="submit" class="submit-btn">상세정보 입력 완료</button>
@@ -135,14 +146,17 @@
 
                         const smokingInput = document.getElementById("smoking");
                         const drinkingInput = document.getElementById("drinking");
+                        const genderInput = document.getElementById("gender");
 
                         console.log("📢 smoking 값:", smokingInput.value);
                         console.log("📢 drinking 값:", drinkingInput.value);
+                        console.log("📢 gender 값:", genderInput.value);
 
                         const userData = {
                             age: parseInt(document.getElementById("age").value),
                             weight: document.getElementById("weight").value.trim(),
                             height: document.getElementById("height").value.trim(),
+                            gender: genderInput.value.trim(), //  gender 값 추가
                             sickType: document.getElementById("disease-type").value,
                             sickDetail: document.getElementById("disease-level").value,
                             exerciseCnt: document.getElementById("exercise-frequency").value,

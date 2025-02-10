@@ -34,6 +34,7 @@ CREATE TABLE user_detail (
                              smoke TINYINT(1) NOT NULL, -- 흡연 여부 ( 0= 비흡연자 , 1= 흡연자)
                              exercise_cnt VARCHAR(20) NOT NULL, -- 운동빈도 (아예안함, 주1~2회, 주3~4회, 주 5회 이상)
                              drink TINYINT(1) NOT NULL, -- 음주 여부 ( 0= 비음주자 , 1= 음주자)
+                             gender CHAR(1) NOT NULL,
                              photo VARCHAR(100), -- 프로필사진
                              target_count INT, -- 주간달성횟수
                              reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
@@ -41,7 +42,6 @@ CREATE TABLE user_detail (
                              user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
                              CONSTRAINT fk_user_detail_user FOREIGN KEY (user_pk) REFERENCES users (user_pk)
 );
-
 
 CREATE TABLE board (
                        board_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
@@ -126,9 +126,11 @@ CREATE TABLE graph (
                        weight INT DEFAULT 0, -- 체중
                        blood_press INT DEFAULT 0, -- 혈압
                        blood_sugar INT DEFAULT 0, -- 혈당
-                       reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 작성일
+                       reg_date DATE NOT NULL, -- 작성일
                        user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
-                       CONSTRAINT fk_graph_users FOREIGN KEY (user_pk) REFERENCES users (user_pk) -- 외래 키 설정
+                       target_pk INT, -- 외래 키 (target 테이블의 target_pk 참조)
+                       CONSTRAINT fk_graph_users FOREIGN KEY (user_pk) REFERENCES users (user_pk), -- 외래 키 설정
+                       CONSTRAINT fk_graph_target FOREIGN KEY (target_pk) REFERENCES target (target_pk) -- 외래 키 설정
 );
 
 CREATE TABLE target (
