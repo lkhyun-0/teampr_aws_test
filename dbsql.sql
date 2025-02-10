@@ -8,7 +8,6 @@ CREATE TABLE exercise_API (
                               exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
                               MET INT DEFAULT 0 NOT NULL -- MET 지수
 );
-=======
 
 CREATE TABLE users (
                        user_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
