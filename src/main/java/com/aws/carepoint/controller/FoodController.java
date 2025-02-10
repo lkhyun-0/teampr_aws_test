@@ -78,7 +78,11 @@ public class FoodController {
     @PostMapping("/record")
     @ResponseBody
     public String recordFood(@RequestBody FoodRecordRequest request,
-                             @SessionAttribute("userPk") int userPk) {
+                             @SessionAttribute(name = "userPk", required = false) Integer userPk) {
+        if (userPk == null) {
+            return "Session userPk is null";
+        }
+
         try {
             request.setUserPk(userPk);
             foodService.recordFood(request);
@@ -87,6 +91,7 @@ public class FoodController {
             return "error";
         }
     }
+
 
 
     //특정 날짜의 식단 가져오기

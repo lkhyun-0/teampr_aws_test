@@ -258,7 +258,7 @@ table, th, td, thead, tbody, tr {
     height: 300px; /* 부모 컨테이너 높이 고정 */
     margin: 30px auto; /* 가운데 정렬 및 위아래 여백 */
     overflow-y: auto; /* 세로 스크롤 */
-    overflow-x: auto; /* 가로 스크롤 제거 */
+    overflow-x: auto; /* 가로 스크롤 */
     padding: 0; /* 내부 여백 제거 */
     box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
 }
@@ -267,7 +267,7 @@ table, th, td, thead, tbody, tr {
 .search-results table {
     width: 100%; /* 테이블이 부모 컨테이너 너비를 완전히 채움 */
     min-width: 600px;
-    border-collapse: collapse; /* 셀 간 경계선 병합 */
+    border-collapse: collapse;
 }
 
 /* 테이블 헤더 */
@@ -283,8 +283,9 @@ table, th, td, thead, tbody, tr {
 /* 테이블 셀 */
 .search-results td {
     font-size: 15px; /* 폰트 크기 */
-    padding: 10px; /* 셀 간 여백 */
+    padding: 7px; /* 셀 간 여백 */
     white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    overflow: hidden; /* 넘치는 텍스트 숨김 */
     border-bottom: 1px solid #ddd; /* 하단 경계선 */
 }
 
@@ -293,20 +294,33 @@ table, th, td, thead, tbody, tr {
     height: 30px; /* 각 행의 높이 */
 }
 
-/* 칼럼 간 간격 */
+
+/* 각 열 너비 설정 */
 .search-results th:nth-child(1),
-.search-results td:nth-child(1) {
-    width: 30%; /* 음식명 */
+.search-results td:nth-child(1) { /* 음식명 */
+    width: 25%;
 }
 
 .search-results th:nth-child(2),
-.search-results td:nth-child(2) {
-    width: 20%; /* 칼로리 */
+.search-results td:nth-child(2) { /* 칼로리 */
+    width: 15%;
 }
 
 .search-results th:nth-child(3),
-.search-results td:nth-child(3) {
-    width: 50%; /* 영양정보 */
+.search-results td:nth-child(3) { /* 영양정보 */
+    width: 40%;
+    white-space: normal; /* 줄바꿈 허용 */
+    text-align: left;
+}
+
+.search-results th:nth-child(4),
+.search-results td:nth-child(4) { /* 섭취량 */
+    width: 10%;
+}
+
+.search-results th:nth-child(5),
+.search-results td:nth-child(5) { /* 추가 버튼 */
+    width: 10%;
 }
 
 /* 영양정보 텍스트 스타일 */
@@ -410,10 +424,10 @@ table, th, td, thead, tbody, tr {
 
 /* 그람수 인풋 */
 .food-amount {
-    width: 70px;
+    width: 60px;
     text-align: center;
     font-size: 14px;
-    padding: 5px;
+    padding: 4px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }

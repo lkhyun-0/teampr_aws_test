@@ -65,7 +65,8 @@
           <th>음식명</th>
           <th>칼로리</th>
           <th>영양정보</th>
-          <th>g</th>
+          <th></th>
+          <th></th>
         </tr>
         </thead>
         <tbody>
@@ -132,7 +133,7 @@
       $('.popup1').fadeOut();
     });
 
-    // 팝업 내부 클릭 시 닫히지 않도록 방지 (원래 코드에서 빠졌던 부분 추가)
+    // 팝업 내부 클릭 시 닫히지 않도록 방지
     $('.popup1').on('click', function (event) {
       event.stopPropagation();
     });
@@ -198,9 +199,17 @@
         <span class="small-text">단백질: ${protein}g | 탄수화물: ${carbohydrate}g | 지방: ${fat}g</span>
     `;
 
-      const emptySlot = $(".selected-menu li:empty").first();
-      if (emptySlot.length > 0) {
-        emptySlot.html(selectedText);
+      if (activeSlot) {
+        // 현재 선택된 슬롯이 있다면 해당 슬롯을 변경
+        activeSlot.html(selectedText);
+        activeSlot.removeClass("selected"); // 변경 후 선택 해제
+        activeSlot = null;
+      } else {
+        // 선택된 슬롯이 없으면 빈 슬롯에 추가
+        const emptySlot = $(".selected-menu li:empty").first();
+        if (emptySlot.length > 0) {
+          emptySlot.html(selectedText);
+        }
       }
     });
 
@@ -235,9 +244,11 @@
         return;
       }
 
+      let today = new Date();
+      today.setHours(today.getHours() + 9); // UTC+9 변환
       let requestData = {
-        selectDate: new Date().toISOString().split("T")[0], // 현재 날짜
-        foodType: foodTypeCode, // 정확한 식사 타입 반영
+        selectDate: today.toISOString().split("T")[0], // 변환된 날짜
+        foodType: foodTypeCode,
         userPk: userPk,
         foodList: selectedFoods
       };
