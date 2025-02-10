@@ -77,5 +77,8 @@ public class ExerciseService {
         return exerciseMapper.getExerciseCount(userPk);
     }
 
-
+    // 오늘 날짜에 운동을 기록했는지 확인
+    public boolean hasTodayExerciseData(int userPk) {
+        return exerciseMapper.hasTodayExerciseData(userPk) > 0;
+    }
 }

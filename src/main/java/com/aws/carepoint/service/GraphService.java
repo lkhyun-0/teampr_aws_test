@@ -26,4 +26,8 @@ public class GraphService {
         graphMapper.updateValueCount(graphDto.getUserPk(), graphDto.getRegDate()); // target 테이블 업데이트
         graphMapper.updateWeightValue(graphDto.getWeight(), graphDto.getUserPk());
     }
+
+    public boolean hasTodayGraphData(int userPk) {
+        return graphMapper.hasTodayGraphData(userPk) > 0;
+    }
 }

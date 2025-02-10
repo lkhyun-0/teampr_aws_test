@@ -33,5 +33,13 @@ public interface GraphMapper {
     @Update("UPDATE user_detail SET weight = ${weight} " +
             "WHERE user_pk = 2")
     void updateWeightValue(@Param("weight") int weight, @Param("userPk") int userPk);
+
+    @Select("""
+        SELECT COUNT(*) FROM graph 
+        WHERE CURDATE() = reg_date -- 'date_column'은 저장된 날짜 필드
+        AND user_pk = #{userPk}
+    """)
+    int hasTodayGraphData(@Param("userPk") int userPk);
+
 }
 

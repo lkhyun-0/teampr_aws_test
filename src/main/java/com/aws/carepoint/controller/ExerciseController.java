@@ -74,7 +74,13 @@ public class ExerciseController {
         return exerciseService.getExerciseCount(userPk);
     }
 
-
+    // ✅ 오늘 운동 데이터가 있는지 확인
+    @ResponseBody
+    @GetMapping("/has-today-exercise")
+    public ResponseEntity<Boolean> hasTodayExerciseData(@RequestParam int userPk) {
+        boolean hasData = exerciseService.hasTodayExerciseData(userPk);
+        return ResponseEntity.ok(hasData);
+    }
 
 
 

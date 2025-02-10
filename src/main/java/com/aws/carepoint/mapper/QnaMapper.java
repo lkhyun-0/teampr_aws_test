@@ -4,8 +4,9 @@ import com.aws.carepoint.mapper.sql.QnaSqlProvider;
 import com.aws.carepoint.util.SearchCriteria;
 import com.aws.carepoint.dto.QnaDto;
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.jdbc.SQL;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -17,7 +18,7 @@ public interface QnaMapper {
             "WHERE a.board_pk = 1 " +
             "AND a.del_status = 0 " +
             "ORDER BY a.origin_num DESC, a.level_ ASC " +
-            "LIMIT #{pageStart}, #{perPageNum} ")
+            "LIMIT #{startPageNum}, #{perPageNum} ")
     @Results(id = "qnaResultMap", value = {
             @Result(property = "articlePk", column = "article_pk"),
             @Result(property = "originNum", column = "origin_num"),
@@ -28,7 +29,7 @@ public interface QnaMapper {
             @Result(property = "userPk", column = "user_pk"),
             @Result(property = "userNick", column = "usernick")
     })
-    List<QnaDto> getQnaList(SearchCriteria scri);
+    ArrayList<QnaDto> getQnaList(HashMap<String, Object> result);
 
     // 총 게시글 개수 조회 (검색 조건 포함)
     @Select("SELECT COUNT(*) " +
@@ -71,7 +72,7 @@ public interface QnaMapper {
             "WHERE article_pk = #{articlePk} " +
             "AND user_pk = #{userPk}")
     @ResultMap("qnaResultMap")
-    void updateQna(QnaDto qna);
+    int updateQna(QnaDto qna);
 
     // 답변글 작성
     @Insert("INSERT INTO article (title, content, origin_num, level_, user_pk, board_pk) " +
@@ -85,6 +86,9 @@ public interface QnaMapper {
             "WHERE origin_num = #{originNum} " +
             "AND del_status = 0")
     int countReplies(int originNum);
+
+    @Select("SELECT origin_num FROM article WHERE user_pk = #{userPk}")
+    List<Integer> getUserOriginNums(int userPk);
 
 
 }

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,24 +27,20 @@ public class QnaService {
     private final QnaMapper qnaMapper;
 
     // 전체 게시글 개수 조회
-    public Map<String, Object> getQnaList(SearchCriteria scri) {
-        Map<String, Object> result = new HashMap<>();
+    public ArrayList<QnaDto> getQnaList(SearchCriteria scri) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("startPageNum", (scri.getPage()-1)*scri.getPerPageNum());
+        result.put("searchType", scri.getSearchType());
+        result.put("perPageNum", scri.getPerPageNum());
 
-        int totalCount = qnaMapper.getTotalQnaCount(scri);
+        ArrayList<QnaDto> qlist = qnaMapper.getQnaList(result);
 
-        scri.setPerPageNum(12);
+        return qlist;
+    }
 
-        pageMaker.setScri(scri);
-        pageMaker.setTotalCount(totalCount);
-
-        // ✅ 매 요청마다 새로운 리스트를 가져와야 함
-        List<QnaDto> qnaList = qnaMapper.getQnaList(scri);
-
-        // ✅ Thymeleaf에 데이터 전달
-        result.put("qnaList", qnaList);
-        result.put("pageMaker", pageMaker);
-
-        return result;
+    public int getQnaTotalCount(SearchCriteria scri) {
+        int cnt = qnaMapper.getTotalQnaCount(scri);
+        return cnt;
     }
 
     // 특정 게시글 상세 내용 가져오기
@@ -51,19 +49,22 @@ public class QnaService {
     }
 
     // 게시글 작성
-    public void createQna(QnaDto qna) {
-        qnaMapper.insertArticle(qna);
+    public int createQna(QnaDto qna) {
+        int value = qnaMapper.insertArticle(qna);
         qnaMapper.updateOriginNum(qna.getArticlePk());
+        return value;
     }
 
+    // 게시글 삭제
     public int deleteQna(QnaDto qna) {
         int value = qnaMapper.updateDelStatus(qna);
         return value;
     }
 
     // 게시글 수정
-    public void updateQna(QnaDto qna) {
-        qnaMapper.updateQna(qna);
+    public int updateQna(QnaDto qna) {
+        int value = qnaMapper.updateQna(qna);
+        return value;
     }
 
     // 답변글 존재 여부
@@ -76,7 +77,12 @@ public class QnaService {
     }
 
     // 답변글 작성
-    public void createQnaReply(QnaDto qna) {
-        qnaMapper.insertQnaReply(qna);
+    public int createQnaReply(QnaDto qna) {
+        int value = qnaMapper.insertQnaReply(qna);
+        return value;
+    }
+
+    public List<Integer> getUserOriginNums(int userPk) {
+        return qnaMapper.getUserOriginNums(userPk);
     }
 }

@@ -66,4 +66,12 @@ public interface ExerciseMapper {
     @Select("SELECT COUNT(*) FROM exercise WHERE user_pk = #{userPk}")
     int getExerciseCount(@Param("userPk") int userPk);
 
+    // 오늘 날짜에 운동 데이터 저장했는지 확인
+    @Select("""
+        SELECT COUNT(*) FROM exercise
+        WHERE user_pk = #{userPk} 
+        AND reg_date = CURDATE()
+    """)
+    int hasTodayExerciseData(@Param("userPk") int userPk);
+
 }
