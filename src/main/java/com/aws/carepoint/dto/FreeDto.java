@@ -10,7 +10,7 @@ public class FreeDto {
     private int articlePk;
     private String title;
     private String content;
-    private String attachfile;
+    private String filename;
     private Integer recom;
     private Integer viewcnt;
     private LocalDateTime regDate;
@@ -18,4 +18,5 @@ public class FreeDto {
     private String userNick;
     private int boardPk;
     private Integer userPk;
+    private MultipartFile attachfile;
 }

@@ -7,12 +7,13 @@
 </head>
 <body>
 
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 <div class="main-container">
     <div class="grid-container">
         <div class="grid-item">
             <div class="image-container">
-                <img src="/images/필릭스.png" alt="운동">
+                <img src="/images/main-운동이미지.png" alt="운동">
                 <div class="overlay">
                     <p class="overlay-text">운동</p>
                 </div>
@@ -20,7 +21,7 @@
         </div>
         <div class="grid-item">
             <div class="image-container">
-                <img src="/images/필릭스.png" alt="의사">
+                <img src="/images/main-의사.webp" alt="의사">
                 <div class="overlay">
                     <p class="overlay-text">의사</p>
                 </div>
@@ -28,7 +29,7 @@
         </div>
         <div class="grid-item">
             <div class="image-container">
-                <img src="/images/필릭스.png" alt="상담">
+                <img src="/images/main-커뮤니티.png" alt="게시판">
                 <div class="overlay">
                     <p class="overlay-text">커뮤니티</p>
                 </div>
@@ -36,7 +37,7 @@
         </div>
         <div class="grid-item">
             <div class="image-container">
-                <img src="/images/필릭스.png" alt="식단">
+                <img src="/images/main-식단.webp" alt="식단">
                 <div class="overlay">
                     <p class="overlay-text">식단</p>
                 </div>
@@ -44,15 +45,15 @@
         </div>
         <div class="grid-item">
             <div class="image-container">
-                <img src="/images/필릭스.png" alt="건강검진">
+                <img src="/images/main-자가진단.jpg" alt="자가진단">
                 <div class="overlay">
-                    <p class="overlay-text">건강검진</p>
+                    <p class="overlay-text">자가진단체크리스트</p>
                 </div>
             </div>
         </div>
         <div class="grid-item">
             <div class="image-container">
-                <img src="/images/필릭스.png" alt="위치">
+                <img src="/images/main-지도.png" alt="위치">
                 <div class="overlay">
                     <p class="overlay-text">가까운병원찾기</p>
                 </div>
@@ -61,8 +62,8 @@
     </div>
 </div>
 
-
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 
 </body>
 </html>

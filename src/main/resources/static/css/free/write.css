@@ -15,7 +15,7 @@ h2 {
 .edit-container {
     margin: 1px auto 50px; /* 위쪽 30px, 아래쪽 50px, 좌우 중앙 정렬 */
     width: 50%;
-    height: 800px; /* 세로 크기를 600px로 설정 */
+    height: 800px;
     border: 1px solid #ddd;
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -90,4 +90,23 @@ h2 {
 .blue {
     color: #4166f7;
     font-weight: bold;
+}
+
+.uploaded-preview {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.uploaded-preview p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.image-preview img {
+    max-width: 100%; /* 이미지를 화면 크기에 맞게 조정 */
+    height: auto; /* 원본 비율 유지 */
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 5px;
 }

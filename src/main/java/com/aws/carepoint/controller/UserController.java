@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller // @RestController= @Controller + @ResponseBody
+@Controller  // @RestController= @Controller + @ResponseBody
 @RequestMapping("/user/")
 public class UserController {
 
@@ -44,13 +44,13 @@ public class UserController {
 
     // 아이디 중복 체크
     @GetMapping("checkUserId")
-    public ResponseEntity<Boolean> checkUserId(@RequestParam("userid") String userid) {
-        boolean isDuplicate = userMapper.countByUserId(userid) > 0;
+    public ResponseEntity<Boolean> checkUserId(@RequestParam("userId") String userId) {
+        boolean isDuplicate = userMapper.countByUserId(userId) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
     // 닉네임 중복 체크
     @GetMapping("checkNickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam("userNick") String userNick) {
+    public ResponseEntity<Boolean> checkNickname(@RequestParam String userNick) {
         boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }

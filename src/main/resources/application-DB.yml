@@ -10,8 +10,6 @@ spring:
     configuration:
       map-underscore-to-camel-case: true
 
-
-
 kakao:
   client-id: "08c634745a5865601618fca8418a8d9e"
   redirect-uri: "http://localhost:8081/user/kakao/callback"
