@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -54,11 +55,24 @@ public class NoticeController {
 
 
     @PostMapping("/noticeDeleteAction/{id}")
-    public String noticeDeleteAction(@PathVariable("id") int articlePk, RedirectAttributes rttr) {
-        NoticeDto notice = noticeService.getNoticeDetail(articlePk);
-        noticeService.deleteNotice(notice);
-        rttr.addFlashAttribute("msg", "게시글이 삭제 되었습니다.");
-        return "redirect:/notice/noticeList";
+    @ResponseBody
+    public Map<String, Object> noticeDeleteAction(@PathVariable("id") int articlePk,
+                                                  @SessionAttribute("userPk") int userPk) {
+        Map<String, Object> response = new HashMap<>();
+
+        int result = noticeService.deleteNotice(articlePk, userPk);
+
+        if (result > 0) {
+            response.put("success", true);
+        } else if (result == -1) {
+            response.put("success", false);
+            response.put("message", "본인 게시글만 삭제할 수 있습니다.");
+        } else {
+            response.put("success", false);
+            response.put("message", "게시글 삭제에 실패했습니다.");
+        }
+
+        return response;
     }
 
 

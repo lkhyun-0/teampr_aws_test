@@ -56,10 +56,21 @@ public class NoticeService {
     }
 
 
-    public int deleteNotice(NoticeDto notice) {
-        int value = noticeMapper.updateDelStatus(notice);
-        return value;
+    public int deleteNotice(int articlePk, int userPk) {
+        NoticeDto notice = noticeMapper.getNoticeDetail(articlePk);
+
+        if (notice == null) {
+            return 0; // 게시글 없음
+        }
+
+        if (notice.getUserPk() != userPk) {
+            return -1; // 권한 없음
+        }
+
+        return noticeMapper.updateDelStatus(articlePk, userPk);
     }
+
+
 
     // 게시글 수정
     public void updateNotice(NoticeDto notice) {

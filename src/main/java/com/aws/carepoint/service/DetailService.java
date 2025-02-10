@@ -49,10 +49,10 @@ public class DetailService {
         return userFullInfo;
     }
 
-    public void updateUserInfo(DetailDto detailDto) {
-        System.out.println("📢 [DEBUG] 서비스에서 업데이트 실행: " + detailDto);
-        detailMapper.updateUserInfo(detailDto);
-    }
+//    public void updateUserInfo(DetailDto detailDto) {
+//        System.out.println("📢 [DEBUG] 서비스에서 업데이트 실행: " + detailDto);
+//        detailMapper.updateUserInfo(detailDto);
+//    }
 
 
 }

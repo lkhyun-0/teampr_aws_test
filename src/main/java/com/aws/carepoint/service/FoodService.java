@@ -2,10 +2,7 @@ package com.aws.carepoint.service;
 
 import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
-import com.aws.carepoint.dto.FoodDto;
-import com.aws.carepoint.dto.FoodListDto;
-import com.aws.carepoint.dto.FoodRecordRequest;
-import com.aws.carepoint.dto.UpdateMealRequest;
+import com.aws.carepoint.dto.*;
 import com.aws.carepoint.mapper.FoodMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +45,7 @@ public class FoodService {
                     "&type=json");
 
             // 요청 URI 확인
-            System.out.println("API 요청 URI: " + uri);
+            //System.out.println("API 요청 URI: " + uri);
 
             // API 호출 (getForObject 사용)
             String responseBody = restTemplate.getForObject(uri, String.class);
@@ -190,6 +187,11 @@ public class FoodService {
 
     public List<FoodListDto> getFoodList(int userPk) {
         return foodMapper.getFoodList(userPk);
+    }
+
+    // 그래프 통계
+    public List<WeeklyFoodStatsDto> getWeeklyFoodStats(int userPk) {
+        return foodMapper.getWeeklyFoodStats(userPk);
     }
 
 

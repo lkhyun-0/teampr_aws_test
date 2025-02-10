@@ -26,12 +26,10 @@
     <div class="actions">
         <!-- 목록으로 버튼 -->
         <a href="/notice/noticeList" class="btn btn-left">목록</a>
-        <!-- 수정 및 삭제 버튼 -->
-        <div class="btn-group">
+        <!-- 수정 및 삭제 버튼 (작성자만 보이도록 설정) -->
+        <div class="btn-group" th:if="${notice.userPk == session.userPk}">
             <a th:href="@{/notice/noticeModify/{id}(id=${notice.articlePk})}" class="btn">수정</a>
-            <form th:action="@{/notice/noticeDeleteAction/{id}(id=${notice.articlePk})}" method="post" onsubmit="return confirmDelete()">
-            <button type="submit" class="btn del-btn">삭제</button>
-            </form>
+            <button type="button" class="btn del-btn" onclick="deleteNotice([[${notice.articlePk}]])">삭제</button>
         </div>
     </div>
 </div>
@@ -39,10 +37,28 @@
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
 
-
 <script>
-    function confirmDelete() {
-        return confirm("정말 삭제하시겠습니까?");
+    function deleteNotice(articlePk) {
+        if (!confirm("정말 삭제하시겠습니까?")) {
+            return;
+        }
+
+        fetch(`/notice/noticeDeleteAction/${articlePk}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("게시글이 삭제되었습니다.");
+                    window.location.href = "/notice/noticeList";
+                } else {
+                    alert(data.message);
+                }
+            }).catch(error => {
+            alert("오류 발생: " + error);
+        });
     }
 </script>
 </body>

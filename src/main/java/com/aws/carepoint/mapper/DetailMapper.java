@@ -36,12 +36,12 @@ public interface DetailMapper {
 
     DetailDto getUserDetailById(int userPk);
 
-    @Update("UPDATE user_detail " +
-            "SET phone = #{phone}, email = #{email}, password = #{password}, " +
-            "height = #{height}, weight = #{weight}, smoke = #{smoke}, drink = #{drink}, " +
-            "update_date = NOW() " +
-            "WHERE user_pk = #{userPk}")
-    void updateUserInfo(DetailDto detailDto);
+//    @Update("UPDATE user_detail " +
+//            "SET phone = #{phone}, email = #{email}, password = #{password}, " +
+//            "height = #{height}, weight = #{weight}, smoke = #{smoke}, drink = #{drink}, " +
+//            "update_date = NOW() " +
+//            "WHERE user_pk = #{userPk}")
+//    void updateUserInfo(DetailDto detailDto);
 
 
 }

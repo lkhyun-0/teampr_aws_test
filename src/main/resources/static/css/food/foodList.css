@@ -133,11 +133,13 @@
 
 /* 페이지네이션 */
 .pagination {
+    position: absolute;
+    bottom: 20px; /* 컨테이너 하단에서 10px 위 */
+    left: 50%;
+    transform: translateX(-50%); /* 가운데 정렬 */
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    gap: 5px;
+    justify-content: center;
 }
 
 .pagination a.prev,
