@@ -3,6 +3,8 @@ package com.aws.carepoint.service;
 import com.aws.carepoint.domain.ExerciseApiEntity;
 import com.aws.carepoint.dto.*;
 import com.aws.carepoint.mapper.ExerciseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,43 +37,34 @@ public class ExerciseService {
         exerciseMapper.saveExerciseApi(exerciseApiEntity);
     }
 
-    // 오늘의 수치 저장
-    @Transactional
-    public void saveGraph(GraphDto graphDto) {
-        exerciseMapper.insertGraph(graphDto);
-        exerciseMapper.updateValueCount(graphDto.getUserPk(), graphDto.getRegDate()); // target 테이블 업데이트
-    }
-
-    // 이번주 목표 저장
-    public void saveTarget(TargetDto targetDto) {
-        // 오늘 날짜 가져오기
-        LocalDate today = LocalDate.now();
-
-        // 이번 주의 시작일 (일요일)
-        LocalDate startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
-
-        // 이번 주의 마지막일 (토요일)
-        LocalDate endDate = startDate.plusDays(6);  // 일요일 + 6일 = 토요일
-
-        // TargetDto에 날짜 추가
-        targetDto.setStartDate(startDate.toString());
-        targetDto.setEndDate(endDate.toString());
-
-        // 목표 저장
-        exerciseMapper.insertTarget(targetDto);
-    }
-
     // 운동 종목 선택 팝업에 띄울 리스트 가져오기
-    public List<ExerciseApiDto> getExerciseList() {
-        return exerciseMapper.getExerciseList();
+    public List<ExerciseApiDto> getExerciseApiList() {
+        return exerciseMapper.getExerciseApiList();
     }
 
     // 운동 정보 DB Insert
     @Transactional
     public void saveExercise(ExerciseDto exerciseDto) {
+        // 해당 유저의 detail 테이블에서 몸무게 가져오기
+        String weight = exerciseMapper.getDetailWeightValue(exerciseDto.getUserPk());
+
+        // 몸무게 int 변환
+        int int_weight = Integer.parseInt(weight);
+
+        // 시간(hour)과 분(minute)을 합쳐서 총 운동 시간 계산
+        double totalTime = exerciseDto.getHour() + (exerciseDto.getMinute() / 60.0);
+
+        // MET 지수를 활용하여 kcal 계산
+        double kcal = exerciseDto.getMetValue() * int_weight * totalTime;
+
+        // double에서 int로 변환하여 exerciseDto에 저장
+        int int_kcal = (int) kcal;
+        exerciseDto.setKcal(int_kcal);
+
+        // 운동 DB 저장
         exerciseMapper.insertExercise(exerciseDto);
         // 목표 운동 횟수 업데이트
-        exerciseMapper.updateExerciseCount(exerciseDto.getUserPk(), exerciseDto.getRegDate());
+        exerciseMapper.updateExerciseTarget(exerciseDto.getUserPk(), exerciseDto.getRegDate(), int_kcal);
     }
 
     // 운동 종목 선택 팝업에 띄울 리스트 가져오기
@@ -79,9 +72,10 @@ public class ExerciseService {
         return exerciseMapper.getAllExercises();
     }
 
-    // ✅ 이번 주 목표 데이터 가져오기
-    public TargetDto getCurrentWeekTarget(int userPk) {
-        TargetDto targetDto = exerciseMapper.findCurrentWeekTarget(userPk);
-        return targetDto;
+    // 해당 회원이 운동 기록한 횟수 가져오기
+    public int getExerciseCount(int userPk) {
+        return exerciseMapper.getExerciseCount(userPk);
     }
+
+
 }
