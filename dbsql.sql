@@ -43,6 +43,7 @@ CREATE TABLE user_detail (
                              CONSTRAINT fk_user_detail_user FOREIGN KEY (user_pk) REFERENCES users (user_pk)
 );
 
+
 CREATE TABLE board (
                        board_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
                        board_type CHAR(1) NOT NULL, -- 게시판종류 (Q : Q&A, F : Free, N : Notice)
@@ -166,6 +167,19 @@ CREATE TABLE exercise_API (
                               MET INT DEFAULT 0 NOT NULL, -- MET 지수
                               exercise_img VARCHAR(100) NOT NULL -- 이미지
 );
+
+CREATE TABLE graph (
+                       graph_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
+                       weight INT DEFAULT 0, -- 체중
+                       blood_press INT DEFAULT 0, -- 혈압
+                       blood_sugar INT DEFAULT 0, -- 혈당
+                       reg_date DATE NOT NULL, -- 작성일
+                       user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
+                       target_pk INT, -- 외래 키 (target 테이블의 target_pk 참조)
+                       CONSTRAINT fk_graph_users FOREIGN KEY (user_pk) REFERENCES users (user_pk), -- 외래 키 설정
+                       CONSTRAINT fk_graph_target FOREIGN KEY (target_pk) REFERENCES target (target_pk) -- 외래 키 설정
+);
+
 
 CREATE TABLE medicine (
                           medicine_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키

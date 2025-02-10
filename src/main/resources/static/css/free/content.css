@@ -44,6 +44,7 @@
 .info-left span:last-child {
     font-size: 0.8em; /* 글씨 크기 축소 */
     color: #999; /* 연한 색상 */
+    margin-top: auto;
 }
 
 /* 본문 내용 */
@@ -58,6 +59,17 @@
     min-height: 400px; /* 최소 높이 설정 */
     overflow: auto; /* 스크롤 처리 */
     word-wrap: break-word; /* 긴 단어 줄바꿈 */
+}
+
+/* 이미지 */
+.uploaded-image {
+    text-align: center; /* 이미지 가운데 정렬 */
+    margin-bottom: 20px; /* 콘텐츠와 간격 */
+}
+
+.uploaded-image img {
+    max-width: 80%; /* 화면 너비에 맞게 크기 조정 */
+    height: auto; /* 원본 비율 유지 */
 }
 
 /* 추천 및 버튼 */
@@ -103,6 +115,7 @@
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
+    font-size: 16px;
 }
 
 /* 목록 버튼 (왼쪽 끝에 배치) */
@@ -208,6 +221,7 @@
 }
 
 .comment-date {
+    padding-right: 10px;
     font-size: 0.8em;
     color: #999; /* 연한 색상 */
 }
@@ -218,5 +232,5 @@
     cursor: pointer;
     background: none;
     border: none;
-    padding: 0 10px;
+    padding-right: 10px;
 }

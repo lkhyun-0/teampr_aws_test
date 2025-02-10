@@ -30,63 +30,13 @@ public class UserController {
     private final UserMapper userMapper; // 🔹 userMapper 추가
     private final DetailService detailService;
     private final DetailMapper detailMapper;
-    private final KakaoAuthService kakaoAuthService;
 
-
-    @Value("${kakao.client-id}") // application.yml에서 가져옴
-    private String kakaoClientId;
-
-    @Value("${kakao.redirect-uri}")
-    private String kakaoRedirectUri;
-
-
-    public UserController(UserService userService, UserMapper userMapper, DetailService detailService, DetailMapper detailMapper, KakaoAuthService kakaoAuthService) {
+    public UserController(UserService userService, UserMapper userMapper, DetailService detailService, DetailMapper detailMapper) {
         this.userService = userService;
         this.userMapper = userMapper; // 🔹 생성자에서 주입
         this.detailService = detailService;
         this.detailMapper = detailMapper;
-        this.kakaoAuthService = kakaoAuthService;
     }
-
-
-
-
-    // 카카오 로그인 URL 반환
-    @GetMapping("kakao/login")
-    public String kakaoLogin(Model model) {
-        String kakaoUrl = "https://kauth.kakao.com/oauth/authorize" +
-                "?client_id=" + kakaoClientId +
-                "&redirect_uri=" + kakaoRedirectUri +
-                "&response_type=code";
-        model.addAttribute("kakaoUrl", kakaoUrl);
-        return "user/login"; // 로그인 페이지로 이동 (Thymeleaf에서 버튼 클릭 시 호출)
-    }
-    @GetMapping("kakao/callback")
-    public String kakaoCallback(@RequestParam("code") String code, HttpSession session) {
-        System.out.println("📢 카카오 로그인 성공! 인증 코드: " + code);
-
-        // ✅ 1. 카카오 액세스 토큰 요청
-        String accessToken = kakaoAuthService.getKakaoAccessToken(code);
-        System.out.println("📢 받은 액세스 토큰: " + accessToken);
-
-        // ✅ 2. 카카오 사용자 정보 가져오기
-        Map<String, Object> kakaoUser = kakaoAuthService.getUserInfo(accessToken);
-        System.out.println("📢 카카오 사용자 정보: " + kakaoUser);
-
-        // ✅ 3. 회원 가입 또는 로그인 처리
-        UsersDto usersDto = userService.processKakaoLogin(kakaoUser, session);
-
-        // ✅ 4. 신규 회원이면 추가 정보 입력 페이지로 이동, 기존 회원이면 마이페이지로 이동
-        if (usersDto.getSocialLoginStatus() == 1 && usersDto.getPhone() == null) {
-            return "redirect:/user/userDetail"; // 🔹 신규 회원 → 상세정보 입력 페이지로 이동
-        } else {
-            return "redirect:/user/myPage"; // 🔹 기존 회원 → 마이페이지로 이동
-        }
-    }
-
-
-
-
 
     @GetMapping("signUp")       // 회원가입 페이지
     public String signUp() {
@@ -101,7 +51,7 @@ public class UserController {
     }
     // 닉네임 중복 체크
     @GetMapping("checkNickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam("userNick") String userNick) {
+    public ResponseEntity<Boolean> checkNickname(@RequestParam String userNick) {
         boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
@@ -145,27 +95,29 @@ public class UserController {
     public String signIn() {
         return "user/signIn";
     }
-    @PostMapping("doSignIn")
+
+    @PostMapping("/doSignIn")       // 로그인 동작
     public ResponseEntity<Map<String, Object>> doSignIn(
-            @RequestBody Map<String, String> loginData, HttpSession session) {
+            @RequestBody Map<String, String> loginData,  // ✅ JSON 데이터 받기
+            HttpSession session) {
 
-        Map<String, Object> response = new HashMap<>();
-
-        // 🔹 로그인 데이터 유효성 검사
         String userId = loginData.get("userId");
         String userPwd = loginData.get("userPwd");
 
+        Map<String, Object> response = new HashMap<>();
+
+        // 🔹 유효성 검사
         if (userId == null || userPwd == null || userId.isEmpty() || userPwd.isEmpty()) {
             response.put("error", "아이디 또는 비밀번호를 입력해주세요.");
             response.put("success", false);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        // 🔹 DB에서 사용자 정보 조회
         UsersDto usersDto = userService.checkId(userId);
         if (usersDto != null) {
             if (userService.checkPwd(userPwd, usersDto.getUserPwd())) {
-                // ✅ 세션 저장
+
+                // 🔹 세션 저장
                 session.setAttribute("userPk", usersDto.getUserPk());
                 session.setAttribute("authLevel", usersDto.getAuthLevel());
                 session.setAttribute("userName", usersDto.getUserName());
@@ -173,31 +125,28 @@ public class UserController {
                 session.setAttribute("joinDate", usersDto.getJoinDate());
                 session.setAttribute("phone", usersDto.getPhone());
                 session.setAttribute("email", usersDto.getEmail());
+               // ✅ 세션 저장 확인 로그 추가
+                System.out.println("로그인 성공! 세션 설정 usePk: " + usersDto.getUserPk());
 
-                // ✅ 디버깅 로그 추가
-                System.out.println("✅ 로그인 성공! 세션 설정 userPk: " + usersDto.getUserPk());
-
-                // ✅ 리다이렉트 URL 설정 (기존 `saveUrl`이 있다면 사용)
+                // 🔹 리다이렉트 처리
                 String redirectUrl = (session.getAttribute("saveUrl") != null) ?
                         session.getAttribute("saveUrl").toString() : "/user/mainPage";
 
-                // 🔹 JSON 응답 반환 (redirect 사용 X)
                 response.put("message", "로그인 성공");
                 response.put("success", true);
                 response.put("redirect", redirectUrl);
-                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+                return ResponseEntity.ok(response);
             } else {
                 response.put("error", "아이디 또는 비밀번호가 잘못되었습니다.");
                 response.put("success", false);
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON).body(response);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
         } else {
             response.put("error", "해당하는 아이디가 없습니다.");
             response.put("success", false);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(response);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
-
 
 
     @GetMapping("userDetail")
@@ -211,14 +160,9 @@ public class UserController {
 
         try {
             System.out.println("📢 doInsertDetail 실행됨!");
-            System.out.println("📢 전달된 데이터: " + detailDto); // ✅ gender 값 확인
+            System.out.println("📢 전달된 데이터: " + detailDto);
 
-            // ✅ gender 값이 정상적으로 들어왔는지 확인
-            if (detailDto.getGender() == null || detailDto.getGender().isEmpty()) {
-                throw new IllegalArgumentException("성별 정보가 누락되었습니다.");
-            }
-
-            // ✅ 기본값 설정
+            // 기본값 처리
             detailDto.setRegDate(LocalDateTime.now());
             detailDto.setUpdateDate(LocalDateTime.now());
 
@@ -226,27 +170,25 @@ public class UserController {
                 detailDto.setTargetCount(0);
             }
             if (detailDto.getSmoke() == null) {
-                detailDto.setSmoke(0);
+                detailDto.setSmoke(0); // 기본값: 비흡연
             }
             if (detailDto.getDrink() == null) {
-                detailDto.setDrink(0);
+                detailDto.setDrink(0); // 기본값: 음주 안 함
             }
 
-            // ✅ 저장 실행
             detailService.insertDetail(detailDto);
 
             response.put("status", "success");
-            response.put("message", "회원 상세정보 저장 완료!");
+            response.put("message", "회원 상세정보 저장 완료! 메인페이지 이동 !");
 
         } catch (Exception e) {
             response.put("status", "error");
             response.put("message", "저장 실패: " + e.getMessage());
-            e.printStackTrace();
+            e.printStackTrace(); // 백엔드 콘솔에서 오류 확인
         }
 
         return ResponseEntity.ok(response);
     }
-
 
 
 
@@ -257,31 +199,33 @@ public class UserController {
         Integer userPk = (Integer) session.getAttribute("userPk");
 
         // ✅ 세션 값이 제대로 저장되었는지 로그 확인
-        System.out.println("📢 [DEBUG] 마이페이지 접근 userPk: " + userPk);
+        System.out.println("마이페이지 접근 userPk: " + userPk);
 
         if (userPk == null) {
             return "redirect:/user/signIn"; // 세션이 없으면 로그인 페이지로 이동
         }
 
-        // ✅ 사용자 기본 정보 가져오기
         UsersDto userInfo = userMapper.getUserById(userPk);
-        System.out.println("📢 [DEBUG] 조회된 사용자 정보: " + userInfo);
-
-        // ✅ 사용자 추가 정보 (키, 체중, 흡연 등) 가져오기
+        // ✅ 사용자 추가 정보 (키, 체중 등) 가져오기
         DetailDto detailDto = detailMapper.getUserDetailById(userPk);
-        if (detailDto == null) {
-            System.out.println("❌ [ERROR] userPk " + userPk + "에 대한 상세 정보가 없습니다. 기본값을 설정합니다.");
-            detailDto = new DetailDto();
-            detailDto.setUserPk(userPk);
+        System.out.println("조회된 사용자 추가 정보: " + detailDto);
+
+        // ✅ DB에서 사용자 정보를 제대로 가져오는지 확인
+        System.out.println("조회된 사용자 정보: " + userInfo);
+
+        if (userInfo == null) {
+            return "redirect:/user/signIn"; // DB에서 조회 실패하면 로그인 페이지로 이동
         }
 
-
-        // ✅ 모델에 데이터 추가
+        // ✅ 모델에 사용자 정보 추가
         model.addAttribute("userInfo", userInfo);
-        model.addAttribute("detailDto", detailDto);
+        model.addAttribute("detailDto", detailDto); // 🛑 여기 추가!
 
         return "user/myPage";
     }
+
+
+
 
 
     @GetMapping("mainPage")
@@ -296,7 +240,7 @@ public class UserController {
 
 
     // ==== 세션 회원 번호 로그아웃 매핑 ====
-    @GetMapping("session")     //
+    @GetMapping("/session")     //
     public ResponseEntity<Map<String, Object>> getSessionInfo(HttpSession session) {
         Object userPk = session.getAttribute("userPk"); // ✅ 로그인 정보 확인
 
@@ -316,13 +260,10 @@ public class UserController {
 
     @GetMapping("logout")
     public ResponseEntity<Map<String, String>> logout(HttpSession session) {
-        // 세션 제거
-        session.invalidate();
-
-        // JSON 응답 반환
+        session.invalidate(); // ✅ 세션 삭제
         Map<String, String> response = new HashMap<>();
         response.put("message", "로그아웃되었습니다.");
-        response.put("redirect", "/user/mainPage"); // 🔥 로그아웃 후 리다이렉트할 페이지
+        response.put("redirect", "/user/mainPage"); // 🚀 메인 페이지로 이동
 
         return ResponseEntity.ok(response);
     }

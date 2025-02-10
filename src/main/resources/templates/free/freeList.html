@@ -6,6 +6,10 @@
     <title>자유게시판 목록</title>
 </head>
 <body>
+<script th:if="${msg != null}" th:inline="javascript">
+    alert('[[${msg}]]'); // 작은따옴표로 문자열로 처리
+</script>
+
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
@@ -31,131 +35,32 @@
                 <th>작성일</th>
             </tr>
 
-            <tr>
-                <td class="No">15</td>
-                <td class="subject"><a>자유게시판 15</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
+            <tr th:each="free : ${freeList}">
+                <td class="No" th:text="${pageMaker.totalCount - (freeStat.index + (scri.page - 1) * scri.perPageNum)}"></td>
+                <td class="subject"><a th:href="@{/free/freeContent/{id}(id=${free.articlePk})}" th:text="${free.title}"></a></td>
+                <td class="writer" th:text = "${free.userNick}"></td>
+                <td class="writeday" th:text = "${#temporals.format(free.regDate, 'yyyy-MM-dd')}"></td>
             </tr>
 
-            <tr>
-                <td class="No">14</td>
-                <td class="subject"><a>자유게시판 14</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">13</td>
-                <td class="subject"><a>자유게시판 13</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">12</td>
-                <td class="subject"><a>자유게시판 12</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">11</td>
-                <td class="subject"><a>자유게시판 11</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">10</td>
-                <td class="subject"><a>자유게시판 10</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">9</td>
-                <td class="subject"><a>자유게시판 9</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">8</td>
-                <td class="subject"><a>자유게시판 8</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">7</td>
-                <td class="subject"><a>자유게시판 7</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">6</td>
-                <td class="subject"><a>자유게시판 6</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">5</td>
-                <td class="subject"><a>자유게시판 5</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">4</td>
-                <td class="subject"><a>자유게시판 4</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">3</td>
-                <td class="subject"><a>자유게시판 3</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">2</td>
-                <td class="subject"><a>자유게시판 2</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
-
-            <tr>
-                <td class="No">1</td>
-                <td class="subject"><a>자유게시판 1</a></td>
-                <td class="writer">22na</td>
-                <td class="writeday">2024-12-24</td>
-            </tr>
         </table>
     </div>
 
     <div class="write">
-        <a href="#" class="write-btn">글쓰기</a>
+        <a href="/free/freeWrite" class="write-btn">글쓰기</a>
     </div>
 
     <div class="page">
         <ul>
-            <li><a href="#" class="prev">◀</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">6</a></li>
-            <li><a href="#">7</a></li>
-            <li><a href="#">8</a></li>
-            <li><a href="#">9</a></li>
-            <li><a href="#">10</a></li>
-            <li><a href="#" class="next">▶</a></li>
+            <li th:if="${pageMaker.prev}">
+                <a class="prev" th:href="@{/free/freeList(page=${pageMaker.startPage - 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">◀</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}"
+                th:classappend="${i == scri.page} ? 'on' : ''">
+                <a th:href="@{/free/freeList(page=${i}, keyword=${scri.keyword}, searchType=${scri.searchType})}" th:text="${i}"></a>
+            </li>
+            <li th:if="${pageMaker.next}">
+                <a class="next" th:href="@{/free/freeList(page=${pageMaker.endPage + 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">▶</a>
+            </li>
         </ul>
     </div>
 </section>
