@@ -112,13 +112,13 @@
 
 /* 하단 카드 제목 */
 .analysis-title {
-    font-size: 16px; /* 약간 작은 크기 */
+    font-size: 20px; /* 약간 작은 크기 */
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
     text-align: left; /* 왼쪽 정렬 */
+    width: 100%; /* 카드 전체 폭에 맞춤 */
 }
-
 
 /* 카드 스타일 공통 */
 .card {
@@ -147,13 +147,7 @@
     color : white;
 }*/
 
-/* 카드 상단 Total Calories 텍스트 */
-.analysis-title {
-    font-size: 18px;
-    color: #333;
-    text-align: left; /* 왼쪽 정렬 */
-    width: 100%; /* 카드 전체 폭에 맞춤 */
-}
+
 
 /* g 단위 스타일 */
 .card-value {

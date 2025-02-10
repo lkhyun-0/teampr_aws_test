@@ -71,7 +71,7 @@
                     <canvas id="caloriesChart"></canvas>
                 </div>
                 <div class="card large">
-                    <p class="analysis-title">Improvement Tips</p>
+                    <p class="analysis-title">건강한 식단 가이드</p>
                     <p id="tip-text">분석 데이터를 불러오는 중...</p>
                 </div>
             </div>
@@ -89,46 +89,67 @@
         // 현재 날짜를 기준으로 최근 7일 범위 계산
         let today = new Date();
         let startDate = new Date();
-        startDate.setDate(today.getDate() - 6); // 7일 전 날짜 계산
+        startDate.setDate(today.getDate() - 6);
 
         let startStr = `${String(startDate.getMonth() + 1).padStart(2, '0')}월 ${String(startDate.getDate()).padStart(2, '0')}일`;
         let endStr = `${String(today.getMonth() + 1).padStart(2, '0')}월 ${String(today.getDate()).padStart(2, '0')}일`;
 
-        $("#date-range").text(`${startStr} - ${endStr}`);
+        $("#date-range").text(`${startStr} - ${endStr}` + " 식단 분석");
 
+        // 사용자 정보 가져오기 (성별 & 나이)
         $.ajax({
-            url: "/food/weeklyStats",
+            url: "/food/getUserDetail",
             type: "GET",
             data: { userPk: userPk },
-            success: function (response) {
-                console.log("주간 통계 데이터:", response);
+            success: function (user) {
+                let gender = user.gender;
+                let age = user.age;
+                let standards = getNutritionStandards(gender, age);
 
-                let totalProtein = 0, totalCarbs = 0, totalFat = 0, totalCalories = 0;
+                // 주간 통계 가져오기
+                $.ajax({
+                    url: "/food/weeklyStats",
+                    type: "GET",
+                    data: { userPk: userPk },
+                    success: function (response) {
+                        let totalProtein = 0, totalCarbs = 0, totalFat = 0, totalCalories = 0;
 
-                response.forEach(day => {
-                    totalProtein += day.totalProtein;
-                    totalCarbs += day.totalCarbohydrates;
-                    totalFat += day.totalFat;
-                    totalCalories += day.totalCalories;
+                        response.forEach(day => {
+                            totalProtein += day.totalProtein;
+                            totalCarbs += day.totalCarbohydrates;
+                            totalFat += day.totalFat;
+                            totalCalories += day.totalCalories;
+                        });
+
+                        $("#protein-value").text(totalProtein.toFixed(2));
+                        $("#carbs-value").text(totalCarbs.toFixed(2));
+                        $("#fat-value").text(totalFat.toFixed(2));
+
+                        updateCaloriesChart(totalCalories, standards.calories);
+                        updateImprovementTips(totalProtein, totalCarbs, totalFat, standards);
+                    }
                 });
-
-                $("#protein-value").text(totalProtein.toFixed(2));
-                $("#carbs-value").text(totalCarbs.toFixed(2));
-                $("#fat-value").text(totalFat.toFixed(2));
-
-                updateCaloriesChart(totalCalories);
-                updateImprovementTips(totalProtein, totalCarbs, totalFat);
-            },
-            error: function (xhr, status, error) {
-                console.error("주간 통계 데이터를 불러오는 데 실패했습니다.", error);
-                $("#tip-text").text("주간 데이터를 불러올 수 없습니다.");
             }
         });
 
-        function updateCaloriesChart(totalCalories) {
+        function getNutritionStandards(gender, age) {
+            let standards = { protein: 0, carbs: 0, fat: 0, calories: 0 };
+
+            if (gender === "M") {
+                if (age <= 29) standards = { protein: 65 * 7, carbs: 350 * 7, fat: 70 * 7, calories: 2600 * 7 };
+                else if (age <= 49) standards = { protein: 65 * 7, carbs: 340 * 7, fat: 70 * 7, calories: 2500 * 7 };
+                else standards = { protein: 60 * 7, carbs: 320 * 7, fat: 65 * 7, calories: 2300 * 7 };
+            } else {
+                if (age <= 29) standards = { protein: 55 * 7, carbs: 300 * 7, fat: 60 * 7, calories: 2000 * 7 };
+                else if (age <= 49) standards = { protein: 50 * 7, carbs: 290 * 7, fat: 55 * 7, calories: 1900 * 7 };
+                else standards = { protein: 50 * 7, carbs: 280 * 7, fat: 50 * 7, calories: 1800 * 7 };
+            }
+            return standards;
+        }
+
+        function updateCaloriesChart(totalCalories, targetCalories) {
             const ctx = document.getElementById('caloriesChart').getContext('2d');
 
-            let targetCalories = 2800 * 7;
             let percentage = (totalCalories / targetCalories) * 100;
             let remainingPercentage = 100 - percentage;
 
@@ -158,29 +179,43 @@
                 },
             });
 
-            const textContainer = document.createElement('div');
-            textContainer.classList.add('chart-center-text');
-            textContainer.innerHTML = `
-            <p>${totalCalories} <span style="font-size: 14px; color: #999;">cal</span></p>`;
-            document.querySelector('#caloriesChart').parentElement.appendChild(textContainer);
+            $(".chart-center-text").html(`<p>${totalCalories} <span style="font-size: 14px; color: #999;">cal</span></p>`);
         }
 
-        function updateImprovementTips(protein, carbs, fat) {
-            let tip = "";
+        function updateImprovementTips(protein, carbs, fat, standards) {
+            let tips = [];
 
-            if (protein > 400) tip += " 단백질을 적절히 섭취 중입니다. 지속하세요!<br>";
-            else if (protein < 200) tip += "⚡ 단백질 섭취량이 부족합니다. 닭가슴살, 두부 추천!<br>";
+            // 단백질 섭취 분석
+            if (protein > standards.protein) {
+                tips.push("💪 <strong>단백질 섭취량이 충분합니다.</strong> 유지하세요!");
+            } else if (protein < standards.protein * 0.8) {
+                tips.push("⚡ <strong>단백질 섭취가 부족합니다.</strong> 닭가슴살, 두부 등 고단백 식품을 추가해보세요.");
+            }
 
-            if (carbs > 500) tip += " 탄수화물 섭취량이 많습니다. 밸런스를 유지하세요.<br>";
-            else if (carbs < 200) tip += "탄수화물 섭취가 적습니다. 현미밥, 감자 추가해보세요.<br>";
+            // 탄수화물 섭취 분석
+            if (carbs > standards.carbs) {
+                tips.push("🍞 <strong>탄수화물 섭취가 많습니다.</strong> 정제 탄수화물(흰쌀, 빵)보다 복합 탄수화물(현미, 고구마)을 선택하세요.");
+            } else if (carbs < standards.carbs * 0.8) {
+                tips.push("🍚 <strong>탄수화물이 부족합니다.</strong> 현미밥, 감자, 귀리 등 건강한 탄수화물을 추가하세요.");
+            }
 
-            if (fat > 150) tip += " 지방 섭취량이 많습니다. 좋은 지방을 선택하세요.<br>";
-            else if (fat < 50) tip += "🍳 건강한 지방을 충분히 섭취하세요. 견과류, 올리브오일 추천!<br>";
+            // 지방 섭취 분석
+            if (fat > standards.fat) {
+                tips.push("🥑 <strong>지방 섭취가 많습니다.</strong> 트랜스 지방 대신 견과류, 올리브오일을 선택하세요.");
+            } else if (fat < standards.fat * 0.8) {
+                tips.push("🍳 <strong>지방 섭취가 부족합니다.</strong> 아보카도, 연어, 들기름 등을 통해 건강한 지방을 보충하세요.");
+            }
 
-            $("#tip-text").html(tip || " 이번 주 영양 섭취가 적절합니다! 계속 유지하세요!");
+            // HTML 렌더링 (줄 간격 적용)
+            $("#tip-text").html(tips.length > 0
+                ? tips.map(tip => `<p style="margin-bottom: 8px;">${tip}</p>`).join("")
+                : "<p>✅ <strong>이번 주 영양 섭취가 적절합니다!</strong> 계속 유지하세요.</p>"
+            );
         }
+
     });
 </script>
+
 
 </body>
 </html>

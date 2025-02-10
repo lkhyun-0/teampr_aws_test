@@ -50,7 +50,7 @@ public class UserController {
     }
     // 닉네임 중복 체크
     @GetMapping("checkNickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam String userNick) {
+    public ResponseEntity<Boolean> checkNickname(@RequestParam("userNick") String userNick) {
         boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }

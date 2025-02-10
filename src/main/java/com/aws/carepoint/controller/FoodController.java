@@ -3,6 +3,7 @@ package com.aws.carepoint.controller;
 import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
 import com.aws.carepoint.dto.*;
+import com.aws.carepoint.mapper.DetailMapper;
 import com.aws.carepoint.service.FoodService;
 import com.aws.carepoint.service.MealService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class FoodController {
 
     private final FoodService foodService;
     private final MealService mealService;
+    private final DetailMapper detailMapper;
 
 
 
@@ -144,6 +146,14 @@ public class FoodController {
     public List<WeeklyFoodStatsDto> getWeeklyFoodStats(@SessionAttribute("userPk") int userPk) {
         return foodService.getWeeklyFoodStats(userPk);
     }
+
+    // 사용자 나이와 성별 가져오기
+    @GetMapping("/getUserDetail")
+    @ResponseBody
+    public DetailDto getUserDetail(@SessionAttribute("userPk") int userPk) {
+        return detailMapper.getUserDetail(userPk);
+    }
+
 
 
 
