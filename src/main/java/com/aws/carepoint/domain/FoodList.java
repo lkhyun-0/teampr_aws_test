@@ -9,9 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@Getter
-@Setter
-public class FoodList {
+public class FoodList { // 공공데이터 api용 domain
     private int foodListPk;
     private String menu;
     private float protein;

@@ -33,6 +33,7 @@ public class NoticeController {
     private String uploadDir;
 
 
+    // 글 작성
     @GetMapping("/noticeWrite")
     public String noticeWrite(
             HttpSession session,
@@ -101,6 +102,7 @@ public class NoticeController {
         return "redirect:/notice/noticeList";
     }
 
+    // 공지사항 내용
     @GetMapping("/noticeContent/{id}")
     public String qnaContent(@PathVariable("id") int articlePk, Model model, RedirectAttributes rttr) {
         NoticeDto notice = noticeService.getNoticeDetail(articlePk);
@@ -109,7 +111,7 @@ public class NoticeController {
         return "notice/noticeContent";
     }
 
-
+    // 공지사항 목록
     @GetMapping("/noticeList")
     public String noticeList(@ModelAttribute("scri") SearchCriteria scri, Model model, HttpSession session) {
         // 매 요청마다 새로운 데이터를 가져와야 함
@@ -129,7 +131,7 @@ public class NoticeController {
         return "notice/noticeList";
     }
 
-
+    // 글 삭제
     @PostMapping("/deleteNotice/{articlePk}")
     @ResponseBody
     public ResponseEntity<Void> deleteNotice(@PathVariable("articlePk") int articlePk) {
@@ -142,7 +144,7 @@ public class NoticeController {
         }
     }
 
-
+    // 글 수정
     @GetMapping("/noticeModify/{id}")
     public String noticeModify(@PathVariable("id") int articlePk, Model model) {
         NoticeDto notice = noticeService.getNoticeDetail(articlePk);
@@ -150,6 +152,7 @@ public class NoticeController {
         return "notice/noticeModify";
     }
 
+    // 글 수정 넘기기
     @PostMapping("/noticeModifyAction")
     public String noticeModifyAction(@ModelAttribute NoticeDto noticeDto,
                              @RequestParam("attachfile") MultipartFile attachfile,
@@ -186,8 +189,6 @@ public class NoticeController {
             }
         }
 
-        System.out.println(noticeDto);
-
         int value = noticeService.updateNotice(noticeDto);
 
         if (value > 0) {
@@ -195,7 +196,6 @@ public class NoticeController {
         } else {
             rttr.addFlashAttribute("msg", "게시글 작성 중 오류 발생");
         }
-
         return "redirect:/notice/noticeList";
     }
 }
