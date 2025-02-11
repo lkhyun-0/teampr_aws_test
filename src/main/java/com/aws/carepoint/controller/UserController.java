@@ -40,6 +40,28 @@ public class UserController {
         this.detailMapper = detailMapper;
     }
 
+    private String formatPhoneNumber(String rawPhone) {
+        if (rawPhone == null || rawPhone.isEmpty()) {
+            return "no-phone";  // 기본값 처리
+        }
+
+        // 숫자만 추출
+        String digits = rawPhone.replaceAll("[^0-9]", "");
+
+        // 한국 전화번호 +82로 시작하면 010으로 변환
+        if (digits.startsWith("82")) {
+            digits = "0" + digits.substring(2);
+        }
+
+        // 010으로 시작하지 않는 경우 처리
+        if (!digits.startsWith("010")) {
+            digits = "010" + digits.substring(digits.length() - 8); // 뒤 8자리 유지
+        }
+
+        return digits;
+    }
+
+
     @GetMapping("signUp")       // 회원가입 페이지
     public String signUp() {
         return "user/signUp";
@@ -251,6 +273,9 @@ public class UserController {
 
         // 📌 전화번호로 userPk 조회 (String 타입으로 반환될 가능성 있음)
         String findUserPk = userMapper.findPhoneByPhone(kakaoUser.getPhone());
+
+        String phone = formatPhoneNumber(kakaoUser.getPhone());
+        System.out.println("전화번호 정규화 !! " + phone); //이거 기준으로 가져올건데 카카오 유저랑 일반유저가 다름
 
         // 🔹 String → Integer 변환 (예외 방지)
         Integer userPk = (findUserPk != null && !findUserPk.isEmpty()) ? Integer.parseInt(findUserPk) : null;

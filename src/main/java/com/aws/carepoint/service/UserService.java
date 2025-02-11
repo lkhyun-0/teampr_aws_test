@@ -25,6 +25,8 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
+
     public void userSignUp(UsersDto usersDto) {     // 일반회원가입
         // 아이디 중복 검사
         if (userMapper.countByUserId(usersDto.getUserId()) > 0) {
@@ -57,15 +59,15 @@ public class UserService {
         return passwordEncoder.matches(rawPwd, encodedPwd);
     }
 
-    String phone;
+
     public UsersDto processKakaoLogin(Map<String, Object> kakaoUser, HttpSession session) {
         try {
             //  1. JSON 형식으로 변환 후 콘솔 출력
             ObjectMapper objectMapper = new ObjectMapper();
             String kakaoUserJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(kakaoUser);
-            System.out.println("📌 카카오에서 받은 사용자 정보 (JSON): \n" + kakaoUserJson);
+            //System.out.println("📌 카카오에서 받은 사용자 정보 (JSON): \n" + kakaoUserJson);
         } catch (Exception e) {     // 오류 출력
-            System.out.println("🚨 JSON 변환 중 오류 발생: " + e.getMessage());
+            //System.out.println("🚨 JSON 변환 중 오류 발생: " + e.getMessage());
         }
 
         // 2. 카카오에서 받은 사용자 정보 파싱
@@ -78,7 +80,7 @@ public class UserService {
         String email = (kakaoAccount != null && kakaoAccount.containsKey("email"))
                 ? kakaoAccount.get("email").toString()
                 : "no-email";  // 이메일
-        phone = (kakaoAccount != null && kakaoAccount.containsKey("phone_number"))
+        String phone = (kakaoAccount != null && kakaoAccount.containsKey("phone_number"))
                 ? kakaoAccount.get("phone_number").toString()
                 : "no-phone";  // 전화번호
 
