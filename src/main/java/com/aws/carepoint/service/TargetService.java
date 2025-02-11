@@ -47,6 +47,7 @@ public class TargetService {
 
     // ✅ target_count 증가
     public boolean incrementTargetCount(int userPk) {
+
         int updatedRows = targetMapper.incrementTargetCount(userPk);
         return updatedRows > 0;
     }

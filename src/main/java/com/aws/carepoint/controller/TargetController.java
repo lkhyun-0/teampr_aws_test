@@ -46,11 +46,12 @@ public class TargetController {
         return ResponseEntity.ok(targetDto);
     }
 
-    // ✅ target_count 증가 API
+    // ✅ target_count 증가
     @ResponseBody
     @PostMapping("/update-target-count")
     public ResponseEntity<?> updateTargetCount(@RequestBody Map<String, Integer> request) {
         Integer userPk = request.get("userPk");
+
         if (userPk == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid userPk"));
         }
@@ -66,8 +67,9 @@ public class TargetController {
 
     // 이번 주 target_count 업데이트 여부 체크
     @GetMapping("/has-updated-this-week")
-    public ResponseEntity<Boolean> hasUpdatedThisWeek(@RequestParam int userPk) {
+    public ResponseEntity<Boolean> hasUpdatedThisWeek(@RequestParam("userPk") int userPk) {
         boolean hasUpdated = targetService.hasUpdatedThisWeek(userPk);
+        System.out.println("hasUpdated ================================== " + hasUpdated);
         return ResponseEntity.ok(hasUpdated);
     }
 

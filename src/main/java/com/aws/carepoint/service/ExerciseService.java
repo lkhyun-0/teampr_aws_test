@@ -68,8 +68,8 @@ public class ExerciseService {
     }
 
     // 운동 종목 선택 팝업에 띄울 리스트 가져오기
-    public List<ExerciseDto> getAllExercises() {
-        return exerciseMapper.getAllExercises();
+    public List<ExerciseDto> getAllExercises(int userPk) {
+        return exerciseMapper.getAllExercises(userPk);
     }
 
     // 해당 회원이 운동 기록한 횟수 가져오기

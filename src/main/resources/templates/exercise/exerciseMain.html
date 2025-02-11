@@ -180,7 +180,7 @@
           }
         });
 
-        // ✅ 📌 서버에서 운동 기록 가져와서 캘린더에 추가
+        // 📌 서버에서 운동 기록 가져와서 캘린더에 추가
         fetch('/exercise/getExerciseEvents')
           .then(response => response.json())
           .then(exerciseList => {
@@ -218,7 +218,7 @@
       });
 
       document.addEventListener("DOMContentLoaded", function () {
-        const userPk = 2;
+        const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
         const exercisePopup = document.querySelector(".exercise-type-popup");
         const exerciseTypeBtn = document.querySelector(".exercise-type-popup-btn");
         const exerciseTypeSaveBtn = document.querySelector(".exercise-type-save-btn");
@@ -235,7 +235,6 @@
         fetch(`/exercise/has-today-exercise?userPk=${userPk}`)
                 .then(response => response.json())
                 .then(hasData => {
-                  console.log("Has Today Exercise Data:", hasData); // 디버깅 로그
                   if (hasData && saveExerciseBtn) {
                     disableSaveExerciseButton();
                   }
@@ -304,14 +303,14 @@
           exerciseTypeDisplay.style.display = "block";
           exerciseTypeDisplay.textContent = selectedExercise;
 
-          // **🚀 선택한 값 hidden input으로 저장 (서버 전송용)**
+          // 선택한 값 hidden input으로 저장 (서버 전송용)**
           document.querySelector("#selected-exercise-name").value = selectedExercise;
           document.querySelector("#selected-exercise-met").value = selectedMet;
 
           exercisePopup.style.display = "none";
         });
 
-        // 📌 운동 저장 버튼 클릭 시 데이터 전송
+        // 운동 저장 버튼 클릭 시 데이터 전송
         saveExerciseBtn.addEventListener("click", function (event) {
           event.preventDefault();
 
@@ -329,7 +328,7 @@
             metValue: selectedMet,
             hour: hour,
             minute: minute,
-            regDate: "2025-02-12"
+            regDate: today
           };
 
           fetch('/exercise/saveExercise', {
@@ -344,9 +343,9 @@
                     return response.json();
                   })
                   .then(result => {
-                    alert(result.message); // ✅ 올바른 JSON 응답 처리
+                    alert(result.message); // 올바른 JSON 응답 처리
 
-                    // ✅ 📌 서버에서 운동 기록 가져와서 캘린더에 추가
+                    // 서버에서 운동 기록 가져와서 캘린더에 추가
                     fetch('/exercise/getExerciseEvents')
                             .then(response => response.json())
                             .then(exerciseList => {
@@ -397,8 +396,9 @@
     <script>
       // 그래프 저장
       document.addEventListener("DOMContentLoaded", function () {
-        const userPk = 2; // 실제 구현 시 세션에서 가져오기
+        const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
         const saveButton = document.querySelector(".save-button"); // 저장 버튼
+        const saveForm = document.getElementById("graph-form");// ✅ 폼 제출 이벤트 리스너 추가
 
         // ✅ 오늘 날짜에 그래프 데이터가 있는지 확인
         fetch(`/graph/has-today-graph?userPk=${userPk}`)
@@ -441,34 +441,34 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
           })
-                  .then(response => response.text())
-                  .then(result => {
-                    alert(result);
+          .then(response =>{
+                  console.log("📡 서버 응답 코드:", response.status);
+                  return response.text();
+          })
+          .then(result => {
+            alert(result);
 
-                    // ✅ 입력 필드 초기화
-                    bloodSugarInput.value = "";
-                    bloodPressInput.value = "";
-                    weightInput.value = "";
+            // ✅ 입력 필드 초기화
+            bloodSugarInput.value = "";
+            bloodPressInput.value = "";
+            weightInput.value = "";
 
-                    // ✅ 저장 후 버튼 비활성화
-                    if (saveButton) {
-                      saveButton.disabled = true;
-                      saveButton.style.opacity = "0.5";
-                      saveButton.textContent = "오늘 데이터 저장 완료";
-                    }
-                  })
-                  .catch(error => console.error('Error:', error));
+            // ✅ 저장 후 버튼 비활성화
+            if (saveButton) {
+              saveButton.disabled = true;
+              saveButton.style.opacity = "0.5";
+            }
+          })
+          .catch(error => console.error('Error:', error));
         }
 
-        // ✅ 폼 제출 이벤트 리스너 추가
-        const saveForm = document.getElementById("graph-form");
         if (saveForm) {
           saveForm.addEventListener("submit", graphSaveCheck);
         }
       });
 
       document.addEventListener("DOMContentLoaded", function () {
-        const userPk = 2; // 실제 구현 시 세션에서 가져오기
+        const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
         const targetWriteBtn = document.querySelector(".target-write-btn");
 
         // ✅ 운동 기록 횟수 가져오기
@@ -752,13 +752,13 @@
     <div class="right-service">
       <h2>오늘의 수치 기록하기 <i class="fa-solid fa-pencil"></i></h2>
       <div class="graph">
-        <form name="graph-frm">
+        <form name="graph-frm" id="graph-form">
           <ul>
             <li>혈당 <input type="number" id="blood_sugar" name="blood_sugar" required> mg/dL</li>
             <li>혈압 <input type="number" id="blood_press" name="blood_press" required> mmHg</li>
             <li>몸무게 <input type="number" id="weight" name="weight" class="weight" required> kg</li>
           </ul>
-          <button type="button" class="save-button" onclick="graphSaveCheck()">저 장</button>
+          <button type="submit" class="save-button">저 장</button>
         </form>
       </div>
       <div class="cumulative-count">

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
 public interface TargetMapper {
 
     @Insert("INSERT INTO target (exercise_target, value_target, kcal_target, start_date, end_date, user_pk) " +
-            "VALUES (#{exerciseTarget}, #{valueTarget}, #{kcalTarget}, #{startDate}, #{endDate}, 2)")
+            "VALUES (#{exerciseTarget}, #{valueTarget}, #{kcalTarget}, #{startDate}, #{endDate}, #{userPk})")
     @Results(id = "targetResultMap", value = {
             @Result(property = "exerciseTarget", column = "exercise_target"),
             @Result(property = "valueTarget", column = "value_target"),
@@ -20,7 +20,7 @@ public interface TargetMapper {
 
     // ✅ 이번 주 목표 데이터 조회
     @Select("SELECT * FROM target " +
-            "WHERE user_pk = 2 " +
+            "WHERE user_pk = #{userPk} " +
             "AND CURDATE() BETWEEN start_date AND end_date " +
             "LIMIT 1")
     @Results(id = "targetResultMap", value = {
