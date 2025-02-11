@@ -68,8 +68,8 @@ public class ExerciseService {
     }
 
     // 운동 종목 선택 팝업에 띄울 리스트 가져오기
-    public List<ExerciseDto> getAllExercises() {
-        return exerciseMapper.getAllExercises();
+    public List<ExerciseDto> getAllExercises(int userPk) {
+        return exerciseMapper.getAllExercises(userPk);
     }
 
     // 해당 회원이 운동 기록한 횟수 가져오기
@@ -77,5 +77,8 @@ public class ExerciseService {
         return exerciseMapper.getExerciseCount(userPk);
     }
 
-
+    // 오늘 날짜에 운동을 기록했는지 확인
+    public boolean hasTodayExerciseData(int userPk) {
+        return exerciseMapper.hasTodayExerciseData(userPk) > 0;
+    }
 }

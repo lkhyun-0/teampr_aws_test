@@ -44,4 +44,21 @@ public class TargetService {
         TargetDto targetDto = targetMapper.findCurrentWeekTarget(userPk);
         return targetDto;
     }
+
+    // ✅ target_count 증가
+    public boolean incrementTargetCount(int userPk) {
+
+        int updatedRows = targetMapper.incrementTargetCount(userPk);
+        return updatedRows > 0;
+    }
+
+    // 이번 주 target_count 업데이트 여부 체크
+    public boolean hasUpdatedThisWeek(int userPk) {
+        return targetMapper.hasUpdatedThisWeek(userPk) > 0;
+    }
+
+    // 해당 회원이 목표 달성한 횟수 가져오기
+    public int getTargetCount(int userPk) {
+        return targetMapper.getTargetCount(userPk);
+    }
 }

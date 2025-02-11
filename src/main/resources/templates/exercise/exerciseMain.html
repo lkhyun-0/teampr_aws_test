@@ -180,7 +180,7 @@
           }
         });
 
-        // ✅ 📌 서버에서 운동 기록 가져와서 캘린더에 추가
+        // 📌 서버에서 운동 기록 가져와서 캘린더에 추가
         fetch('/exercise/getExerciseEvents')
           .then(response => response.json())
           .then(exerciseList => {
@@ -218,6 +218,7 @@
       });
 
       document.addEventListener("DOMContentLoaded", function () {
+        const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
         const exercisePopup = document.querySelector(".exercise-type-popup");
         const exerciseTypeBtn = document.querySelector(".exercise-type-popup-btn");
         const exerciseTypeSaveBtn = document.querySelector(".exercise-type-save-btn");
@@ -229,6 +230,16 @@
         let selectedExercise = "";
         let selectedMet = 0; // MET 저장 변수
         let exerciseList = []; // 운동 리스트 저장
+
+        // ✅ 오늘 날짜에 운동 데이터가 있는지 확인
+        fetch(`/exercise/has-today-exercise?userPk=${userPk}`)
+                .then(response => response.json())
+                .then(hasData => {
+                  if (hasData && saveExerciseBtn) {
+                    disableSaveExerciseButton();
+                  }
+                })
+                .catch(error => console.error("Error checking today's exercise data:", error));
 
         // 📌 운동명 리스트 가져오기 (API 호출)
         fetch('/exercise/apiList')
@@ -292,14 +303,14 @@
           exerciseTypeDisplay.style.display = "block";
           exerciseTypeDisplay.textContent = selectedExercise;
 
-          // **🚀 선택한 값 hidden input으로 저장 (서버 전송용)**
+          // 선택한 값 hidden input으로 저장 (서버 전송용)**
           document.querySelector("#selected-exercise-name").value = selectedExercise;
           document.querySelector("#selected-exercise-met").value = selectedMet;
 
           exercisePopup.style.display = "none";
         });
 
-        // 📌 운동 저장 버튼 클릭 시 데이터 전송
+        // 운동 저장 버튼 클릭 시 데이터 전송
         saveExerciseBtn.addEventListener("click", function (event) {
           event.preventDefault();
 
@@ -325,222 +336,260 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(exerciseData)
           })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then(result => {
-            alert(result.message); // ✅ 올바른 JSON 응답 처리
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                  })
+                  .then(result => {
+                    alert(result.message); // 올바른 JSON 응답 처리
 
-            // ✅ 새로운 이벤트 객체 생성
-            let newEvent = {
-              title: `운동 종목: ${selectedExercise}<br>운동 시간: ${hour}시간 ${minute}분<br>`+
-                      `총 소모 칼로리: <b class="highlight-kcal">${exercise.kcal}</b>kcal`,
-              start: today,
-              extendedProps: {
-                icon: '/images/운동일러.jpg',
-              }
-            };
-            // ✅ 기존 이벤트 모두 삭제 (강제 리프레시)
-            calendar.removeAllEvents();
+                    // 서버에서 운동 기록 가져와서 캘린더에 추가
+                    fetch('/exercise/getExerciseEvents')
+                            .then(response => response.json())
+                            .then(exerciseList => {
+                              exerciseList.forEach(exercise => {
+                                calendar.addEvent({
+                                  title: `운동 종목: ${exercise.exerciseName}<br>운동 시간: ${exercise.hour}시간 ${exercise.minute}분<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal`,
+                                  start: exercise.regDate,
+                                  extendedProps: {
+                                    icon: '/images/운동일러.jpg',
+                                  }
+                                });
+                              });
+                            })
+                            .catch(error => console.error("Error loading exercises:", error));
 
-            // ✅ 새로운 이벤트 추가
-            calendar.addEvent(newEvent);
+                    // 입력 필드 초기화
+                    exerciseTypeDisplay.textContent = "";
+                    exerciseTypeDisplay.style.display = "none";
+                    exerciseTypeBtn.style.display = "inline-block";
+                    exerciseTimeHour.value = "00";
+                    exerciseTimeMinute.value = "00";
 
-            // ✅ 📌 서버에서 운동 기록 가져와서 캘린더에 추가
-            fetch('/exercise/getExerciseEvents')
-                    .then(response => response.json())
-                    .then(exerciseList => {
-                      exerciseList.forEach(exercise => {
-                        calendar.addEvent({
-                          title: `운동 종목: ${exercise.exerciseName}<br>운동 시간: ${exercise.hour}시간 ${exercise.minute}분<br>`+
-                                  `총 소모 칼로리: <b class="highlight-kcal">742</b>kcal`,
-                          start: exercise.regDate,
-                          extendedProps: {
-                            icon: '/images/운동일러.jpg',
-                          }
-                        });
-                      });
-                    })
-                    .catch(error => console.error("Error loading exercises:", error));
+                    // 캘린더로 포커스
+                    setTimeout(() => {
+                      var calendarEl = document.getElementById('calendar'); // 캘린더의 DOM 요소 가져오기
+                      if (calendarEl) {
+                        calendarEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); // 스크롤 이동
+                        calendarEl.focus(); // 포커스 설정 (선택사항)
+                      }
+                    }, 300);
 
-            // 입력 필드 초기화
-            exerciseTypeDisplay.textContent = "";
-            exerciseTypeDisplay.style.display = "none";
-            exerciseTypeBtn.style.display = "inline-block";
-            exerciseTimeHour.value = "00";
-            exerciseTimeMinute.value = "00";
-
-          })
-          .catch(error => console.error("Error saving exercise:", error));
-
-          // 캘린더로 포커스
-          setTimeout(() => {
-            var calendarEl = document.getElementById('calendar'); // 캘린더의 DOM 요소 가져오기
-            if (calendarEl) {
-              calendarEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); // 스크롤 이동
-              calendarEl.focus(); // 포커스 설정 (선택사항)
-            }
-          }, 300);
-
-          calendar.render();
+                    calendar.render();
+                  })
+                  .catch(error => console.error("Error saving exercise:", error));
         });
+
+        // ✅ 버튼을 비활성화하는 함수 (반복 사용)
+        function disableSaveExerciseButton() {
+          saveExerciseBtn.disabled = true;
+        }
+
+        // ✅ 폼 제출 이벤트 리스너 추가
+        if (saveExerciseBtn) {
+          saveExerciseBtn.addEventListener("click", saveExercise);
+        }
       });
     </script>
     <script>
-      function graphSaveCheck() {
-        // 입력 필드 가져오기
-        const bloodSugarInput = document.getElementById("blood_sugar");
-        const bloodPressInput = document.getElementById("blood_press");
-        const weightInput = document.getElementById("weight");
-
-        // 입력 값 가져오기
-        const bloodSugar = bloodSugarInput.value.trim();
-        const bloodPress = bloodPressInput.value.trim();
-        const weight = weightInput.value.trim();
-
-        // 최소 하나 이상의 입력값이 필요함
-        if (!bloodSugar && !bloodPress && !weight) {
-          alert("수치를 한 개 이상 입력해주세요.");
-
-          // 비어 있는 첫 번째 입력 필드에 포커스 맞추기
-          if (!bloodSugar) {
-            bloodSugarInput.focus();
-          }
-
-          return; // 서버로 요청 보내지 않음
-        }
-
-        // 데이터 객체 생성
-        const data = {
-          bloodSugar: bloodSugar || null, // 값이 비어있으면 null로 전달
-          bloodPress: bloodPress || null,
-          weight: weight || null
-        };
-
-        // 서버로 데이터 전송
-        fetch('/graph/saveGraph', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        })
-        .then(response => response.text())
-        .then(result => {
-          alert(result); // 저장 성공 메시지
-
-          // ✅ 입력 필드 초기화 (값을 비움)
-          bloodSugarInput.value = "";
-          bloodPressInput.value = "";
-          weightInput.value = "";
-
-          // ✅ 첫 번째 입력 필드에 포커스 맞추기
-          bloodSugarInput.focus();
-        })
-        .catch(error => console.error('Error:', error));
-      }
-
-      function targetSaveCheck(event) {
-        event.preventDefault(); // 기본 제출 방지
-
-        // 입력 필드 가져오기
-        const exerciseTargetInput = document.querySelector("[name='exercise_target']");
-        const valueTargetInput = document.querySelector("[name='value_target']");
-        const kcalTargetInput = document.querySelector("[name='kcal_target']");
-
-        // 입력 값 가져오기
-        const exerciseTarget = exerciseTargetInput.value.trim();
-        const valueTarget = valueTargetInput.value.trim();
-        const kcalTarget = kcalTargetInput.value.trim();
-
-        // 최소 하나 이상의 입력값이 필요함
-        if (!exerciseTarget && !valueTarget && !kcalTarget) {
-          alert("목표를 한 개 이상 입력해주세요.");
-
-          // 비어 있는 첫 번째 입력 필드에 포커스 맞추기
-          if (!exerciseTarget) {
-            exerciseTargetInput.focus();
-          } else if (!valueTarget) {
-            valueTargetInput.focus();
-          } else {
-            kcalTargetInput.focus();
-          }
-
-          return; // 서버로 요청 보내지 않음
-        }
-
-        // 데이터 객체 생성
-        const data = {
-          exerciseTarget: exerciseTarget || null, // 값이 비어있으면 null로 전달
-          valueTarget: valueTarget || null,
-          kcalTarget: kcalTarget || null
-        };
-
-        // 서버로 데이터 전송
-        fetch('/target/saveTarget', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        })
-        .then(response => response.json()) // 서버 응답을 JSON으로 받음
-        .then(result => {
-          alert(result.message); // 저장 성공 메시지
-
-          // ✅ 입력 필드 초기화
-          exerciseTargetInput.value = "";
-          valueTargetInput.value = "";
-          kcalTargetInput.value = "";
-
-          // ✅ 첫 번째 입력 필드에 포커스 맞추기
-          $('.target-popup').css('display', 'none');
-        })
-        .catch(error => console.error('Error:', error));
-      }
-
-      // 이번주 목표 받아오기
+      // 그래프 저장
       document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("target-form").addEventListener("submit", targetSaveCheck);
-        const userPk = 2; // 현재 사용자 ID (실제 구현 시 세션에서 가져오기)
+        const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
+        const saveButton = document.querySelector(".save-button"); // 저장 버튼
+        const saveForm = document.getElementById("graph-form");// ✅ 폼 제출 이벤트 리스너 추가
+
+        // ✅ 오늘 날짜에 그래프 데이터가 있는지 확인
+        fetch(`/graph/has-today-graph?userPk=${userPk}`)
+                .then(response => response.json())
+                .then(hasData => {
+                  console.log("Has Today Graph Data:", hasData); // 디버깅 로그
+                  if (hasData && saveButton) {
+                    saveButton.disabled = true;
+                  }
+                })
+                .catch(error => console.error("Error checking today's graph data:", error));
+
+        // ✅ 그래프 저장 함수
+        function graphSaveCheck(event) {
+          event.preventDefault(); // 기본 제출 방지
+
+          const bloodSugarInput = document.getElementById("blood_sugar");
+          const bloodPressInput = document.getElementById("blood_press");
+          const weightInput = document.getElementById("weight");
+
+          const bloodSugar = bloodSugarInput.value.trim();
+          const bloodPress = bloodPressInput.value.trim();
+          const weight = weightInput.value.trim();
+
+          if (!bloodSugar && !bloodPress && !weight) {
+            alert("수치를 한 개 이상 입력해주세요.");
+            if (!bloodSugar) bloodSugarInput.focus();
+            return;
+          }
+
+          const data = {
+            userPk: userPk,
+            bloodSugar: bloodSugar || null,
+            bloodPress: bloodPress || null,
+            weight: weight || null
+          };
+
+          fetch('/graph/saveGraph', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          })
+          .then(response =>{
+                  console.log("📡 서버 응답 코드:", response.status);
+                  return response.text();
+          })
+          .then(result => {
+            alert(result);
+
+            // ✅ 입력 필드 초기화
+            bloodSugarInput.value = "";
+            bloodPressInput.value = "";
+            weightInput.value = "";
+
+            // ✅ 저장 후 버튼 비활성화
+            if (saveButton) {
+              saveButton.disabled = true;
+              saveButton.style.opacity = "0.5";
+            }
+          })
+          .catch(error => console.error('Error:', error));
+        }
+
+        if (saveForm) {
+          saveForm.addEventListener("submit", graphSaveCheck);
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
+        const targetWriteBtn = document.querySelector(".target-write-btn");
 
         // ✅ 운동 기록 횟수 가져오기
         fetch(`/exercise/count?userPk=${userPk}`)
                 .then(response => response.json())
                 .then(count => {
-                  document.getElementById("exercise-count").textContent = `${count}회`; // 운동 기록 횟수 업데이트
+                  document.getElementById("exercise-count").textContent = `${count}회`;
                 })
                 .catch(error => console.error("Error fetching exercise count:", error));
 
+        // ✅ 주간 목표 달성 수 가져오기
+        fetch(`/target/count?userPk=${userPk}`)
+                .then(response => response.json())
+                .then(count => {
+                  document.getElementById("weekly-goal-count").textContent = `${count}회`;
+                })
+                .catch(error => console.error("Error fetching weekly goal count:", error));
+
+        // ✅ 이번 주 목표 데이터 가져오기
         fetch(`/target/current-week?userPk=${userPk}`)
-          .then(response => {
-            if (!response.ok) throw new Error("No target data available");
-            return response.json();
+                .then(response => response.json())
+                .then(data => {
+                  if (!data) return;
+
+                  if (data) {
+                    targetWriteBtn.disabled = true;
+                  }
+
+                  // ✅ 목표 정보 업데이트
+                  document.querySelector(".target-1 .current").textContent = `${data.exerciseCount.toLocaleString()}회`;
+                  document.querySelector(".target-1 .goal").textContent = `${data.exerciseTarget.toLocaleString()}회`;
+                  document.querySelector(".target-2 .current").textContent = `${data.valueCount.toLocaleString()}회`;
+                  document.querySelector(".target-2 .goal").textContent = `${data.valueTarget.toLocaleString()}회`;
+                  document.querySelector(".target-3 .current").textContent = `${data.kcalSum.toLocaleString()}kcal`;
+                  document.querySelector(".target-3 .goal").textContent = `${data.kcalTarget.toLocaleString()}kcal`;
+
+                  // ✅ 진행 바 업데이트
+                  updateProgress(".target-1 .target-progress", data.exerciseCount, data.exerciseTarget);
+                  updateProgress(".target-2 .target-progress", data.valueCount, data.valueTarget);
+                  updateProgress(".target-3 .target-progress", data.kcalSum, data.kcalTarget);
+
+                  // ✅ 목표 달성 여부 확인 및 SUCCESS 도장 표시
+                  toggleSuccessStamp(".target-1 .success-stamp", data.exerciseCount, data.exerciseTarget);
+                  toggleSuccessStamp(".target-2 .success-stamp", data.valueCount, data.valueTarget);
+                  toggleSuccessStamp(".target-3 .success-stamp", data.kcalSum, data.kcalTarget);
+
+                  // ✅ 모든 목표가 달성되었는지 체크 후 target_count 증가
+                  checkAllGoalsCompleted(userPk, data);
+                })
+                .catch(error => console.error("Error loading target data:", error));
+
+        // ✅ 목표 저장 체크 (목표 입력 후 서버로 전송)
+        function targetSaveCheck(event) {
+          event.preventDefault(); // 기본 제출 방지
+
+          const exerciseTargetInput = document.querySelector("[name='exercise_target']");
+          const valueTargetInput = document.querySelector("[name='value_target']");
+          const kcalTargetInput = document.querySelector("[name='kcal_target']");
+
+          const exerciseTarget = exerciseTargetInput.value.trim();
+          const valueTarget = valueTargetInput.value.trim();
+          const kcalTarget = kcalTargetInput.value.trim();
+
+          // ✅ 최소 하나 이상의 입력값이 필요함
+          if (!exerciseTarget && !valueTarget && !kcalTarget) {
+            alert("목표를 한 개 이상 입력해주세요.");
+
+            // 비어 있는 첫 번째 입력 필드에 포커스 맞추기
+            if (!exerciseTarget) {
+              exerciseTargetInput.focus();
+            } else if (!valueTarget) {
+              valueTargetInput.focus();
+            } else {
+              kcalTargetInput.focus();
+            }
+            return;
+          }
+
+          // ✅ 목표 데이터 객체 생성
+          const data = {
+            userPk: userPk,
+            exerciseTarget: exerciseTarget || null,
+            valueTarget: valueTarget || null,
+            kcalTarget: kcalTarget || null
+          };
+
+          // ✅ 서버로 목표 저장 요청
+          fetch('/target/saveTarget', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
           })
-          .then(data => {
-            if (!data) return;
+                  .then(response => response.json())
+                  .then(result => {
+                    alert(result.message); // 저장 성공 메시지
 
-            // ✅ 운동 횟수 반영
-            document.querySelector(".target-1 .current").textContent = `${data.exerciseCount.toLocaleString()}회`;
-            document.querySelector(".target-1 .goal").textContent = `${data.exerciseTarget.toLocaleString()}회`;
+                    // ✅ 입력 필드 초기화
+                    exerciseTargetInput.value = "";
+                    valueTargetInput.value = "";
+                    kcalTargetInput.value = "";
 
-            // ✅ 수치 기록 횟수 반영
-            document.querySelector(".target-2 .current").textContent = `${data.valueCount.toLocaleString()}회`;
-            document.querySelector(".target-2 .goal").textContent = `${data.valueTarget.toLocaleString()}회`;
+                    // ✅ 목표 작성 완료 시 버튼 비활성화
+                    if (targetWriteBtn) {
+                      targetWriteBtn.disabled = true;
+                      targetWriteBtn.style.opacity = "0.5";
+                      targetWriteBtn.textContent = "이미 목표를 작성했습니다";
+                    }
 
-            // ✅ 칼로리 소모량 반영 (천 단위 쉼표 포함)
-            document.querySelector(".target-3 .current").textContent = `${data.kcalSum.toLocaleString()}kcal`;
-            document.querySelector(".target-3 .goal").textContent = `${data.kcalTarget.toLocaleString()}kcal`;
+                    // ✅ 팝업 닫기
+                    $('.target-popup').css('display', 'none');
+                  })
+                  .catch(error => console.error('Error:', error));
+        }
 
-            // ✅ 진행 바 업데이트
-            updateProgress(".target-1 .target-progress", data.exerciseCount, data.exerciseTarget);
-            updateProgress(".target-2 .target-progress", data.valueCount, data.valueTarget);
-            updateProgress(".target-3 .target-progress", data.kcalSum, data.kcalTarget);
-          })
-          .catch(error => console.error("Error loading target data:", error));
+        // ✅ 폼 제출 이벤트 리스너 추가
+        const targetForm = document.getElementById("target-form");
+        if (targetForm) {
+          targetForm.addEventListener("submit", targetSaveCheck);
+        }
       });
 
       // ✅ 목표 진행 바 업데이트 함수
@@ -552,7 +601,50 @@
         progressBar.style.width = `${percentage}%`;
       }
 
-      // 특정 회원이 운동 기록한 횟수 가져오기
+      // ✅ 목표 달성 여부 확인 및 SUCCESS 도장 표시 함수
+      function toggleSuccessStamp(selector, current, target) {
+        const stamp = document.querySelector(selector);
+        if (stamp) {
+          if (target === 0) {
+            stamp.style.display = "none"; // 목표 값이 0이면 도장 숨김
+          } else {
+            stamp.style.display = current >= target ? "flex" : "none"; // 목표 달성 여부에 따라 표시
+          }
+        }
+      }
+
+      // ✅ 모든 목표 달성 여부 확인 후 target_count 증가
+      function checkAllGoalsCompleted(userPk, data) {
+        const exerciseCompleted = data.exerciseCount >= data.exerciseTarget && data.exerciseTarget > 0;
+        const valueCompleted = data.valueCount >= data.valueTarget && data.valueTarget > 0;
+        const kcalCompleted = data.kcalSum >= data.kcalTarget && data.kcalTarget > 0;
+
+        if (exerciseCompleted && valueCompleted && kcalCompleted) {
+          updateTargetCount(userPk); // 목표 3개 모두 달성 시 target_count 증가
+        }
+      }
+
+      // ✅ 목표 달성 시 user_detail 테이블의 target_count +1 업데이트 (이번 주에 한 번만)
+      function updateTargetCount(userPk) {
+        fetch(`/target/has-updated-this-week?userPk=${userPk}`)
+                .then(response => response.json())
+                .then(hasUpdated => {
+                  if (!hasUpdated) {
+                    // 이번 주에 아직 증가한 적 없으면 업데이트 실행
+                    fetch(`/target/update-target-count`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ userPk }),
+                    })
+                            .then(response => response.json())
+                            .then(result => console.log("Target count updated:", result))
+                            .catch(error => console.error("Error updating target count:", error));
+                  } else {
+                    console.log("이번 주에는 이미 목표 달성 보상이 지급되었습니다!");
+                  }
+                })
+                .catch(error => console.error("Error checking update status:", error));
+      }
 
     </script>
 </head>
@@ -660,13 +752,13 @@
     <div class="right-service">
       <h2>오늘의 수치 기록하기 <i class="fa-solid fa-pencil"></i></h2>
       <div class="graph">
-        <form name="graph-frm">
+        <form name="graph-frm" id="graph-form">
           <ul>
             <li>혈당 <input type="number" id="blood_sugar" name="blood_sugar" required> mg/dL</li>
             <li>혈압 <input type="number" id="blood_press" name="blood_press" required> mmHg</li>
             <li>몸무게 <input type="number" id="weight" name="weight" class="weight" required> kg</li>
           </ul>
-          <button type="button" class="save-button" onclick="graphSaveCheck()">저 장</button>
+          <button type="submit" class="save-button">저 장</button>
         </form>
       </div>
       <div class="cumulative-count">
@@ -675,7 +767,7 @@
           <span>내가 운동 기록한 횟수 <i class="fa-solid fa-medal"></i> </span>
         </div>
         <div class="cumulative-total">
-          <span id="weekly-goal-count">32회</span>
+          <span id="weekly-goal-count">0회</span>
           <span id="exercise-count">0회</span>
         </div>
       </div>

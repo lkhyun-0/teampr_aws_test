@@ -27,7 +27,11 @@
     </div>
   </div>
 
-  <div class="article-content" th:text="${qna.content}">
+  <div class="article-content">
+      <div class="uploaded-image" th:if="${not #strings.isEmpty(qna.filename) and qna.filename != 'null'}">
+          <img th:src="@{/uploads/{filename}(filename=${qna.filename})}" alt="첨부된 이미지">
+      </div>
+      <span th:text="${qna.content}"></span>
   </div>
 
   <div class="actions">

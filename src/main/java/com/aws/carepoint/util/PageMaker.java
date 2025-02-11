@@ -14,6 +14,8 @@ public class PageMaker {
     private int displayPageNum = 10; // 한 화면에 보여줄 페이지 개수
     private SearchCriteria scri;
 
+
+
     public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
         calcData();
