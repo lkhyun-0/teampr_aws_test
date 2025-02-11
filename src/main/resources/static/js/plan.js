@@ -33,63 +33,90 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 0);
         },
         dateClick: function (info) {
-            let events = calendar.getEvents();
-
+            let events = window.calendar.getEvents();
             let selectDate = new Date(info.date);
-            let formattedSelectDate = selectDate.getFullYear() + '-' +
-                String(selectDate.getMonth() + 1).padStart(2, '0') + '-' +
-                String(selectDate.getDate()).padStart(2, '0');
 
-            // 선택한 날짜의 일정 찾기
-            let selectedEvent = events.find(event => {
-                let eventDate = new Date(event.start);
-                let formattedEventDate = eventDate.getFullYear() + '-' +
-                    String(eventDate.getMonth() + 1).padStart(2, '0') + '-' +
-                    String(eventDate.getDate()).padStart(2, '0');
-
-                return formattedSelectDate === formattedEventDate;
+            // 선택한 날짜에 해당하는 병원 일정 찾기
+            let hospitalEvent = events.find(event => {
+                let startDate = new Date(event.start);
+                let endDate = new Date(event.end);
+                return startDate <= selectDate && selectDate < endDate && event.title.includes("병원");
             });
 
-            if (selectedEvent) {
-                let hospitalPk = selectedEvent.id;
-                fetchEventDetails(hospitalPk, formattedSelectDate); // 상세 정보 불러오기
+            // 선택한 날짜에 해당하는 약 일정 찾기
+            let medicineEvent = events.find(event => {
+                let startDate = new Date(event.start);
+                let endDate = new Date(event.end);
+                return startDate <= selectDate && selectDate < endDate && event.title.includes("약");
+            });
+
+            if (hospitalEvent || medicineEvent) {
+                // 둘 다 일정이 있으면 병원 & 약 일정 데이터를 가져옴
+                if (hospitalEvent) {
+                    fetchHospitalDetails(hospitalEvent.id, info.dateStr);
+                }
+                if (medicineEvent) {
+                    fetchMedicineDetails(medicineEvent.id, info.dateStr);
+                }
+                openPopup(hospitalEvent, medicineEvent);
             } else {
                 alert("해당 날짜에는 일정이 없습니다.");
             }
-        },
+        }
+
     });
 
     window.calendar.render();
 
     // 캘린더 데이터 로드
-    loadHospitalPlans(calendar);
+    loadAllPlans(calendar);
+
 });
 
-// 일정 불러오기 함수 (calendar 객체를 인자로 받도록 수정)
-function loadHospitalPlans(calendar) {
-    $.ajax({
-        url: "/plan/getAllPlansAjax",
-        type: "GET",
-        success: function (data) {
+function loadAllPlans(calendar) {
+
+    Promise.all([
+        $.ajax({ url: "/plan/getAllHospitalPlansAjax", type: "GET" }),
+        $.ajax({ url: "/plan/getAllMedicinePlansAjax", type: "GET" })
+    ])
+        .then(([hospitalData, medicineData]) => {
+
             calendar.removeAllEvents();
 
-            data.forEach(event => {
-                calendar.addEvent({
+            // 병원 일정 추가
+            hospitalData.forEach(event => {
+
+
+                let newEvent = {
                     id: event.id,
                     title: event.title,
                     start: event.start,
                     allDay: true
-                });
+                };
+                calendar.addEvent(newEvent);
+            });
+
+            // 약 일정 추가
+            medicineData.forEach(event => {
+                let endDate = new Date(event.end);
+                endDate.setDate(endDate.getDate() + 1);
+
+                let newEvent = {
+                    id: event.id,
+                    title: event.title,
+                    start: event.start,
+                    end: endDate.toISOString().split('T')[0],
+                    allDay: true
+                };
+                calendar.addEvent(newEvent);
             });
 
             window.calendar.render();
-        },
-        error: function () {
-            alert("일정 목록을 불러오는 데 실패했습니다.");
-        }
-    });
+        })
+        .catch(error => {
+            alert("일정을 불러오는 데 실패했습니다.");
+        });
 }
-
 
 // 지도
 let map;
@@ -148,13 +175,13 @@ function addMarker(position, title, targetMap) {
 }
 
 // 최근 일정가져오기 버튼 함수
-$(".favorite-list button").on("click", function () {
+$(".hospital-recent").on("click", function () {
     const hospitalName = $(this).text().trim();
 
     $.ajax({
         url: "/plan/getHospitalRecent",
         type: "GET",
-        data: { hospitalName: hospitalName },
+        data: {hospitalName: hospitalName},
         success: function (data) {
             if (!data) {
                 alert("병원 정보를 가져올 수 없습니다.");
@@ -282,7 +309,7 @@ function hospitalSave(event) {
 
     const hospitalData = {
         selectDate: $("#select-date").val(),
-        selectTime: $("#select-time").val(),
+        selectTime: $("#hospital-time").val(),
         hospitalName: $("#hospital-info").val(),
         latitude: $("#hospital-lat").val() || null,
         longitude: $("#hospital-lng").val() || null,
@@ -308,12 +335,14 @@ function hospitalSave(event) {
                 allDay: true
             });
 
-            loadHospitalPlans(calendar);
+            loadAllPlans(calendar);
             window.calendar.render();
         },
         error: function (xhr) {
             if (xhr.status === 401) {
                 alert("로그인이 필요합니다.");
+            } else if (xhr.status === 409) {
+                alert("이미 해당 날짜에 병원 일정이 등록되었습니다.");
             } else {
                 alert("등록을 실패하였습니다.");
             }
@@ -324,13 +353,13 @@ function hospitalSave(event) {
 }
 
 // AJAX로 병원일정 상세 정보 가져오기
-function fetchEventDetails(hospitalPk, selectDate) {
+function fetchHospitalDetails(hospitalPk, selectDate) {
     $.ajax({
         url: `/plan/getHospitalDetail/${hospitalPk}?selectDate=${selectDate}`, // 서버에서 일정 상세 정보 제공하는 API
         type: "GET",
         success: function (data) {
             console.log(data);
-            updatePopupContent(data); //팝업 내용 업데이트
+            updatePopupHospital(data); //팝업 내용 업데이트
         },
         error: function () {
             alert("일정 상세 정보를 불러오는 데 실패했습니다.");
@@ -340,12 +369,12 @@ function fetchEventDetails(hospitalPk, selectDate) {
 }
 
 // 병원팝업 업데이트
-function updatePopupContent(eventData) {
-    $(".content-title").text(`🏥 ${eventData.selectDate} 병원 일정`);
+function updatePopupHospital(eventData) {
+    $(".hospital-title").text(`🏥 ${eventData.selectDate} 병원 일정`);
     $(".hospital-table tr:nth-child(1) td").text(eventData.selectTime); // 시간
     $(".hospital-table tr:nth-child(2) td").text(eventData.hospitalName); // 병원 이름
     $(".hospital-table tr:nth-child(3) td").text(eventData.address); // 병원 위치
-    $(".delete-btn").attr("onclick", `deleteEvent(${eventData.id})`); // 삭제 버튼에 ID 연결
+    $(".delete-btn").attr("onclick", `deleteEvent(${eventData.hospitalPk})`); // 삭제 버튼에 ID 연결
 
     $('.detail-popup').css({
         'opacity': '1',
@@ -363,6 +392,40 @@ function updatePopupContent(eventData) {
     } else {
         $("#popup-map").hide(); // 위치 정보 없으면 지도 숨기기
     }
+}
+
+// 일정 삭제 함수
+function deleteEvent(hospitalPk) {
+    if (!confirm("정말 삭제하시겠습니까?")) {
+        return;
+    }
+
+    $.ajax({
+        url: `/plan/deleteHospital/${hospitalPk}`,
+        type: "DELETE",
+        success: function (response) {
+            alert("일정이 삭제되었습니다.");
+
+            // 캘린더에서 해당 이벤트 제거
+            let calendar = window.calendar;
+            let event = calendar.getEventById(hospitalPk);
+
+            if (event) {
+                event.remove();
+            }
+
+            closeModal(); // 팝업 닫기
+        },
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                alert("로그인이 필요합니다.");
+            } else if (xhr.status === 404) {
+                alert("해당 일정을 찾을 수 없습니다.");
+            } else {
+                alert("삭제를 실패하였습니다.");
+            }
+        }
+    });
 }
 
 // 약 시간 추가 함수
@@ -389,6 +452,176 @@ $(".add-time").click(function () {
     });
 });
 
+// 약 유형 선택함수
+$(".medicine-type").click(function () {
+    $(".medicine-type").removeClass("selected");
+    $(this).addClass("selected");
+    $("#medicineType").val(Number($(this).attr("data-type")));
+});
+
+// 폼 제출 시, 사용자가 선택하지 않았다면 경고 메시지
+$("form[name='form2']").submit(function (e) {
+    if (!$("#medicineType").val()) {
+        alert("약 유형을 선택해주세요!");
+        e.preventDefault();
+    }
+});
+
+// 약 일정 저장함수
+function medicineSave(event) {
+    event.preventDefault();
+
+    const form = document.forms["form2"];
+
+    if (!form.checkValidity()) {
+        return false;
+    }
+
+    const medicineData = {
+        startDate: $("#start-date").val(),
+        endDate: $("#end-date").val(),
+        selectTime: $("#medicine-time").val(),
+        medicineName: $("#medicine-name").val(),
+        medicineType: $("#medicineType").val()
+    };
+
+    $.ajax({
+        url: "/plan/saveMedicine",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(medicineData),
+        success: function (medicine) {
+            alert("일정이 등록되었습니다.");
+
+            let calendar = window.calendar;
+
+            calendar.removeAllEvents();
+
+            calendar.addEvent({
+                id: medicine.id,
+                title: medicine.title,
+                start: medicine.start,
+                end: medicine.end,
+            });
+
+            loadAllPlans(calendar);
+            window.calendar.render();
+        },
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                alert("로그인이 필요합니다.");
+            } else {
+                alert("등록을 실패하였습니다.");
+            }
+        }
+    });
+    return false;
+}
+
+$(".medicine-recent").on("click", function () {
+    const medicineName = $(this).text().trim();
+
+    $.ajax({
+        url: "/plan/getMedicineRecent",
+        type: "GET",
+        data: {medicineName: medicineName},
+        success: function (data) {
+            if (!data) {
+                alert("약 정보를 가져올 수 없습니다.");
+                return;
+            }
+
+            // 병원 정보 입력란 자동 채우기
+            $("#medicine-name").val(data.medicineName);
+            $("#medicineType").val(data.medicineType);
+
+            // 기존 선택된 약 유형 해제
+            $(".medicine-type").removeClass("selected");
+
+            // 가져온 medicineType 값과 일치하는 요소 선택
+            let selectedType = $(".medicine-type[data-type='" + data.medicineType + "']");
+
+            if (selectedType.length) {
+                selectedType.addClass("selected");
+            }
+        },
+        error: function () {
+            alert("약 정보를 불러오는 데 실패했습니다.");
+        }
+    });
+});
+
+function fetchMedicineDetails(medicinePk, selectDate) {
+    $.ajax({
+        url: `/plan/getMedicineDetail/${medicinePk}?selectDate=${selectDate}`,
+        type: "GET",
+        success: function (data) {
+            updatePopupMedicine(data, selectDate); // 약 일정 팝업 업데이트
+        },
+        error: function () {
+            alert("약 일정 상세 정보를 불러오는 데 실패했습니다.");
+        }
+    });
+}
+
+function updatePopupMedicine(eventData, selectDate) {
+    $(".medicine-title").html(`<img class="medicine" src="/images/medicine.jpg" alt=""> ${selectDate} 약 일정`);
+
+    let medicineTable = $(".medicine-table");
+    medicineTable.find("tr:gt(0)").remove(); // 기존 데이터 삭제 (첫 번째 행 제외)
+
+    console.log(eventData);
+
+    eventData.medicineDto.forEach(medicine => {
+        let medicineTypeImg = medicine.medicineType == 1
+            ? "/images/medicine.jpg"
+            : "/images/syringe.jpg";
+
+        let row = `
+            <tr>
+                <td><input type="checkbox" class="delete-checkbox"></td>
+                <td>${medicine.selectTime}</td>
+                <td>${medicine.medicineName}</td>
+                <td><img src="${medicineTypeImg}" alt="약 유형"></td>
+            </tr>
+        `;
+        medicineTable.append(row);
+    });
+}
+
+
+function openPopup(hasHospital, hasMedicine) {
+    // 모든 탭 초기화
+    $(".tab").removeClass("active");
+    $(".detail-content").removeClass("active");
+
+    if (hasHospital && hasMedicine) {
+        // 병원 & 약 일정 둘 다 있을 경우
+        $(".tab[data-tab='tab1']").addClass("active");
+        $(".tab[data-tab='tab2']").removeClass("hidden");
+        $("#tab1").addClass("active");
+        $("#tab2").removeClass("hidden");
+    } else if (hasHospital) {
+        // 병원 일정만 있는 경우
+        $(".tab[data-tab='tab1']").addClass("active");
+        $(".tab[data-tab='tab2']").addClass("hidden");
+        $("#tab1").addClass("active");
+        $("#tab2").addClass("hidden");
+    } else if (hasMedicine) {
+        // 약 일정만 있는 경우
+        $(".tab[data-tab='tab1']").addClass("hidden");
+        $(".tab[data-tab='tab2']").addClass("active");
+        $("#tab1").addClass("hidden");
+        $("#tab2").addClass("active");
+    }
+
+    // 팝업 표시
+    $('.detail-popup').css({
+        'opacity': '1',
+        'visibility': 'visible'
+    });
+}
+
 
 // 모달 닫기 함수
 window.closeModal = function () {
@@ -406,19 +639,4 @@ $(".tab").click(function () {
     // 클릭한 버튼 활성화 & 해당 콘텐츠 표시
     $(this).addClass("active");
     $("#" + $(this).data("tab")).addClass("active");
-});
-
-// 약 유형 선택함수
-$(".medicine-type").click(function () {
-    $(".medicine-type").removeClass("selected");
-    $(this).addClass("selected");
-    $("#medicineType").val($(this).data("type"));
-});
-
-// 폼 제출 시, 사용자가 선택하지 않았다면 경고 메시지
-$("form[name='form2']").submit(function (e) {
-    if (!$("#medicineType").val()) {
-        alert("약 유형을 선택해주세요!");
-        e.preventDefault();
-    }
 });

@@ -18,7 +18,7 @@
     </div>
     <div class="detail-content active" id="tab1">
         <button onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-        <div class="content-title">🏥 2025-01-01 병원 일정</div>
+        <div class="content-title hospital-title">🏥 2025-01-01 병원 일정</div>
         <div class="content-info">
             <table class="hospital-table">
                 <tr>
@@ -45,7 +45,7 @@
     </div>
     <div class="detail-content" id="tab2">
         <button onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-        <div class="content-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 2025-01-01 약 일정</div>
+        <div class="content-title medicine-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 2025-01-01 약 일정</div>
         <div class="content-info">
             <table class="medicine-table">
                 <tr>
@@ -53,18 +53,6 @@
                     <th>시간</th>
                     <th>약 이름</th>
                     <th>약 유형</th>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="delete-checkbox"></td>
-                    <td>13시 00분</td>
-                    <td>당뇨약</td>
-                    <td><img src="/images/syringe.jpg" alt="주사기"></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="delete-checkbox"></td>
-                    <td>19시 00분</td>
-                    <td>감기약</td>
-                    <td><img src="/images/medicine.jpg" alt="약"></td>
                 </tr>
             </table>
             <button class="btn delete-btn" onclick="">삭제</button>
@@ -83,7 +71,7 @@
                     최근 등록한 일정 <img class="star" src="/images/star.jpg" alt="">
                 </div>
                 <div class="favorite-list">
-                    <button type="button" th:each="hospital, iterStat : ${hospitalList}" th:if="${iterStat.index} < 3" th:text="${hospital.hospitalName}"></button>
+                    <button type="button" class="hospital-recent" th:each="hospital, iterStat : ${hospitalList}" th:if="${iterStat.index} < 3" th:text="${hospital.hospitalName}"></button>
                 </div>
                 <div class="plan-input">
                     <form name="form1" onsubmit="return hospitalSave(event);">
@@ -92,8 +80,8 @@
                             <input type="date" id="select-date" name="select-date" required>
                         </div>
                         <div class="time-input">
-                            <label for="select-time">시간 :</label>
-                            <input type="time" id="select-time" name="select-time" required>
+                            <label for="hospital-time">시간 :</label>
+                            <input type="time" id="hospital-time" name="hospital-time" required>
                         </div>
                         <div class="info-input">
                             <label for="hospital-info">병원정보 :</label>
@@ -124,14 +112,13 @@
             <div class="plan-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 약 일정 입력하기</div>
             <div class="plan-content">
                 <div class="plan-favorite">
-                    최근 일정 <img src="/images/star.jpg" alt="">
+                    최근 등록한 일정 <img src="/images/star.jpg" alt="">
                 </div>
                 <div class="favorite-list">
-                    <button>당뇨약</button>
-                    <button>감기약</button>
+                    <button type="button" class="medicine-recent" th:each="medicine, iterStat : ${medicineList}" th:if="${iterStat.index} < 3" th:text="${medicine.medicineName}"></button>
                 </div>
                 <div class="plan-input">
-                    <form name="form2" action="">
+                    <form name="form2" onsubmit="return medicineSave(event);">
                         <div class="date-input">
                             <label for="start-date">날짜 :</label>
                             <input type="date" id="start-date" name="start-date" required>
@@ -140,7 +127,7 @@
                         </div>
                         <div class="time-input">
                             <label for="medicine-time">시간 :</label>
-                            <input type="time" id="medicine-time" name="medicine-time" step="900" required>
+                            <input type="time" id="medicine-time" name="medicine-time" required>
                             <button type="button" class="add-time"><i class="fa-solid fa-circle-plus"></i></button>
                             <div class="time-container"></div>
                         </div>
@@ -152,11 +139,11 @@
                             <label>약 유형 :</label>
                             <input type="hidden" id="medicineType" name="medicineType">
                             <div class="medicine-types">
-                                <img src="/images/medicine.jpg" alt="약" class="medicine-type" data-type="medicine">
-                                <img src="/images/syringe.jpg" alt="주사기" class="medicine-type" data-type="syringe">
+                                <img src="/images/medicine.jpg" alt="약" class="medicine-type" data-type="1">
+                                <img src="/images/syringe.jpg" alt="주사기" class="medicine-type" data-type="2">
                             </div>
                         </div>
-                        <button class="btn" type="submit" onclick="medicineSave();">등록</button>
+                        <button class="btn" type="submit">등록</button>
                     </form>
                 </div>
             </div>

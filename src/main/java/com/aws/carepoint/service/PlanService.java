@@ -1,11 +1,13 @@
 package com.aws.carepoint.service;
 
 import com.aws.carepoint.dto.HospitalDto;
+import com.aws.carepoint.dto.MedicineDto;
 import com.aws.carepoint.mapper.PlanMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -32,5 +34,35 @@ public class PlanService {
 
     public HospitalDto getHospitalRecent(String hospitalName) {
         return planMapper.getHospitalRecent(hospitalName);
+    }
+
+    public boolean checkExistingPlan(LocalDate selectDate) {
+        return planMapper.checkExistingPlan(selectDate);
+    }
+
+    public boolean deleteHospital(int hospitalPk, Integer userPk) {
+        int deletedPlans = planMapper.deleteHospitalPlan(hospitalPk, userPk);
+        int deletedHospital = planMapper.deleteHospital(hospitalPk, userPk);
+
+        return (deletedPlans > 0 || deletedHospital > 0);
+    }
+
+    public MedicineDto saveMedicine(MedicineDto medicineDto) {
+        planMapper.saveMedicine(medicineDto);
+        planMapper.saveMedicine_Plan(medicineDto);
+
+        return planMapper.getLastInsertedMedicine(medicineDto.getUserPk());
+    }
+
+    public List<MedicineDto> getAllMedicine(Integer userPk) {
+        return planMapper.getAllMedicine(userPk);
+    }
+
+    public MedicineDto getMedicineRecent(String medicineName) {
+        return planMapper.getMedicineRecent(medicineName);
+    }
+
+    public List<MedicineDto> getMedicineDetail(int medicinePk, String selectDate) {
+        return planMapper.getMedicineDetail(medicinePk, selectDate);
     }
 }

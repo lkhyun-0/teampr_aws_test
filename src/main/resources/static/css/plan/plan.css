@@ -34,6 +34,9 @@ table {
     margin: 190px auto 50px; /* 상하 여백 및 가운데 정렬 유지 */
 }
 
+.fc-daygrid-day-events {
+    max-height: 50px; /* 일정 칸 최대 높이 지정 */
+}
 
 .fc-col-header-cell-cushion, .fc-daygrid-day-number {
     text-decoration: none;
