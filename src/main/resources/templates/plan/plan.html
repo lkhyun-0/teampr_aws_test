@@ -23,16 +23,20 @@
             <table class="hospital-table">
                 <tr>
                     <th>시간</th>
-                    <td>13시 00분</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th>병원 이름</th>
-                    <td>대전을지대학교병원</td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <th>병원 위치</th>
+                    <th>병원 주소</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>지도</th>
                     <td>
-                        <div id="hospital-map"></div>
+                        <div id="popup-map" style="width: 100%; height: 300px; display: none;"></div>
                     </td>
                 </tr>
             </table>
@@ -76,12 +80,10 @@
             <div class="plan-title">🏥 병원 일정 입력하기</div>
             <div class="plan-content">
                 <div class="plan-favorite">
-                    최근 일정 <img class="star" src="/images/star.jpg" alt="">
+                    최근 등록한 일정 <img class="star" src="/images/star.jpg" alt="">
                 </div>
                 <div class="favorite-list">
-                    <button>대전우리병원</button>
-                    <button>대전센텀병원</button>
-                    <button>대전을지대학교병원</button>
+                    <button type="button" th:each="hospital, iterStat : ${hospitalList}" th:if="${iterStat.index} < 3" th:text="${hospital.hospitalName}"></button>
                 </div>
                 <div class="plan-input">
                     <form name="form1" onsubmit="return hospitalSave(event);">
@@ -112,6 +114,7 @@
                             <input type="hidden" id="hospital-lng" name="hospital-lng">
                             <input type="hidden" id="hospital-address" name="hospital-address">
                         </div>
+                        <small style="font-size: 10px;">검색 시 정보가 없으면 지도와 주소가 뜨지않습니다.</small>
                         <button type="submit" class="btn">등록</button>
                     </form>
                 </div>
@@ -165,7 +168,6 @@
 <div th:insert="~{/common/footer.html}"></div>
 
 <!--js-->
-<script src="/js/fullCalendar.js"></script>
 <script src="/js/plan.js"></script>
 
 <script async defer

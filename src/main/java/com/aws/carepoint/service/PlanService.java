@@ -15,12 +15,22 @@ public class PlanService {
     @Autowired
     private final PlanMapper planMapper;
 
-    public void saveHospital(HospitalDto hospitalDto) {
+    public HospitalDto saveHospital(HospitalDto hospitalDto) {
         planMapper.saveHospital(hospitalDto);
         planMapper.saveHospitalPlan(hospitalDto);
+
+        return planMapper.getLastInsertedHospital(hospitalDto.getUserPk());
     }
 
     public List<HospitalDto> getAllHospital(Integer userPk) {
         return planMapper.getAllHospital(userPk);
+    }
+
+    public HospitalDto getHospitalDetail(int hospitalPk, String selectDate) {
+        return planMapper.getHospitalDetail(hospitalPk, selectDate);
+    }
+
+    public HospitalDto getHospitalRecent(String hospitalName) {
+        return planMapper.getHospitalRecent(hospitalName);
     }
 }

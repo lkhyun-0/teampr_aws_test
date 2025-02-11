@@ -23,13 +23,23 @@ public class PlanController {
     @Autowired
     private PlanService planService;
 
+    @GetMapping("/hospital")
+    public String hospital() {
+        return "plan/hospital";
+    }
+
     @GetMapping("/plan")
-    public String plan(Model model, HttpSession session) {
+    public String plan(
+            Model model,
+            HttpSession session
+    ) {
 
         Integer userPk = (Integer) session.getAttribute("userPk");
 
         List<HospitalDto> hospitalList = planService.getAllHospital(userPk);
+
         model.addAttribute("hospitalList", hospitalList);
+
         return "plan/plan";
     }
 
@@ -42,17 +52,13 @@ public class PlanController {
 
         List<Map<String, Object>> events = hospitalList.stream().map(hospitalDto -> {
             Map<String, Object> event = new HashMap<>();
+            event.put("id", hospitalDto.getHospitalPk());
             event.put("title", hospitalDto.getHospitalName());
             event.put("start", hospitalDto.getSelectDate());
             return event;
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(events);
-    }
-
-    @GetMapping("/hospital")
-    public String hospital() {
-        return "plan/hospital";
     }
 
     @PostMapping("/saveHospital")
@@ -69,20 +75,45 @@ public class PlanController {
                         .body("로그인이 필요합니다.");
             }
 
-            // 🔹 필수 값 확인
+            // 필수 값 확인
             if (hospitalDto.getHospitalName() == null || hospitalDto.getSelectDate() == null || hospitalDto.getSelectTime() == null) {
                 return ResponseEntity.badRequest().body("필수 입력값이 누락되었습니다.");
             }
 
             hospitalDto.setUserPk(userPk);
 
-            // 🔹 병원 저장 로직 실행
-            planService.saveHospital(hospitalDto);
-            return ResponseEntity.ok("일정 등록 완료");
+            HospitalDto savedHospital = planService.saveHospital(hospitalDto);
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", savedHospital.getHospitalPk()); // 저장된 일정 ID
+            response.put("title", savedHospital.getHospitalName()); // 일정 제목
+            response.put("start", savedHospital.getSelectDate()); // 일정 날짜
+            response.put("allDay", true);
+
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("서버 오류: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/getHospitalRecent")
+    public ResponseEntity<HospitalDto> getHospitalRecent(@RequestParam("hospitalName") String hospitalName) {
+        HospitalDto hospitalDto = planService.getHospitalRecent(hospitalName);
+
+        if (hospitalDto != null) {
+            return ResponseEntity.ok(hospitalDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/getHospitalDetail/{hospitalPk}")
+    @ResponseBody
+    public HospitalDto getHospitalDetail(
+            @PathVariable("hospitalPk") int hospitalPk,
+            @RequestParam("selectDate") String selectDate
+    ) {
+        return planService.getHospitalDetail(hospitalPk, selectDate); // 일정 상세 조회
     }
 }
