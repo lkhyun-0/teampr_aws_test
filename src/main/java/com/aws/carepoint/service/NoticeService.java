@@ -1,5 +1,6 @@
 package com.aws.carepoint.service;
 
+import com.aws.carepoint.dto.FreeDto;
 import com.aws.carepoint.dto.NoticeDto;
 import com.aws.carepoint.dto.QnaDto;
 import com.aws.carepoint.mapper.NoticeMapper;
@@ -24,13 +25,17 @@ public class NoticeService {
     private final NoticeMapper noticeMapper;
 
     // 게시글 작성
-    public void createNotice(NoticeDto notice) {
-        noticeMapper.insertArticle(notice);
+    public int createNotice(NoticeDto noticeDto) {
+        return noticeMapper.insertArticle(noticeDto);
     }
+
 
     // 특정 게시글 상세 내용 가져오기
     public NoticeDto getNoticeDetail(int articlePk) {
-        return noticeMapper.getNoticeDetail(articlePk);
+
+        NoticeDto notice = noticeMapper.getNoticeDetail(articlePk);
+
+        return notice;
     }
 
 
@@ -55,15 +60,23 @@ public class NoticeService {
         return result;
     }
 
+    // 사용자 권한 조회
+    public Integer getUserAuthLevel(int userPk) {
+        return noticeMapper.getAuthLevelByUserPk(userPk);
+    }
+    
 
-    public int deleteNotice(NoticeDto notice) {
-        int value = noticeMapper.updateDelStatus(notice);
-        return value;
+    // 삭제
+    public int deleteNotice(int articlePk) {
+        return noticeMapper.deleteNotice(articlePk);
     }
 
     // 게시글 수정
-    public void updateNotice(NoticeDto notice) {
-        noticeMapper.updateNotice(notice);
+    public int updateNotice(NoticeDto noticeDto) {
+        return noticeMapper.updateNotice(noticeDto);
     }
+
+
+
 
 }

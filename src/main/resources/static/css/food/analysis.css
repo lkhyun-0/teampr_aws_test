@@ -47,6 +47,7 @@
 }
 
 .outer-container {
+    position: relative; /* 날짜 배치를 위해 relative 추가 */
     width: 1200px; /* 외곽 컨테이너 너비 */
     height: 675px; /* 외곽 컨테이너 높이 */
     border: 2px solid #ccc; /* 외곽선 */
@@ -60,6 +61,18 @@
 }
 
 
+/*주간 범위 스타일 */
+.weekly-range {
+    position: absolute; /* 상단 고정 */
+    top: 10px;
+    left: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #424242;
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+
 
 .inner-container {
     width: 100%;
@@ -67,6 +80,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-top: 50px;
 }
 
 /* WEEKLY CHECK 스타일 */
@@ -98,13 +112,13 @@
 
 /* 하단 카드 제목 */
 .analysis-title {
-    font-size: 16px; /* 약간 작은 크기 */
+    font-size: 20px; /* 약간 작은 크기 */
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
     text-align: left; /* 왼쪽 정렬 */
+    width: 100%; /* 카드 전체 폭에 맞춤 */
 }
-
 
 /* 카드 스타일 공통 */
 .card {
@@ -133,13 +147,7 @@
     color : white;
 }*/
 
-/* 카드 상단 Total Calories 텍스트 */
-.analysis-title {
-    font-size: 18px;
-    color: #333;
-    text-align: left; /* 왼쪽 정렬 */
-    width: 100%; /* 카드 전체 폭에 맞춤 */
-}
+
 
 /* g 단위 스타일 */
 .card-value {

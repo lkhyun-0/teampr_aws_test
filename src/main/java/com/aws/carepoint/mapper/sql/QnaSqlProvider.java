@@ -4,7 +4,7 @@ import com.aws.carepoint.dto.QnaDto;
 import org.apache.ibatis.jdbc.SQL;
 
 public class QnaSqlProvider {
-    public static String updateDelStatus(QnaDto qna) {
+    public static String updateDelStatus(QnaDto qna, int userPk) {
         return new SQL() {{
             UPDATE("article");
             SET("del_status = 1");

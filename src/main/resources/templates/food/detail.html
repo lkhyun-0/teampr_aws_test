@@ -98,6 +98,8 @@
                     <th>음식명</th>
                     <th>칼로리</th>
                     <th>영양정보</th>
+                    <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -119,12 +121,12 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
     $(document).ready(function () {
         //  URL에서 날짜 가져오기
         let urlParams = new URLSearchParams(window.location.search);
         let selectedDate = urlParams.get("date"); // URL에서 date 파라미터 가져오기
-        let userPk = 1;  // 로그인된 사용자 ID
+        let userPk = [[${session.userPk}]];  // 로그인된 사용자 ID
         let mealTypes = ["breakfast", "lunch", "dinner"]; // 아침, 점심, 저녁
         let selectedMealType = ""; // 현재 선택된 식사 타입
         let activeSlot = null; // 현재 활성화된 슬롯
@@ -139,7 +141,7 @@
         console.log("불러온 날짜:", selectedDate);
         $("#diet-date").text(`${selectedDate} 식단 기록표`); // 제목 업데이트
 
-        // 기존 하드코딩된 `selectedDate` 제거 후 동적으로 반영
+
         loadDietRecords(selectedDate);
 
         // 특정 날짜의 식단 불러오기
@@ -164,6 +166,7 @@
                         meals[mealType].push({
                             menu: food.menu,
                             kcal: food.kcal,
+                            amount: food.amount,
                             protein: food.protein,
                             carbohydrate: food.carbohydrate,
                             fat: food.fat,
@@ -179,7 +182,7 @@
                         for (let i = 0; i < 5; i++) {
                             let foodItem = mealData[i]
                                 ? `<li class="meal-menu" data-foodlistpk="${mealData[i].foodListPk}">
-                                ${mealData[i].menu} <span>${mealData[i].kcal} kcal</span>
+                                ${mealData[i].menu} (${mealData[i].amount}g) <span>${mealData[i].kcal} kcal</span>
                                 <a href="#" class="delete-icon"><img src="/images/x.png" alt="삭제"></a>
                             </li>`
                                 : `<li class="meal-menu">
@@ -224,7 +227,7 @@
 
                     existingFoods.forEach((food, index) => {
                         $(".selected-menu li").eq(index).html(`
-                        <span>${food.menu}</span>
+                        <span>${food.menu} (${food.amount}g) </span>
                         <span>${food.kcal} kcal</span>
                         <span class="small-text">단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</span>
                     `).attr("data-foodlistpk", food.foodListPk);
@@ -266,6 +269,10 @@
                         <td>${food.menu}</td>
                         <td>${food.kcal} kcal</td>
                         <td>단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</td>
+                        <td>
+                            <input type="number" class="food-amount" value="100" min="1" step="10"> g
+                        </td>
+                        <td><button class="add-food">추가</button></td>
                     </tr>`;
                         tableBody.append(row);
                     });
@@ -273,24 +280,48 @@
             });
         });
 
+        // 선택된 슬롯 클릭 시 활성화 (이벤트 위임 방식 적용)
+        $(document).on("click", ".selected-menu li", function () {
+            $(".selected-menu li").removeClass("selected");
+            $(this).addClass("selected");
+            activeSlot = $(this);
+        });
+
+
         // 검색 결과 클릭 시 선택된 슬롯에 반영 (이벤트 위임 방식)
-        $(document).on("click", ".search-results tr", function () {
+        $(document).on("click", ".add-food", function () {
             if (!activeSlot) {
                 alert("먼저 수정할 칸을 선택하세요!");
                 return;
             }
 
-            let foodName = $(this).data("menu");
-            let kcal = $(this).data("kcal");
-            let protein = $(this).data("protein");
-            let carbohydrate = $(this).data("carb");
-            let fat = $(this).data("fat");
+            let row = $(this).closest("tr"); // 현재 클릭한 행 가져오기
+            let foodName = row.data("menu");
+            let kcalPer100g = row.data("kcal");
+            let proteinPer100g = row.data("protein");
+            let carbohydratePer100g = row.data("carb");
+            let fatPer100g = row.data("fat");
+            let userAmount = row.find(".food-amount").val(); // 사용자가 입력한 g 단위 가져오기
+
+            if (!userAmount || userAmount <= 0) {
+                alert("올바른 g 단위를 입력하세요!");
+                return;
+            }
+
+            let ratio = userAmount / 100; // 100g 대비 비율 계산
+
+            let kcal = (kcalPer100g * ratio).toFixed(1);
+            let protein = (proteinPer100g * ratio).toFixed(1);
+            let carbohydrate = (carbohydratePer100g * ratio).toFixed(1);
+            let fat = (fatPer100g * ratio).toFixed(1);
 
             activeSlot.html(`
-            <span>${foodName}</span>
+            <span>${foodName} (${userAmount}g)</span>
             <span>${kcal} kcal</span>
             <span class="small-text">단백질: ${protein}g | 탄수화물: ${carbohydrate}g | 지방: ${fat}g</span>
-        `);
+        `).removeClass("selected");
+
+            activeSlot = null; // 추가 후 활성화된 슬롯 초기화
         });
 
         // 수정 저장 (updateMeal)
@@ -301,8 +332,9 @@
                 if ($(this).html().trim() !== "") {
                     let foodData = {
                         foodListPk: $(this).attr("data-foodlistpk") || null,
-                        menu: $(this).find("span:nth-child(1)").text(),
-                        kcal: parseInt($(this).find("span:nth-child(2)").text().replace(" kcal", "")),
+                        menu: $(this).find("span:nth-child(1)").text().split(" (")[0], // 음식명만 추출
+                        amount: parseFloat($(this).find("span:nth-child(1)").text().match(/\((\d+)g\)/)[1]), // g 단위 추출
+                        kcal: parseFloat($(this).find("span:nth-child(2)").text().replace(" kcal", "")),
                         protein: parseFloat($(this).find(".small-text").text().match(/단백질: ([0-9.]+)g/)[1]),
                         carbohydrate: parseFloat($(this).find(".small-text").text().match(/탄수화물: ([0-9.]+)g/)[1]),
                         fat: parseFloat($(this).find(".small-text").text().match(/지방: ([0-9.]+)g/)[1])
@@ -346,7 +378,7 @@
             });
         });
 
-// 개별 음식 삭제
+        // 개별 음식 삭제
         $(document).on("click", ".delete-icon", function () {
             let foodListPk = $(this).closest(".meal-menu").data("foodlistpk");
 

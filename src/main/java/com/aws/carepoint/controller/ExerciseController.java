@@ -5,6 +5,7 @@ import com.aws.carepoint.dto.ExerciseDto;
 import com.aws.carepoint.dto.GraphDto;
 import com.aws.carepoint.dto.TargetDto;
 import com.aws.carepoint.service.ExerciseService;
+import jakarta.servlet.http.HttpSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -33,41 +35,40 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
+    // 운동 메인페이지
     @GetMapping("/exerciseMain")
-    public String exerciseMain() {
+    public String exerciseMain(
+        Model model,
+        HttpSession session,
+        RedirectAttributes redirectAttributes) {
 
+        int userPk;
+
+        if (session.getAttribute("userPk") == null) {
+            redirectAttributes.addFlashAttribute("msg", "로그인 후 이용 가능합니다.");
+            return "redirect:/user/signIn";
+        }
+
+        userPk = (Integer) session.getAttribute("userPk");
+
+        model.addAttribute("userPk", userPk);
         return "exercise/exerciseMain";
-    }
-
-    @ResponseBody
-    @PostMapping("/saveGraph")
-    public ResponseEntity<String> saveGraph(@RequestBody GraphDto graphDto) {
-        exerciseService.saveGraph(graphDto);
-        return ResponseEntity.ok("오늘의 수치가 저장되었습니다.");
-    }
-
-    @ResponseBody
-    @PostMapping("/saveTarget")
-    public ResponseEntity<Map<String, String>> saveTarget(@RequestBody TargetDto targetDto) {
-        exerciseService.saveTarget(targetDto);
-
-        // 응답을 JSON 형태로 반환
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "이번 주 목표가 저장되었습니다.");
-
-        return ResponseEntity.ok(response);
     }
 
     // 운동 목록 불러오기 API
     @ResponseBody
-    @GetMapping("/list")
-    public List<ExerciseApiDto> getExerciseList() {
-        return exerciseService.getExerciseList();
+    @GetMapping("/apiList")
+    public List<ExerciseApiDto> apiList() {
+        return exerciseService.getExerciseApiList();
     }
 
+    // 운동 정보 저장하기
     @ResponseBody
     @PostMapping("/saveExercise")
-    public ResponseEntity<Map<String, String>> saveExercise(@RequestBody ExerciseDto exerciseDto) {
+    public ResponseEntity<Map<String, String>> saveExercise(@RequestBody ExerciseDto exerciseDto, HttpSession session) {
+
+        int userPk = (Integer) session.getAttribute("userPk");
+        exerciseDto.setUserPk(userPk);
         exerciseService.saveExercise(exerciseDto);
 
         // JSON 응답으로 변경
@@ -80,21 +81,25 @@ public class ExerciseController {
     // 📌 저장된 운동 기록 가져오기 (캘린더에 반영)
     @ResponseBody
     @GetMapping("/getExerciseEvents")
-    public List<ExerciseDto> getExerciseEvents() {
-        return exerciseService.getAllExercises();
+    public List<ExerciseDto> getExerciseEvents(HttpSession session) {
+        int userPk = (int) session.getAttribute("userPk");
+        return exerciseService.getAllExercises(userPk);
     }
 
-    // 이번주 목표 데이터 가져오기
-    @GetMapping("/current-week")
-    public ResponseEntity<TargetDto> getCurrentWeekTarget(@RequestParam("userPk") int userPk) {
-        TargetDto targetDto = exerciseService.getCurrentWeekTarget(userPk);
-        if (targetDto == null) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(targetDto);
+    // 해당 회원이 운동 기록한 횟수 가져오기
+    @ResponseBody
+    @GetMapping("/count")
+    public int getExerciseCount(@RequestParam("userPk") int userPk) {
+        return exerciseService.getExerciseCount(userPk);
     }
 
-
+    // ✅ 오늘 운동 데이터가 있는지 확인
+    @ResponseBody
+    @GetMapping("/has-today-exercise")
+    public ResponseEntity<Boolean> hasTodayExerciseData(@RequestParam("userPk") int userPk) {
+        boolean hasData = exerciseService.hasTodayExerciseData(userPk);
+        return ResponseEntity.ok(hasData);
+    }
 
 
 
@@ -147,7 +152,7 @@ public class ExerciseController {
 
                 exerciseService.save(exerciseApiDto);
             }
-            return "✅ 데이터가 성공적으로 저장되었습니다.";
+            return "✅ 슬이언니 바보";
         } catch (Exception e) {
             e.printStackTrace();
             return "에러: " + e.getMessage();

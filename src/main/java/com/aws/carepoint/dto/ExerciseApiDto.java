@@ -5,8 +5,6 @@ import lombok.Data;
 
 @Data
 public class ExerciseApiDto {
-
     private String exerciseName;
     private String metValue;
-
 }

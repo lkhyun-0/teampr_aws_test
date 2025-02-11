@@ -5,16 +5,10 @@ import com.aws.carepoint.dto.UsersDto;
 import com.aws.carepoint.mapper.DetailMapper;
 import com.aws.carepoint.mapper.UserMapper;
 import com.aws.carepoint.service.DetailService;
-import com.aws.carepoint.service.KakaoAuthService;
 import com.aws.carepoint.service.UserService;
-import com.aws.carepoint.util.RandomPassword;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -54,7 +48,7 @@ public class UserController {
     }
     // 닉네임 중복 체크
     @GetMapping("checkNickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam String userNick) {
+    public ResponseEntity<Boolean> checkNickname(@RequestParam("userNick") String userNick) {
         boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
@@ -103,7 +97,7 @@ public class UserController {
 
     @PostMapping("doSignIn") // 일반 로그인
     public ResponseEntity<Map<String, Object>> doSignIn(
-            @RequestBody Map<String, String> loginData, // ✅ JSON 데이터 받기
+            @RequestBody Map<String, String> loginData,  // ✅ JSON 데이터 받기
             HttpSession session) {
 
         String userId = loginData.get("userId");
@@ -120,17 +114,8 @@ public class UserController {
 
         // 2. 사용자 정보 조회
         UsersDto usersDto = userService.checkId(userId);
-        if (usersDto == null) {
-            response.put("error", "해당하는 아이디가 없습니다.");
-            response.put("success", false);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-        // 4. 비밀번호 검증
-        if (!userService.checkPwd(userPwd, usersDto.getUserPwd())) {
-            response.put("error", "아이디 또는 비밀번호가 잘못되었습니다.");
-            response.put("success", false);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
+        if (usersDto != null) {
+            if (userService.checkPwd(userPwd, usersDto.getUserPwd())) {
 
         // 5. 로그인 성공 → 세션 저장
         session.setAttribute("userPk", usersDto.getUserPk());
@@ -148,20 +133,29 @@ public class UserController {
         String redirectUrl = (session.getAttribute("saveUrl") != null) ?
                 session.getAttribute("saveUrl").toString() : "/user/mainPage";
 
-        response.put("message", "로그인 성공");
-        response.put("success", true);      // 여기까지 잘 오면 로그인 성공 >> 일반 로그인임
-        response.put("redirect", redirectUrl);
-        return ResponseEntity.ok(response);
+                response.put("message", "로그인 성공");
+                response.put("success", true);
+                response.put("redirect", redirectUrl);
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("error", "아이디 또는 비밀번호가 잘못되었습니다.");
+                response.put("success", false);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        } else {
+            response.put("error", "해당하는 아이디가 없습니다.");
+            response.put("success", false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
-
 
 
     @GetMapping("userDetail")
     public String userDetail() {
         return "user/userDetail";
-    }       // 상세정보 입력 창 보여주기
+    }
 
-    @PostMapping("doInsertDetail")      // 싱세정보 입력 동작
+    @PostMapping("doInsertDetail")
     public ResponseEntity<Map<String, Object>> doInsertDetail(@RequestBody DetailDto detailDto, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
 
@@ -182,7 +176,6 @@ public class UserController {
             detailDto.setUserPk(userPk);
             detailDto.setDetailPk(userPk);
 
-            // 상세정보 DB 저장
             detailService.insertDetail(detailDto);
 
             response.put("status", "success");
@@ -196,6 +189,10 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+
+
+
 
     @GetMapping("myPage")
     public String myPage(HttpSession session, Model model) {
@@ -316,5 +313,11 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+
+
+
+
+
 
 }

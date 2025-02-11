@@ -44,12 +44,15 @@ public class DetailService {
         Map<String, Object> userFullInfo = new HashMap<>();
         userFullInfo.put("userInfo", userInfo);
         userFullInfo.put("userDetail", userDetail);
+
+
         return userFullInfo;
     }
 
-    public void updateUserInfo(DetailDto detailDto) {
-        detailMapper.updateUserInfo(detailDto);
-    }
+//    public void updateUserInfo(DetailDto detailDto) {
+//        System.out.println("📢 [DEBUG] 서비스에서 업데이트 실행: " + detailDto);
+//        detailMapper.updateUserInfo(detailDto);
+//    }
 
 
 }
