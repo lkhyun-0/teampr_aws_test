@@ -1,9 +1,13 @@
 package com.aws.carepoint.service;
 
+import com.aws.carepoint.dto.UsersDto;
+import com.aws.carepoint.mapper.UserMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -62,7 +66,7 @@ public class KakaoAuthService {
         }
     }
 
-
+    String phone;
     public Map<String, Object> getUserInfo(String accessToken) {
         String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
 
@@ -103,9 +107,10 @@ public class KakaoAuthService {
                 userInfo.put("name", jsonNode.get("kakao_account").get("profile").get("nickname").asText());
             }
 
-            // ✅ 전화번호 (비활성화된 경우 없을 수 있음)
+            // ✅ 전화번호
             if (jsonNode.has("kakao_account") && jsonNode.get("kakao_account").has("phone_number")) {
                 userInfo.put("phone", jsonNode.get("kakao_account").get("phone_number").asText());
+                phone = jsonNode.get("kakao_account").get("phone_number").asText();
             } else {
                 userInfo.put("phone", "N/A"); // 전화번호가 없을 경우 기본값 설정
             }
@@ -118,6 +123,10 @@ public class KakaoAuthService {
         } catch (Exception e) {
             throw new RuntimeException("카카오 유저 정보 요청 실패", e);
         }
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
 }

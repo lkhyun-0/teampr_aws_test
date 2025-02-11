@@ -10,17 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 console.log("📌 로그인 상태 확인:", data);
+                console.log("✅ 로그인된 userPk:", data.userPk);
 
                 let signupMenu = document.getElementById("signup-menu");
                 let loginMenu = document.getElementById("login-menu");
                 let myPageMenu = document.getElementById("mypage-menu");
                 let logoutMenu = document.getElementById("logout-menu");
-
-                console.log("✅ 초기 상태: ");
-                console.log("signupMenu:", signupMenu ? signupMenu.style.display : "없음");
-                console.log("loginMenu:", loginMenu ? loginMenu.style.display : "없음");
-                console.log("myPageMenu:", myPageMenu ? myPageMenu.style.display : "없음");
-                console.log("logoutMenu:", logoutMenu ? logoutMenu.style.display : "없음");
 
                 if (data.loggedIn) {
                     console.log("✅ 로그인 상태 감지됨! 메뉴 변경");

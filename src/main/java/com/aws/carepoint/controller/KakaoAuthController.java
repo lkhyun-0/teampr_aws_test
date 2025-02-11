@@ -32,6 +32,7 @@ public class KakaoAuthController {
 
     @PostConstruct
     public void checkKakaoClientId() {
+        //System.out.println("phone ====================> " + kakaoAuthService.getPhone());
         System.out.println("📢 현재 적용된 client-id: [" + clientId + "]");
     }
 
@@ -69,6 +70,11 @@ public class KakaoAuthController {
 
         return ResponseEntity.ok(response);
     }
+
+
+
+
+
 
 
 

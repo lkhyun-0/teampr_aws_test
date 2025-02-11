@@ -47,6 +47,9 @@ public interface UserMapper {
     @Select("SELECT * FROM users WHERE email = #{email}")
     UsersDto findByEmail(String email);
 
+    @Select("SELECT user_pk FROM users WHERE phone = #{phone}")
+    String findPhoneByPhone(String phone);
+
 
 
 
