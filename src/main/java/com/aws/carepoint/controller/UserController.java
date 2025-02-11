@@ -40,26 +40,13 @@ public class UserController {
         this.detailMapper = detailMapper;
     }
 
-    private String formatPhoneNumber(String rawPhone) {
-        if (rawPhone == null || rawPhone.isEmpty()) {
-            return "no-phone";  // 기본값 처리
+    public String formatPhoneNumber(String phone) {     // 국제번호 형식으로 저장
+        if (phone.startsWith("010")) {
+            return "+82" + phone.substring(1);  // 01012341234 → +821012341234 변환
         }
-
-        // 숫자만 추출
-        String digits = rawPhone.replaceAll("[^0-9]", "");
-
-        // 한국 전화번호 +82로 시작하면 010으로 변환
-        if (digits.startsWith("82")) {
-            digits = "0" + digits.substring(2);
-        }
-
-        // 010으로 시작하지 않는 경우 처리
-        if (!digits.startsWith("010")) {
-            digits = "010" + digits.substring(digits.length() - 8); // 뒤 8자리 유지
-        }
-
-        return digits;
+        return phone;  // 이미 국제 형식이면 그대로 사용
     }
+
 
 
     @GetMapping("signUp")       // 회원가입 페이지
