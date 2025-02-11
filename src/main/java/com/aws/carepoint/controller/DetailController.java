@@ -52,7 +52,7 @@ public class DetailController {
         return "user/myPage";
     }
 
-// todo 디테일 컨트롤러 해야함
+
 
 
 

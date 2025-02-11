@@ -43,13 +43,12 @@ public interface UserMapper {
     @ResultMap("userResultMap")
     UsersDto getUserById(int userPk);
 
-    // 🔹 카카오 ID로 기존 회원 찾기
-    @Select("SELECT * FROM users WHERE userId = #{userId}")
-    UsersDto findBySocialId(String userId);
-
     // 🔹 같은 이메일이 있는지 확인
     @Select("SELECT * FROM users WHERE email = #{email}")
     UsersDto findByEmail(String email);
+
+    @Select("SELECT user_pk FROM users WHERE phone = #{phone}")
+    String findPhoneByPhone(String phone);
 
 
 

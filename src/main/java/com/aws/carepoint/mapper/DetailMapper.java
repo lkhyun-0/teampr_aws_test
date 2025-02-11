@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 public interface DetailMapper {
     // 회원 상세정보 입력 !
     @Insert("INSERT INTO user_detail (age, weight, height, gender, sick_type, sick_detail, smoke, exercise_cnt, drink, target_count, reg_date, update_date, user_pk) " +
-            "VALUES (#{age}, #{weight}, #{height}, #{gender}, #{sickType}, #{sickDetail}, #{smoke}, #{exerciseCnt}, #{drink}, #{targetCount}, #{regDate}, #{updateDate}, #{userPk})")
+            "VALUES (#{age}, #{weight}, #{height}, #{gender}, #{sickType}, #{sickDetail}, #{smoke}, #{exerciseCnt}, #{drink}, #{targetCount}, NOW(), NOW(), #{userPk})")
     @Options(useGeneratedKeys = true, keyProperty = "detailPk", keyColumn = "detail_pk")
     void insertDetail(DetailDto detailDto);
 

@@ -2,7 +2,7 @@ package com.aws.carepoint.util;
 
 import java.security.SecureRandom;
 
-public class RamdomPassword {
+public class RandomPassword {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
     private static final int PASSWORD_LENGTH = 12;
 

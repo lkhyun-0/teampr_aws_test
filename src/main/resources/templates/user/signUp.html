@@ -168,6 +168,6 @@
 <div th:insert="~{/common/footer.html}"></div>
 <!-- jQuery 및 JavaScript 파일 로드 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/js/signUp.js"></script>
+<script th:src="@{/js/signUp.js}"></script>  <!-- Thymeleaf 경로 바인딩 -->
 </body>
 </html>
