@@ -18,7 +18,7 @@ public interface QnaMapper {
             "WHERE a.board_pk = 1 " +
             "AND a.del_status = 0 " +
             "ORDER BY a.origin_num DESC, a.level_ ASC " +
-            "LIMIT #{startPageNum}, #{perPageNum} ")
+            "LIMIT #{pageStart}, #{perPageNum} ")
     @Results(id = "qnaResultMap", value = {
             @Result(property = "articlePk", column = "article_pk"),
             @Result(property = "originNum", column = "origin_num"),
@@ -29,7 +29,7 @@ public interface QnaMapper {
             @Result(property = "userPk", column = "user_pk"),
             @Result(property = "userNick", column = "usernick")
     })
-    ArrayList<QnaDto> getQnaList(HashMap<String, Object> result);
+    List<QnaDto> getQnaList(SearchCriteria scri);
 
     // 총 게시글 개수 조회 (검색 조건 포함)
     @Select("SELECT COUNT(*) " +
@@ -48,7 +48,7 @@ public interface QnaMapper {
 
     // 게시글 작성
     @Insert("INSERT INTO article (title, content, user_pk, board_pk)" +
-            "VALUES (#{title}, #{content}, 2, 1)")
+            "VALUES (#{title}, #{content}, #{userPk}, 1)")
     @Options(useGeneratedKeys = true, keyProperty = "articlePk")
     int insertArticle(QnaDto qna);
 
@@ -76,7 +76,7 @@ public interface QnaMapper {
 
     // 답변글 작성
     @Insert("INSERT INTO article (title, content, origin_num, level_, user_pk, board_pk) " +
-            "VALUES (#{title}, #{content}, #{originNum}, 1, 1, 1)")
+            "VALUES (#{title}, #{content}, #{originNum}, 1, #{userPk}, 1)")
     @Options(useGeneratedKeys = true, keyProperty = "articlePk")
     @ResultMap("qnaResultMap")
     int insertQnaReply(QnaDto qna);

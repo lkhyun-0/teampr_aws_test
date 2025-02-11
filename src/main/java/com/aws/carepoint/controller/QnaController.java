@@ -35,19 +35,10 @@ public class QnaController {
 
     @GetMapping("/qnaList")
     public String qnaList(@ModelAttribute("scri") SearchCriteria scri, Model model) {
-
-        int cnt = qnaService. getQnaTotalCount(scri);
-
-        scri.setPerPageNum(12);
-
-        pageMaker.setScri(scri);
-        pageMaker.setTotalCount(cnt);
-
-        ArrayList<QnaDto> qlist = qnaService.getQnaList(scri);
-
-        model.addAttribute("qnaList", qlist);
-        model.addAttribute("pageMaker", pageMaker);
-
+        // ✅ 매 요청마다 새로운 데이터를 가져와야 함
+        Map<String, Object> data = qnaService.getQnaList(scri);
+        model.addAllAttributes(data); // ✅ model에 새로운 데이터 추가
+        System.out.println(data);
         return "qna/qnaList";
     }
 
@@ -57,23 +48,34 @@ public class QnaController {
             Model model,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
+        String path="";
+        int userPk;
+        int authLevel;
 
         QnaDto qnaDto = qnaService.getQnaDetail(articlePk);
         model.addAttribute("qna", qnaDto);
 
-        int userPk = (int) session.getAttribute("userPk");
-        System.out.println("userPk ===================================> " + userPk);
-        int authLevel = (int) session.getAttribute("authLevel");
-        System.out.println("authLevel ===================================> " + authLevel);
+        if(session.getAttribute("userPk") == null) {
+            userPk = 0;
+            redirectAttributes.addFlashAttribute("msg", "로그인 후 사용 가능합니다.");
+            path = "redirect:/qna/qnaList";
+        } else {
+            userPk = (Integer)session.getAttribute("userPk");
+        }
 
-        String path="";
+        if(session.getAttribute("authLevel") == null) {
+            authLevel = 0;
+        } else {
+            authLevel = (Integer)session.getAttribute("authLevel");
+        }
+
 
         // 관리자는 모든 게시글에 접근 가능
         if(authLevel == 7) {
             path = "qna/qnaContent";
         }
         // 회원은 자신이 작성한 글과 해당 글의 origin_num이 같은 모든 게시글 열람 가능
-        else {
+        else if(authLevel == 3) {
             // 회원이 작성한 origin_num 가져오기
             List<Integer> userOriginNums = qnaService.getUserOriginNums(userPk);
             System.out.println("userOriginNums ============================> " + userOriginNums);
@@ -83,10 +85,9 @@ public class QnaController {
                 path = "qna/qnaContent";
             } else {
                 redirectAttributes.addFlashAttribute("msg", "열람 권한이 없습니다.");
-                path = "qna/qnaList";
+                path = "redirect:/qna/qnaList";
             }
         }
-
         return path;
     }
 

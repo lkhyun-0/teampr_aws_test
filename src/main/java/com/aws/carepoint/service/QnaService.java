@@ -27,20 +27,24 @@ public class QnaService {
     private final QnaMapper qnaMapper;
 
     // 전체 게시글 개수 조회
-    public ArrayList<QnaDto> getQnaList(SearchCriteria scri) {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("startPageNum", (scri.getPage()-1)*scri.getPerPageNum());
-        result.put("searchType", scri.getSearchType());
-        result.put("perPageNum", scri.getPerPageNum());
+    public Map<String, Object> getQnaList(SearchCriteria scri) {
+        Map<String, Object> result = new HashMap<>();
 
-        ArrayList<QnaDto> qlist = qnaMapper.getQnaList(result);
+        int totalCount = qnaMapper.getTotalQnaCount(scri);
 
-        return qlist;
-    }
+        scri.setPerPageNum(12);
 
-    public int getQnaTotalCount(SearchCriteria scri) {
-        int cnt = qnaMapper.getTotalQnaCount(scri);
-        return cnt;
+        pageMaker.setScri(scri);
+        pageMaker.setTotalCount(totalCount);
+
+        // ✅ 매 요청마다 새로운 리스트를 가져와야 함
+        List<QnaDto> qnaList = qnaMapper.getQnaList(scri);
+
+        // ✅ Thymeleaf에 데이터 전달
+        result.put("qnaList", qnaList);
+        result.put("pageMaker", pageMaker);
+
+        return result;
     }
 
     // 특정 게시글 상세 내용 가져오기
