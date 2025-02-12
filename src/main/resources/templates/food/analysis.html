@@ -37,7 +37,7 @@
                         <span id="protein-value" class="number">0</span>
                         <span class="unit">g</span>
                     </p>
-                    <p class="card-title">PROTEIN</p>
+                    <p class="card-title">단 백 질</p>
                     <div class="bar">
                         <div class="bar-inner protein"></div>
                     </div>
@@ -47,7 +47,7 @@
                         <span id="carbs-value" class="number">0</span>
                         <span class="unit">g</span>
                     </p>
-                    <p class="card-title">CARBOHYDRATES</p>
+                    <p class="card-title">탄 수 화 물</p>
                     <div class="bar">
                         <div class="bar-inner carbs"></div>
                     </div>
@@ -57,7 +57,7 @@
                         <span id="fat-value" class="number">0</span>
                         <span class="unit">g</span>
                     </p>
-                    <p class="card-title">FAT</p>
+                    <p class="card-title">지 방</p>
                     <div class="bar">
                         <div class="bar-inner fat"></div>
                     </div>
@@ -166,7 +166,7 @@
             } else if (protein < standards.protein * 0.8) {
                 tips.push("⚡ <strong>단백질 섭취가 부족합니다.</strong> 닭가슴살, 두부 등 고단백 식품을 추가해보세요.");
             } else {
-                tips.push("<strong>단백질 섭취가 적절합니다.</strong> 계속 유지하세요!");
+                tips.push("✔️ <strong>단백질 섭취가 적절합니다.</strong> 계속 유지하세요!");
             }
 
             // 탄수화물 섭취 분석
@@ -175,7 +175,7 @@
             } else if (carbs < standards.carbs[0]) {
                 tips.push("🍚 <strong>탄수화물이 부족합니다.</strong> 현미밥, 감자, 귀리 등 건강한 탄수화물을 추가하세요.");
             } else {
-                tips.push("<strong>탄수화물 섭취가 적절합니다.</strong> 균형을 유지하세요!");
+                tips.push("✔️ <strong>탄수화물 섭취가 적절합니다.</strong> 균형을 유지하세요!");
             }
 
             // 지방 섭취 분석
@@ -184,12 +184,12 @@
             } else if (fat < standards.fat[0]) {
                 tips.push("🍳 <strong>지방 섭취가 부족합니다.</strong> 아보카도, 연어, 들기름 등을 통해 건강한 지방을 보충하세요.");
             } else {
-                tips.push("<strong>지방 섭취가 적절합니다.</strong> 건강한 습관을 유지하세요!");
+                tips.push("✔️ <strong>지방 섭취가 적절합니다.</strong> 건강한 습관을 유지하세요!");
             }
 
             // 피드백이 없을 경우 기본 메시지 추가
             if (tips.length === 0) {
-                tips.push("<p> <strong>이번 주 영양 섭취가 적절합니다!</strong> 계속 유지하세요!</p>");
+                tips.push("<p> ✔️ <strong>이번 주 영양 섭취가 적절합니다!</strong> 계속 유지하세요!</p>");
             }
 
             $("#tip-text").html(tips.map(tip => `<p style="margin-bottom: 8px;">${tip}</p>`).join(""));

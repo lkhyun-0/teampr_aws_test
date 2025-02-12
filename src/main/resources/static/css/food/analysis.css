@@ -217,4 +217,10 @@
     pointer-events: none; /* 클릭 방해 방지 */
 }
 
+.card-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+
 
