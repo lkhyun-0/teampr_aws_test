@@ -59,6 +59,7 @@
                 <a th:href="@{/free/freeList(page=${i}, keyword=${scri.keyword}, searchType=${scri.searchType})}" th:text="${i}"></a>
             </li>
             <li th:if="${pageMaker.next}">
+
                 <a class="next" th:href="@{/free/freeList(page=${pageMaker.endPage + 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">▶</a>
             </li>
         </ul>

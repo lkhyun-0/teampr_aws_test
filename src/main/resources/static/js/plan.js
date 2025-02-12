@@ -4,12 +4,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        timeZone: 'Asia/Seoul',
         headerToolbar: {
             left: 'prev addEventButton',
             center: 'title',
             right: 'today next'
         },
         selectable: false,
+        contentHeight: 'auto', // 일정이 많아도 높이 유지
+        dayMaxEvents: 3,
+        eventOrder: function(eventA, eventB) {
+            if (eventA.extendedProps.category === "hospital" && eventB.extendedProps.category === "medicine") {
+                return -1; // 병원이 위쪽으로 정렬
+            } else if (eventA.extendedProps.category === "medicine" && eventB.extendedProps.category === "hospital") {
+                return 1; // 약 일정이 아래쪽으로 정렬
+            }
+            return 0; // 나머지는 기존 순서 유지
+        },
         customButtons: {
             addEventButton: {
                 text: '일정 추가',
@@ -42,23 +53,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }, 0);
         },
+        eventClick: function (info){
+
+        },
         dateClick: function (info) {
             let events = window.calendar.getEvents();
             let selectDate = new Date(info.date);
+
+            console.log("📅 현재 캘린더에 등록된 이벤트 목록:", events);
 
             // 선택한 날짜에 해당하는 병원 일정 찾기
             let hospitalEvent = events.find(event => {
                 let eventDate = new Date(event.start).toISOString().split("T")[0]; // YYYY-MM-DD 추출
                 let selectedDateStr = selectDate.toISOString().split("T")[0]; // YYYY-MM-DD 추출
 
-                return eventDate === selectedDateStr && event.title.includes("병원");
+                console.log("selectedDateStr: " + selectedDateStr);
+                console.log("eventDate: " + eventDate);
+
+                console.log("데이터 타입 비교:", typeof selectedDateStr, typeof eventDate);
+
+                return eventDate === selectedDateStr
             });
+
+            console.log("🔍 찾은 병원 일정:", hospitalEvent);
 
             // 선택한 날짜에 해당하는 약 일정 찾기
             let medicineEvent = events.find(event => {
                 let startDate = new Date(event.start);
                 let endDate = new Date(event.end);
-                return startDate <= selectDate && selectDate < endDate && event.title.includes("약");
+                return startDate <= selectDate && selectDate < endDate
             });
 
             if (hospitalEvent || medicineEvent) {
@@ -105,7 +128,7 @@ function loadAllPlans(calendar) {
                     start: event.start,
                     allDay: true,
                     backgroundColor: "#79b9fa", // 병원 일정 색상
-                    borderColor: "#0056b3"
+                    category: "hospital"
                 };
                 calendar.addEvent(newEvent);
             });
@@ -122,7 +145,7 @@ function loadAllPlans(calendar) {
                     end: endDate.toISOString().split('T')[0],
                     allDay: true,
                     backgroundColor: "#6dd984", // 약 일정 색상
-                    borderColor: "#1e7e34"
+                    category: "medicine"
                 };
                 calendar.addEvent(newEvent);
             });
@@ -153,7 +176,20 @@ function initMap() {
                     position.coords.longitude
                 );
                 map.setCenter(userLatLng);
-                addMarker(userLatLng, "내 위치", map); // 현재 위치 마커만 추가
+
+                var marker = new google.maps.Marker({
+                    position: userLatLng,
+                    map: map,
+                    title: "현재 위치"
+                });
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: marker.title
+                });
+
+                marker.addListener("click", function() {
+                    infowindow.open(map, marker);
+                });
             },
             error => {
                 console.error("위치 정보를 가져올 수 없습니다.", error);
@@ -170,7 +206,7 @@ function initPopupMap(hospital) {
     const popupMapEl = document.getElementById("popup-map");
     const popupMap = new google.maps.Map(popupMapEl, {
         center: new google.maps.LatLng(hospital.latitude, hospital.longitude),
-        zoom: 15
+        zoom: 17
     });
 
     addMarker(new google.maps.LatLng(hospital.latitude, hospital.longitude), hospital.name, popupMap)
@@ -182,11 +218,17 @@ function initPopupMap(hospital) {
 }
 
 // 마커 추가 함수
-function addMarker(position, title, targetMap) {
+function addMarker(position, title, targetMap, iconUrl) {
     new google.maps.Marker({
         position: position,
         map: targetMap,
-        title: title
+        title: title,
+        icon:{
+            url: "/images/hospital.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(20, 40)
+        }
     });
 }
 
@@ -290,11 +332,7 @@ function displayHospitalOnMap(hospital) {
     map.setCenter(position);
 
     // 마커 추가
-    new google.maps.Marker({
-        position: position,
-        map: map,
-        title: hospital.name, // 마커에 병원 이름 표시
-    });
+    addMarker(position, hospital.name, map)
 
     // 병원 정보 윈도우 표시
     const infoWindow = new google.maps.InfoWindow({
@@ -353,6 +391,10 @@ function hospitalSave(event) {
 
             loadAllPlans(calendar);
             window.calendar.render();
+
+            $('.plan').animate({
+                scrollTop: 0
+            }, 500);
 
             $("#select-date").val("");
             $("#hospital-time").val("");
@@ -711,6 +753,12 @@ window.closeModal = function () {
         'visibility': 'hidden'
     });
 };
+
+window.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closeModal();
+    }
+});
 
 $(".tab").click(function () {
     // 모든 탭 버튼 비활성화 & 모든 콘텐츠 숨김
