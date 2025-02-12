@@ -27,15 +27,20 @@ table {
 }
 
 /* 캘린더 */
-
 #calendar {
     max-width: 100%; /* 부모 요소에 맞춤 */
     width: 100%; /* 캘린더가 전체 차지하도록 설정 */
     margin: 190px auto 50px; /* 상하 여백 및 가운데 정렬 유지 */
 }
 
-.fc-daygrid-day-events {
-    max-height: 50px; /* 일정 칸 최대 높이 지정 */
+.fc-daygrid-day {
+    height: 150px !important; /* 정사각형 형태 유지 */
+    min-height: 150px !important;
+    max-height: 150px !important;
+}
+
+.fc-h-event {
+    border: none;
 }
 
 .fc-col-header-cell-cushion, .fc-daygrid-day-number {
@@ -211,7 +216,7 @@ table {
     align-items:center;
     justify-content:center;
     flex-direction: column;
-    z-index: 1000;
+    z-index: 100;
     opacity: 0;
     visibility: hidden;
 }
@@ -234,7 +239,7 @@ table {
 
 .detail-content {
     display: none;
-    width: 500px;
+    width: 700px;
     min-height: 300px;
     background-color: #fff;
     border: 2px solid #ddd;
@@ -346,4 +351,9 @@ table {
 .delete-btn {
     text-align: center;
     margin: 30px auto;
+}
+
+/*지도*/
+#popup-map {
+    height: 350px !important;
 }
