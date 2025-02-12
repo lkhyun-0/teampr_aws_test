@@ -165,6 +165,8 @@
                 tips.push("💪 <strong>단백질 섭취량이 충분합니다.</strong> 유지하세요!");
             } else if (protein < standards.protein * 0.8) {
                 tips.push("⚡ <strong>단백질 섭취가 부족합니다.</strong> 닭가슴살, 두부 등 고단백 식품을 추가해보세요.");
+            } else {
+                tips.push("<strong>단백질 섭취가 적절합니다.</strong> 계속 유지하세요!");
             }
 
             // 탄수화물 섭취 분석
@@ -172,6 +174,8 @@
                 tips.push("🍞 <strong>탄수화물 섭취가 많습니다.</strong> 정제 탄수화물(흰쌀, 빵)보다 복합 탄수화물(현미, 고구마)을 선택하세요.");
             } else if (carbs < standards.carbs[0]) {
                 tips.push("🍚 <strong>탄수화물이 부족합니다.</strong> 현미밥, 감자, 귀리 등 건강한 탄수화물을 추가하세요.");
+            } else {
+                tips.push("<strong>탄수화물 섭취가 적절합니다.</strong> 균형을 유지하세요!");
             }
 
             // 지방 섭취 분석
@@ -179,13 +183,20 @@
                 tips.push("🥑 <strong>지방 섭취량이 많습니다.</strong> 트랜스 지방 대신 견과류, 올리브오일을 선택하세요.");
             } else if (fat < standards.fat[0]) {
                 tips.push("🍳 <strong>지방 섭취가 부족합니다.</strong> 아보카도, 연어, 들기름 등을 통해 건강한 지방을 보충하세요.");
+            } else {
+                tips.push("<strong>지방 섭취가 적절합니다.</strong> 건강한 습관을 유지하세요!");
             }
 
-            $("#tip-text").html(tips.length > 0 ? tips.map(tip => `<p style="margin-bottom: 8px;">${tip}</p>`).join("") : "<p> <strong>이번 주 영양 섭취가 적절합니다!</strong> 계속 유지하세요.</p>");
+            // 피드백이 없을 경우 기본 메시지 추가
+            if (tips.length === 0) {
+                tips.push("<p> <strong>이번 주 영양 섭취가 적절합니다!</strong> 계속 유지하세요!</p>");
+            }
+
+            $("#tip-text").html(tips.map(tip => `<p style="margin-bottom: 8px;">${tip}</p>`).join(""));
         }
 
 
-// 칼로리 도넛 그래프 업데이트
+        // 칼로리 도넛 그래프 업데이트
         function updateCaloriesChart(totalCalories, targetCalories) {
             const ctx = document.getElementById('caloriesChart').getContext('2d');
 
