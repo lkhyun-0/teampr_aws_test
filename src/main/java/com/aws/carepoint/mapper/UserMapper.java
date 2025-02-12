@@ -50,6 +50,15 @@ public interface UserMapper {
     @Select("SELECT user_pk FROM users WHERE phone = #{phone}")
     String findPhoneByPhone(String phone);
 
+    @Update("UPDATE users " +
+            "SET phone = IFNULL(#{phone}, phone), " +
+            "email = IFNULL(#{email}, email), " +
+            "userPwd = IFNULL(#{userPwd}, userPwd), " +
+            "update_date = NOW() " +
+            "WHERE user_pk = #{userPk}")
+    int updateUserInfo(UsersDto usersDto);
+
+
 
 
 

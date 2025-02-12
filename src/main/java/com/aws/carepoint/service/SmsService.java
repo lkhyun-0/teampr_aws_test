@@ -6,6 +6,7 @@ import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +24,7 @@ public class SmsService {
 
     public void sendSms(String to, String text) {
         Message message = new Message();
-        message.setFrom("01024705367");  // 발신번호 등록 필요
+        message.setFrom("01024705367");  // 문자보내는 사람의 전화번호 등록해두기 발신번호 등록 필요
         message.setTo(to);
         message.setText(text);
 
@@ -37,4 +38,6 @@ public class SmsService {
             System.out.println("예외 발생: " + e.getMessage());
         }
     }
+
+
 }

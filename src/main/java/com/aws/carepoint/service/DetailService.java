@@ -7,6 +7,7 @@ import com.aws.carepoint.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
@@ -53,6 +54,16 @@ public class DetailService {
 //        System.out.println("📢 [DEBUG] 서비스에서 업데이트 실행: " + detailDto);
 //        detailMapper.updateUserInfo(detailDto);
 //    }
+
+    @Transactional
+    public boolean updateUserInfo(UsersDto usersDto) {
+        return userMapper.updateUserInfo(usersDto) > 0;
+    }
+
+    @Transactional
+    public boolean updateDetailInfo(DetailDto detailDto) {
+        return detailMapper.updateDetailInfo(detailDto) > 0;
+    }
 
 
 }

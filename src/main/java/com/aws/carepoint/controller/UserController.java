@@ -12,15 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,7 +107,7 @@ public class UserController {
 
     @PostMapping("doSignIn") // 일반 로그인
     public ResponseEntity<Map<String, Object>> doSignIn(
-            @RequestBody Map<String, String> loginData,  // ✅ JSON 데이터 받기
+            @RequestBody Map<String, String> loginData,
             HttpSession session) {
 
         String userId = loginData.get("userId");
@@ -145,6 +141,8 @@ public class UserController {
         // 6. 리다이렉트 URL 결정 (세션에 저장된 `saveUrl`이 있으면 해당 경로로 이동)
         String redirectUrl = (session.getAttribute("saveUrl") != null) ?
                 session.getAttribute("saveUrl").toString() : "/user/mainPage";
+
+                System.out.println("redirectUrl: " + redirectUrl);
 
                 response.put("message", "로그인 성공");
                 response.put("success", true);
