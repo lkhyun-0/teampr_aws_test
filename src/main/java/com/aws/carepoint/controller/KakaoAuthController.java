@@ -3,7 +3,6 @@ package com.aws.carepoint.controller;
 import com.aws.carepoint.dto.UsersDto;
 import com.aws.carepoint.service.KakaoAuthService;
 import com.aws.carepoint.service.UserService;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +29,6 @@ public class KakaoAuthController {
         this.userService = userService;
     }
 
-    @PostConstruct
-    public void checkKakaoClientId() {
-        //System.out.println("phone ====================> " + kakaoAuthService.getPhone());
-        System.out.println("📢 현재 적용된 client-id: [" + clientId + "]");
-    }
-
     @GetMapping("/login/kakao/auth-url")
     public ResponseEntity<Map<String, String>> getKakaoAuthUrl() {
         String kakaoUrl = "https://kauth.kakao.com/oauth/authorize" +
@@ -51,15 +44,15 @@ public class KakaoAuthController {
 
     @GetMapping("/login/oauth2/code/kakao")
     public ResponseEntity<Map<String, Object>> kakaoCallback(@RequestParam("code") String code, HttpSession session) {
-        System.out.println("📢 받은 카카오 인증 코드: " + code);
+        //System.out.println("📢 받은 카카오 인증 코드: " + code);
 
         // 1️⃣ 액세스 토큰 요청
         String accessToken = kakaoAuthService.getKakaoAccessToken(code);
-        System.out.println("📢 받은 액세스 토큰: " + accessToken);
+        //System.out.println("📢 받은 액세스 토큰: " + accessToken);
 
         // 2️⃣ 사용자 정보 요청
         Map<String, Object> userInfo = kakaoAuthService.getUserInfo(accessToken);
-        System.out.println("📢 받은 사용자 정보: " + userInfo);
+        //System.out.println("📢 받은 사용자 정보: " + userInfo);
 
         // 3️⃣ 사용자 정보 저장 및 로그인 처리
         UsersDto usersDto = userService.processKakaoLogin(userInfo, session);
@@ -70,15 +63,5 @@ public class KakaoAuthController {
 
         return ResponseEntity.ok(response);
     }
-
-
-
-
-
-
-
-
-
-
 
 }

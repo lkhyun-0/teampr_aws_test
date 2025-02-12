@@ -33,15 +33,16 @@ public interface DetailMapper {
             @Result(property = "updateDate", column = "update_date"),
             @Result(property = "userPk", column = "user_pk")
     })
+    DetailDto getUserDetailById(int userPk);        // 마이페이지에서 보여줘야할 데이터들
 
-    DetailDto getUserDetailById(int userPk);
-
-//    @Update("UPDATE user_detail " +
-//            "SET phone = #{phone}, email = #{email}, password = #{password}, " +
-//            "height = #{height}, weight = #{weight}, smoke = #{smoke}, drink = #{drink}, " +
-//            "update_date = NOW() " +
-//            "WHERE user_pk = #{userPk}")
-//    void updateUserInfo(DetailDto detailDto);
+    @Update("UPDATE user_detail " +
+            "SET height = IFNULL(#{height}, height), " +
+            "weight = IFNULL(#{weight}, weight), " +
+            "smoke = IFNULL(#{smoke}, smoke), " +
+            "drink = IFNULL(#{drink}, drink), " +
+            "update_date = NOW() " +
+            "WHERE user_pk = #{userPk}")
+    int updateDetailInfo(DetailDto detailDto);
 
 
 }
