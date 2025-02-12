@@ -5,6 +5,9 @@
     <title>로그인 페이지</title>
     <link rel="stylesheet" th:href="@{/css/user/login.css}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:if="${msg}">
+        alert("[[${msg}]]");
+    </script>
     <script>
         function popUp() {
             $(document).on('click', '.find-pwd', function () {

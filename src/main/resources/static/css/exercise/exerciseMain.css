@@ -584,9 +584,7 @@
     height: 230px;
 }
 
-/* 날짜에 마우스 올렸을 때 커서 변경 */
 .fc .fc-daygrid-day-frame {
-    cursor: pointer;
     height: 100px;
 }
 

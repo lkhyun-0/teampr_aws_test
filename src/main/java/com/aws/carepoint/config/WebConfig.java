@@ -11,6 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**") // URL 접근 경로
                 .addResourceLocations("file:uploads/") // 실제 저장되는 로컬 경로
+                .addResourceLocations("file:D:/team_Pr/workspace/uploads") // 실제 저장되는 로컬 경로
                 .setCachePeriod(3600); // 캐싱(초 단위) - 선택사항
     }
 }
