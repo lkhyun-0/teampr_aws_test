@@ -5,7 +5,7 @@ function doSignIn() {
 
     let loginData = { userId: userId, userPwd: userPwd };
 
-    console.log("📌 로그인 요청 데이터:", loginData);
+    //console.log(" 로그인 요청 데이터:", loginData);
 
     fetch("/user/doSignIn", {
         method: "POST",

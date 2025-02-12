@@ -37,12 +37,10 @@ public class DetailController {
         DetailDto userDetail = (DetailDto) userFullInfo.get("userDetail");
 
         if (userInfo == null) {
-            System.out.println("❌ userInfo is NULL, setting default value...");
             userInfo = new UsersDto();
         }
 
         if (userDetail == null) {
-            System.out.println("❌ userDetail is NULL, setting default value...");
             userDetail = new DetailDto();
         }
 
@@ -54,14 +52,14 @@ public class DetailController {
     @PostMapping("updateInfo")
     public ResponseEntity<?> updateInfo(@RequestBody Map<String, Object> requestBody) {
         try {
-            System.out.println("📌 받은 데이터: " + requestBody);  // JSON 데이터 확인
+            //System.out.println("받은 데이터: " + requestBody);  // JSON 데이터 확인
             // JSON에서 usersDto 데이터 추출
             ObjectMapper objectMapper = new ObjectMapper();
             UsersDto usersDto = objectMapper.convertValue(requestBody.get("usersDto"), UsersDto.class);
             DetailDto detailDto = objectMapper.convertValue(requestBody.get("detailDto"), DetailDto.class);
 
-            System.out.println("📌 변환된 UsersDto: " + usersDto);
-            System.out.println("📌 변환된 DetailDto: " + detailDto);
+            //System.out.println("변환된 UsersDto: " + usersDto);
+            //System.out.println("변환된 DetailDto: " + detailDto);
 
 
             // 두 개의 DTO 업데이트 실행

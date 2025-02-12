@@ -5,7 +5,11 @@ import com.aws.carepoint.mapper.UserMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,11 +56,10 @@ public class UserService {
     public UsersDto checkId(String userId) {
         UsersDto usersDto = userMapper.findByUserId(userId);
         if (usersDto != null) {
-            //System.out.println("DB에서 가져온 userId: " + usersDto.getUserId());
         } else {
             System.out.println("DB에서 해당 userId를 찾을 수 없음");
         }
-        return userMapper.findByUserId(userId); // DB에서 사용자 정보 조회
+        return usersDto;
     }
 
     public boolean checkPwd(String rawPwd, String encodedPwd) { //(사용자가 입력한 비번,암호화된 비번 대조하기)
@@ -145,4 +148,14 @@ public class UserService {
 
         return true;
     }
+
+    public UsersDto checkUserByPk(int userPk) {
+        return userMapper.findByUserPk(userPk);
+    }
+
+    @Transactional
+    public boolean markUserAsDeleted(int userPk) {
+        return userMapper.updateDelStatus(userPk) > 0;
+    }
+
 }

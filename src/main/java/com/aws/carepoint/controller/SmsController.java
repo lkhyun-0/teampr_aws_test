@@ -17,7 +17,7 @@ public class SmsController {
 
     @GetMapping("/send-sms")
     public String sendSms(@RequestParam("to") String to, @RequestParam("text") String text) {       // 누구에게 어떤 메시지를??
-        smsService.sendSms(to, text);       // 그냥 url에 메시지 담아서 보내는것 !
+        smsService.sendSms(to, text);
         return "문자 전송 요청 완료!";
     }
 

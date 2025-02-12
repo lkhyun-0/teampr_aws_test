@@ -2,6 +2,8 @@ package com.aws.carepoint.mapper;
 
 import com.aws.carepoint.dto.UsersDto;
 import org.apache.ibatis.annotations.*;
+import org.springframework.transaction.annotation.Transactional;
+
 @Mapper
 public interface UserMapper {
 
@@ -66,4 +68,13 @@ public interface UserMapper {
     @ResultMap("userResultMap")
     int updateUserPassword(@Param("userPk") int userPk, @Param("userPwd") String password);
 
+    @Select("SELECT user_pk, userId, userPwd, del_status FROM users WHERE user_pk = #{userPk} LIMIT 1")
+    @ResultMap("userResultMap")
+    UsersDto findByUserPk(@Param("userPk") int userPk);
+
+
+    @Update("UPDATE users SET del_status = 1, delDate = NOW() WHERE user_pk = #{userPk}")
+    int updateDelStatus(@Param("userPk") int userPk);
+
 }
+

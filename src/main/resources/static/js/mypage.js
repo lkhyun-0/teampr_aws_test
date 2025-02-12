@@ -196,3 +196,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// 수정하기 모달에서 탈퇴버튼 클릭시 알럿창 탈퇴하시겠습니까? 확인 or 취소 확인 하면 > 회원 탈퇴시키기
+function deleteUser() {
+    if (!confirm("정말로 탈퇴하시겠습니까?")) {
+        return;
+    }
+
+    fetch("/user/deleteUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    alert(err.error || "서버 오류 발생");
+                    return null;
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+
+            alert(data.message);
+            if (data.redirect) {
+                window.location.href = data.redirect;  // 로그인 페이지로 이동
+            }
+        })
+        .catch(error => {
+            console.error("회원 탈퇴 요청 실패:", error);
+            alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+        });
+}
