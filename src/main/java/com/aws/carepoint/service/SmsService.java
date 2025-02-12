@@ -13,8 +13,9 @@ import org.springframework.stereotype.Service;
 public class SmsService {
 
     private final DefaultMessageService messageService;
+    @Value("${coolsms.sender.phone}")
+    private String senderPhone;
 
-    // API 키 및 시크릿 키를 application.properties에서 가져오기
     public SmsService(
             @Value("${coolsms.api.key}") String apiKey,
             @Value("${coolsms.api.secret}") String apiSecret
@@ -23,21 +24,24 @@ public class SmsService {
     }
 
     public void sendSms(String to, String text) {
+        if (to == null || to.isEmpty()) {
+            System.out.println("⚠️ 수신자의 전화번호가 없습니다.");
+            return;
+        }
+
         Message message = new Message();
-        message.setFrom("01024705367");  // 문자보내는 사람의 전화번호 등록해두기 발신번호 등록 필요
+        message.setFrom(senderPhone);  // 설정에서 불러온 발신번호
         message.setTo(to);
         message.setText(text);
 
         try {
             messageService.send(message);
-            System.out.println("문자 전송 성공!");
+            System.out.println("✅ 문자 전송 성공! (수신자: " + to + ")");
         } catch (NurigoMessageNotReceivedException e) {
-            System.out.println("문자 전송 실패: " + e.getMessage());
+            System.out.println("❌ 문자 전송 실패: " + e.getMessage());
             System.out.println("실패한 메시지: " + e.getFailedMessageList());
         } catch (Exception e) {
-            System.out.println("예외 발생: " + e.getMessage());
+            System.out.println("❌ 예외 발생: " + e.getMessage());
         }
     }
-
-
 }

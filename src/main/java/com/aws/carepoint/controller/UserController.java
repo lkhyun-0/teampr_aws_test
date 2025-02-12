@@ -36,11 +36,21 @@ public class UserController {
         this.detailMapper = detailMapper;
     }
 
-    public String formatPhoneNumber(String phone) {     // 국제번호 형식으로 저장
-        if (phone.startsWith("010")) {
-            return "+82" + phone.substring(1);  // 01012341234 → +821012341234 변환
+    /**
+     * 🔹 전화번호 정규화 함수 (010XXXXXXXX 형식)
+     */
+    private String normalizePhoneNumber(String phone) {
+        if (phone == null || phone.isEmpty()) {
+            return null;
         }
-        return phone;  // 이미 국제 형식이면 그대로 사용
+
+        // 1. 국제번호 (+82) 제거
+        phone = phone.replaceAll("^\\+82\\s*", "0");
+
+        // 2. 숫자 외 모든 문자 제거 (공백, 하이픈 등)
+        phone = phone.replaceAll("[^0-9]", "");
+
+        return phone;
     }
 
 
@@ -77,6 +87,9 @@ public class UserController {
         }
 
         try {
+            // 🔹 전화번호 정규화 적용
+            String formattedPhone = normalizePhoneNumber(usersDto.getPhone());
+            usersDto.setPhone(formattedPhone); // 정규화된 전화번호 설정
             userService.userSignUp(usersDto);
             System.out.println("유저 DTO 확인: " + usersDto);
 
@@ -125,6 +138,9 @@ public class UserController {
         UsersDto usersDto = userService.checkId(userId);
         if (usersDto != null) {
             if (userService.checkPwd(userPwd, usersDto.getUserPwd())) {
+
+                    System.out.println("✅ 입력된 비밀번호: " + userPwd);
+                    System.out.println("✅ DB에서 조회된 암호화된 비밀번호: " + usersDto.getUserPwd());
 
         // 5. 로그인 성공 → 세션 저장
         session.setAttribute("userPk", usersDto.getUserPk());
@@ -259,7 +275,7 @@ public class UserController {
         // 📌 전화번호로 userPk 조회 (String 타입으로 반환될 가능성 있음)
         String findUserPk = userMapper.findPhoneByPhone(kakaoUser.getPhone());
 
-        String phone = formatPhoneNumber(kakaoUser.getPhone());
+        String phone = normalizePhoneNumber(kakaoUser.getPhone());
         System.out.println("전화번호 정규화 !! " + phone); //이거 기준으로 가져올건데 카카오 유저랑 일반유저가 다름
 
         // 🔹 String → Integer 변환 (예외 방지)
@@ -328,6 +344,20 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+
+    @PostMapping("findPassword")
+    public ResponseEntity<?> findPassword(@RequestBody Map<String, String> request) {
+        System.out.println("📌 받은 데이터: " + request); // 요청 데이터 출력
+        String userName = request.get("userName");
+        String userId = request.get("userId");
+        String phone = request.get("phone");
+        boolean isSuccess = userService.resetPasswordAndSendSMS(userName, userId, phone);
+        if (isSuccess) {
+            return ResponseEntity.ok(Map.of("success", true, "message", "임시 비밀번호가 문자로 전송되었습니다."));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "일치하는 회원 정보를 찾을 수 없습니다."));
+        }
+    }
 
 
 

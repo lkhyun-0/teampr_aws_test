@@ -2,15 +2,17 @@ package com.aws.carepoint.service;
 
 import com.aws.carepoint.dto.UsersDto;
 import com.aws.carepoint.mapper.UserMapper;
-import com.aws.carepoint.util.RandomPassword;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+
+import static com.aws.carepoint.util.RandomPassword.generateRandomPassword;
 
 @Slf4j
 @Service
@@ -18,11 +20,13 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final SmsService smsService;
 
     @Autowired
-    public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder, SmsService smsService) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.smsService = smsService;
     }
 
 
@@ -84,7 +88,7 @@ public class UserService {
                 ? kakaoAccount.get("phone_number").toString()
                 : "no-phone";  // 전화번호
 
-        String randomPwd = RandomPassword.generateRandomPassword();  // 랜덤 비밀번호 생성 후 암호화
+        String randomPwd = generateRandomPassword();  // 랜덤 비밀번호 생성 후 암호화
 
         // 4. DB에서 기존 회원 조회
         UsersDto existingUser = userMapper.findByEmail(email);
@@ -101,12 +105,39 @@ public class UserService {
 
             userMapper.insertUser(newUser);  // 🔥 DB에 신규 회원 저장
             existingUser = newUser; // 신규 회원 정보 저장
-            System.out.println("새로운 카카오 사용자 회원가입 완료! (ID: " + existingUser + ")");
+            //System.out.println("새로운 카카오 사용자 회원가입 완료! (ID: " + existingUser + ")");
         } else {
-            System.out.println("기존 카카오 사용자 로그인 성공! (ID: " + existingUser + ")");
+            //System.out.println("기존 카카오 사용자 로그인 성공! (ID: " + existingUser + ")");
         }
 
 
         return existingUser;
+    }
+
+    @Transactional
+    public boolean resetPasswordAndSendSMS(String userName, String userId, String phone) {
+        UsersDto usersDto = userMapper.findUserByNameAndIdAndPhone(userName, userId, phone);
+
+        if (usersDto == null) {
+            System.out.println("⚠️ 일치하는 회원 정보 없음: userName=" + userName + ", userId=" + userId + ", phone=" + phone);
+            return false;  // 회원 정보 없음
+        }
+
+// 조회된 정보 출력 (usersDto가 null이 아닐 때만)
+        System.out.println("📌 DB 조회 성공: userName=" + usersDto.getUserName() + ", userId=" + usersDto.getUserId() + ", phone=" + usersDto.getPhone());
+
+        // 2. 임시 비밀번호 생성
+        String tempPassword = generateRandomPassword();
+        String encodedPassword = passwordEncoder.encode(tempPassword);
+
+        // 3. 데이터베이스에서 비밀번호 업데이트
+        userMapper.updateUserPassword(usersDto.getUserPk(), encodedPassword);
+
+        // 4. 문자 발송
+        String message = "임시 비밀번호: " + tempPassword + " (로그인 후 변경해주세요)";
+        System.out.println("비밀번호 변경시 전송되는 메시지 ==================== > " + message);
+        smsService.sendSms(phone, message);
+
+        return true;
     }
 }

@@ -58,6 +58,12 @@ public interface UserMapper {
             "WHERE user_pk = #{userPk}")
     int updateUserInfo(UsersDto usersDto);
 
+    @Select("SELECT * FROM users WHERE username = #{userName} AND userId = #{userId} AND phone = #{phone} LIMIT 1")
+    UsersDto findUserByNameAndIdAndPhone(@Param("userName") String userName, @Param("userId") String userId, @Param("phone") String phone);
+
+    @Update("UPDATE users SET userPwd = #{password}, update_date = NOW() WHERE user_pk = #{userPk}")
+    void updateUserPassword(@Param("userPk") int userPk, @Param("password") String password);
+
 
 
 

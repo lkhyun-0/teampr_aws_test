@@ -34,7 +34,7 @@ function doSignIn() {
             console.error("로그인 요청 실패:", error);
             alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
         });
-}
+}       // 일반로그인
 
 // ✅ 3. 카카오 로그인 실행
 function kakaoLogin() {
@@ -89,3 +89,30 @@ function kakaoLogin() {
         }
     });
 }
+
+document.querySelector(".find-pwd-btn").addEventListener("click", () => {
+    const userName = document.getElementById("userName").value.trim();
+    const userId = document.getElementById("findUserId").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+
+    if (!userName || !userId || !phone) {
+        alert("모든 정보를 입력해주세요.");
+        return;
+    }
+
+    fetch("/user/findPassword", {           // usercontroller로 보내는 !!
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userName, userId, phone })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("임시 비밀번호가 문자로 전송되었습니다.");
+            } else {
+                alert("일치하는 회원 정보를 찾을 수 없습니다.");
+            }
+        })
+        .catch(error => console.error("비밀번호 찾기 오류:", error));
+});
+
