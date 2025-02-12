@@ -5,153 +5,62 @@
     <title>병원/약 일정관리</title>
     <link href="/css/plan/plan.css" type="text/css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
-
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth', // 월별 보기
-                headerToolbar: {
-                    left: 'prev',
-                    center: 'title',
-                    right: 'next' // 다양한 보기 옵션
-                },
-                views: {
-                    dayGridMonth: {
-                        titleFormat: {
-                            year: 'numeric',
-                            month: '2-digit'
-                        }
-                    }
-                },
-                datesSet: function (info) {
-                    setTimeout(() => {
-                        var titleEl = document.querySelector('.fc-toolbar-title');
-                        if (titleEl) {
-                            // 기존 내용을 완전히 초기화
-                            titleEl.innerHTML = '';
-
-                            // 현재 달력 중앙 날짜 가져오기
-                            var currentDate = calendar.getDate(); // 현재 날짜 객체 반환
-                            var year = currentDate.getFullYear(); // 현재 연도
-                            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // 현재 월 (2자리)
-
-                            // 새로운 연도와 월로 요소 생성
-                            var calendarTitle = document.createElement('div');
-                            calendarTitle.className = 'calendar-title';
-
-                            var calendarYear = document.createElement('div');
-                            calendarYear.className = 'calendar-year';
-                            calendarYear.textContent = year; // 연도 삽입
-
-                            var calendarMonth = document.createElement('div');
-                            calendarMonth.className = 'calendar-month';
-                            calendarMonth.textContent = month; // 월 삽입
-
-                            calendarTitle.appendChild(calendarYear);
-                            calendarTitle.appendChild(calendarMonth);
-                            titleEl.appendChild(calendarTitle);
-                        }
-                    }, 0);
-                },
-                events: [
-                    // 예시 일정 데이터
-                    {
-                        title: '병원 방문',
-                        start: '2025-02-10'
-                    },
-                    {
-                        title: '병원 방문',
-                        start: '2025-02-15'
-                    },
-                    {
-                        title: '약 복용',
-                        start: '2025-02-15',
-                        end: '2025-02-20'
-                    }
-                ],
-                selectable: true,
-                select: function (info) {
-                    // 상세일정 모달팝업
-                    let events = calendar.getEvents(); // 현재 달력의 모든 일정 가져오기
-                    let selectDate = info.startStr; // 사용자가 클릭한 날짜
-
-                    // 선택한 날짜에 일정이 있는지 확인
-                    let hasEvent = events.some(event => event.startStr === selectDate);
-
-                    if (hasEvent) {
-                        // 일정이 있으면 모달 표시
-                        $('.detail-popup').css({
-                            'opacity': '1',
-                            'visibility': 'visible'
-                        });
-                    } else {
-                        // 일정이 없으면 알림 (선택사항)
-                        alert("해당 날짜에는 일정이 없습니다.");
-                    }
-                },
-            });
-
-            calendar.render();
-
-        });
-    </script>
 </head>
 <body>
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
+<!--popup-->
 <div class="detail-popup">
     <div class="tab-buttons">
-        <button class="tab active" data-tab="tab1">병원일정</button>
-        <button class="tab" data-tab="tab2">약일정</button>
+        <button class="tab active" data-tab="tab1">병원 일정</button>
+        <button class="tab" data-tab="tab2">약 일정</button>
     </div>
     <div class="detail-content active" id="tab1">
         <button onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-        <div class="content-title">🏥 2025-01-01 병원 일정</div>
+        <div class="content-title hospital-title">일정이 없습니다.</div>
         <div class="content-info">
             <table class="hospital-table">
                 <tr>
                     <th>시간</th>
-                    <td>13시 00분</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th>병원 이름</th>
-                    <td>대전을지대학교병원</td>
-                </tr>
-                <tr>
-                    <th>병원 위치</th>
                     <td></td>
                 </tr>
+                <tr>
+                    <th>병원 주소</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>지도</th>
+                    <td>
+                        <div id="popup-map" style="width: 100%; height: 300px; display: none;"></div>
+                    </td>
+                </tr>
             </table>
+            <button class="btn delete-btn hospital" onclick="">삭제</button>
         </div>
     </div>
     <div class="detail-content" id="tab2">
         <button onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-        <div class="content-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 2025-01-01 약 일정</div>
+        <div class="content-title medicine-title">일정이 없습니다.</div>
         <div class="content-info">
             <table class="medicine-table">
                 <tr>
+                    <th>선택</th>
                     <th>시간</th>
                     <th>약 이름</th>
                     <th>약 유형</th>
                 </tr>
-                <tr>
-                    <td>13시 00분</td>
-                    <td>당뇨약</td>
-                    <td><img src="/images/syringe.jpg" alt="주사기"></td>
-                </tr>
-                <tr>
-                    <td>19시 00분</td>
-                    <td>감기약</td>
-                    <td><img src="/images/medicine.jpg" alt="약"></td>
-                </tr>
             </table>
+            <button class="btn delete-btn medicine" onclick="">삭제</button>
         </div>
     </div>
 </div>
 
-
+<!--main-->
 <section class="main">
     <div id="calendar"></div>
     <div class="plan">
@@ -159,28 +68,42 @@
             <div class="plan-title">🏥 병원 일정 입력하기</div>
             <div class="plan-content">
                 <div class="plan-favorite">
-                    즐겨찾기 <img class="star" src="/images/star.jpg" alt="">
+                    최근 등록한 일정 <img class="star" src="/images/star.jpg" alt="">
                 </div>
                 <div class="favorite-list">
-                    <a href="#">대전우리병원</a>
-                    <a href="#">대전센텀병원</a>
-                    <a href="#">대전을지대학교병원</a>
+                    <button type="button" class="hospital-recent" th:each="hospital, iterStat : ${hospitalList}" th:if="${iterStat.index} < 3" th:text="${hospital.hospitalName}"></button>
                 </div>
                 <div class="plan-input">
-                    <form name="form1" action="">
+                    <form name="form1" onsubmit="return hospitalSave(event);">
                         <div class="date-input">
                             <label for="select-date">날짜 :</label>
                             <input type="date" id="select-date" name="select-date" required>
                         </div>
                         <div class="time-input">
-                            <label for="select-time">시간 :</label>
-                            <input type="time" id="select-time" name="select-time" step="900" required>
+                            <label for="hospital-time">시간 :</label>
+                            <input type="time" id="hospital-time" name="hospital-time" required>
                         </div>
                         <div class="info-input">
                             <label for="hospital-info">병원정보 :</label>
                             <input type="text" id="hospital-info" name="hospital-info" placeholder="병원 이름 입력" required>
+                            <button type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+
+                            <!-- 검색 결과 리스트 -->
+                            <div>
+                                <ul id="hospital-list" style="display:none;"></ul>
+                            </div>
+
+                            <!-- 지도 -->
+                            <div id="map" style="width: 100%; height: 300px; margin-top: 10px;"></div>
+
+                            <!-- 숨겨진 필드 (검색된 병원 정보 저장용) -->
+                            <input type="hidden" id="hospital-lat" name="hospital-lat">
+                            <input type="hidden" id="hospital-lng" name="hospital-lng">
+                            <input type="hidden" id="hospital-address" name="hospital-address">
                         </div>
-                        <button class="btn" onclick="save();">저장</button>
+                        <small style="font-size: 10px;">검색 시 정보가 없으면 지도와 주소가 뜨지않습니다.</small>
+                        <button type="submit" class="btn">등록</button>
                     </form>
                 </div>
             </div>
@@ -189,14 +112,13 @@
             <div class="plan-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 약 일정 입력하기</div>
             <div class="plan-content">
                 <div class="plan-favorite">
-                    즐겨찾기 <img src="/images/star.jpg" alt="">
+                    최근 등록한 일정 <img src="/images/star.jpg" alt="">
                 </div>
                 <div class="favorite-list">
-                    <a href="#">당뇨약</a>
-                    <a href="#">감기약</a>
+                    <button type="button" class="medicine-recent" th:each="medicine, iterStat : ${medicineList}" th:if="${iterStat.index} < 3" th:text="${medicine.medicineName}"></button>
                 </div>
                 <div class="plan-input">
-                    <form name="form2" action="">
+                    <form name="form2" onsubmit="return medicineSave(event);">
                         <div class="date-input">
                             <label for="start-date">날짜 :</label>
                             <input type="date" id="start-date" name="start-date" required>
@@ -205,23 +127,23 @@
                         </div>
                         <div class="time-input">
                             <label for="medicine-time">시간 :</label>
-                            <input type="time" id="medicine-time" name="medicine-time" step="900" required>
-                            <button type="button" class="add-time"><i class="fa-solid fa-circle-plus"></i></button>
+                            <input type="time" id="medicine-time" name="medicine-time" required>
+<!--                            <button type="button" class="add-time"><i class="fa-solid fa-circle-plus"></i></button>-->
                             <div class="time-container"></div>
                         </div>
                         <div class="name-input">
-                            <label for="medicine-name">약이름 :</label>
+                            <label for="medicine-name">약 이름 :</label>
                             <input type="text" id="medicine-name" name="medicine-name" placeholder="약 이름 입력" required>
                         </div>
                         <div class="type-input">
-                            <label>약유형 :</label>
+                            <label>약 유형 :</label>
                             <input type="hidden" id="medicineType" name="medicineType">
                             <div class="medicine-types">
-                                <img src="/images/medicine.jpg" alt="약" class="medicine-type" data-type="medicine">
-                                <img src="/images/syringe.jpg" alt="주사기" class="medicine-type" data-type="syringe">
+                                <img src="/images/medicine.jpg" alt="약" class="medicine-type" data-type="1">
+                                <img src="/images/syringe.jpg" alt="주사기" class="medicine-type" data-type="2">
                             </div>
                         </div>
-                        <button class="btn" type="submit" onclick="save();">저장</button>
+                        <button class="btn" type="submit">등록</button>
                     </form>
                 </div>
             </div>
@@ -232,62 +154,12 @@
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
 
-<script>
-    $(".medicine-type").click(function () {
-        $(".medicine-type").removeClass("selected");
-        $(this).addClass("selected");
-        $("#medicineType").val($(this).data("type"));
-    });
+<!--js-->
+<script src="/js/plan.js"></script>
 
-    // 폼 제출 시, 사용자가 선택하지 않았다면 경고 메시지
-    $("form[name='form2']").submit(function (e) {
-        if (!$("#medicineType").val()) {
-            alert("약 유형을 선택해주세요!");
-            e.preventDefault();
-        }
-    });
-
-    $(".add-time").click(function () {
-        let timeContainer = $(this).closest("form").find(".time-container");
-
-        if (timeContainer.find(".time-field").length >= 2) { // 최대 2개까지만 추가 가능
-            alert("최대 2개의 시간을 추가할 수 있습니다.");
-            return;
-        }
-
-        let newTimeInput = `
-        <div class="time-list">
-            <input type="time" class="time-field" name="select-time" step="900">
-            <button type="button" class="remove-time">🗑</button>
-        </div>
-        `;
-
-        timeContainer.append(newTimeInput);
-
-        // 새로 추가된 삭제 버튼에 이벤트 연결
-        timeContainer.find(".remove-time").off("click").on("click", function () {
-            $(this).closest(".time-list").remove();
-        });
-    });
-
-    // 모달 닫기 함수
-    window.closeModal = function () {
-        $('.detail-popup').css({
-            'opacity': '0',
-            'visibility': 'hidden'
-        });
-    };
-
-    $(".tab").click(function () {
-        // 모든 탭 버튼 비활성화 & 모든 콘텐츠 숨김
-        $(".tab").removeClass("active");
-        $(".detail-content").removeClass("active");
-
-        // 클릭한 버튼 활성화 & 해당 콘텐츠 표시
-        $(this).addClass("active");
-        $("#" + $(this).data("tab")).addClass("active");
-    });
-
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8Lr0W0_S0gchFmLITwOCGGDrjiZCav1E&libraries=places&callback=initMap">
 </script>
+
 </body>
 </html>

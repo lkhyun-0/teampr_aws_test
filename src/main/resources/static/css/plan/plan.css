@@ -34,6 +34,9 @@ table {
     margin: 190px auto 50px; /* 상하 여백 및 가운데 정렬 유지 */
 }
 
+.fc-daygrid-day-events {
+    max-height: 50px; /* 일정 칸 최대 높이 지정 */
+}
 
 .fc-col-header-cell-cushion, .fc-daygrid-day-number {
     text-decoration: none;
@@ -128,6 +131,36 @@ table {
     padding: 20px 5px;
 }
 
+.info-input {
+    position: relative;
+}
+
+/* 검색 결과 리스트 스타일 */
+#hospital-list {
+    position: absolute;
+    top: 40px; /* 입력란 아래쪽에 표시하도록 조정 (필요시 값 조정) */
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    z-index: 10; /* 지도보다 위에 표시되도록 높은 z-index 지정 */
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 리스트 아이템 스타일 */
+#hospital-list li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#hospital-list li:hover {
+    background-color: #f0f0f0;
+}
+
 .type-input {
     display: flex;
     align-items: center;
@@ -166,16 +199,6 @@ table {
     padding: 0 5px;
 }
 
-.favorite-list > a {
-    display: inline-block;
-    background-color: #6495ED;
-    border-radius: 5px;
-    font-weight: normal;
-    color: white;
-    padding: 3px 10px;
-    margin: 5px;
-}
-
 /*상세페이지*/
 .detail-popup {
     display: flex;
@@ -193,25 +216,26 @@ table {
     visibility: hidden;
 }
 
-.tab-buttons {
-
-}
-
 .tab {
     background-color: #fff;
     border-radius: 5px 5px 0 0;
     padding: 5px 10px;
 }
 
+.tab.hidden {
+    display: none;
+}
+
 .tab.active {
     background-color: #4169E1;
     color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .detail-content {
     display: none;
     width: 500px;
-    height: 500px;
+    min-height: 300px;
     background-color: #fff;
     border: 2px solid #ddd;
     position: relative;
@@ -219,6 +243,7 @@ table {
 
 .detail-content.active {
     display: block;
+    border: 2px solid #4169E1;
 }
 
 .content-title {
@@ -242,6 +267,8 @@ table {
 
 .content-info > table th {
     background-color: #6495ED;
+    padding: 2px;
+    width: 120px;
     color: white;
 }
 
@@ -287,6 +314,24 @@ table {
     margin-left: auto;
 }
 
+.favorite-list > button {
+    display: inline-block;
+    background-color: #6495ED;
+    border-radius: 5px;
+    font-weight: normal;
+    color: white;
+    padding: 3px 10px;
+    margin: 5px;
+}
+
+.info-input > button  {
+    border: 1px solid #666;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    padding: 0;
+}
+
 .detail-content > button {
     position: absolute;
     top: 10px;
@@ -296,4 +341,9 @@ table {
     color: red;
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+.delete-btn {
+    text-align: center;
+    margin: 30px auto;
 }
