@@ -10,6 +10,17 @@
     line-height: 1.5;
 }
 
+/* 이미지 */
+.uploaded-image {
+    text-align: center; /* 이미지 가운데 정렬 */
+    margin-bottom: 20px; /* 콘텐츠와 간격 */
+}
+
+.uploaded-image img {
+    max-width: 80%; /* 화면 너비에 맞게 크기 조정 */
+    height: auto; /* 원본 비율 유지 */
+}
+
 /* 제목 */
 .article-title {
     font-size: 1.6em;

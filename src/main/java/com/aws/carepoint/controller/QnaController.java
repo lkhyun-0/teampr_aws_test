@@ -8,6 +8,7 @@ import com.aws.carepoint.service.QnaService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,8 @@ public class QnaController {
     @Autowired
     private final QnaService qnaService;
 
-    @Autowired(required = false)
-    private final PageMaker pageMaker;
+    @Value("${file.upload-dir}") // application.yml에서 설정 값 가져오기
+    private String uploadDir;
 
     @GetMapping("/qnaList")
     public String qnaList(@ModelAttribute("scri") SearchCriteria scri, Model model) {
@@ -69,7 +70,6 @@ public class QnaController {
             authLevel = (Integer)session.getAttribute("authLevel");
         }
 
-
         // 관리자는 모든 게시글에 접근 가능
         if(authLevel == 7) {
             path = "qna/qnaContent";
@@ -78,7 +78,6 @@ public class QnaController {
         else if(authLevel == 3) {
             // 회원이 작성한 origin_num 가져오기
             List<Integer> userOriginNums = qnaService.getUserOriginNums(userPk);
-            System.out.println("userOriginNums ============================> " + userOriginNums);
 
             // 현재 게시글의 origin_num이 회원의 origin_num 목록에 포함되어 있는지 확인
             if(userOriginNums.contains(qnaDto.getOriginNum())) {
@@ -111,7 +110,7 @@ public class QnaController {
             HttpSession session,
             RedirectAttributes rttr) {
 
-        String uploadDir = System.getProperty("user.dir") + File.separator + "uploads";
+        String uploadDir = "D:/team_Pr/workspace/uploads";
 
         if (!attachfile.isEmpty()) {
             try {
@@ -143,7 +142,7 @@ public class QnaController {
 
         Integer userPk = (Integer) session.getAttribute("userPk");
         qnaDto.setUserPk(userPk);
-
+        System.out.println("DtoFilename =======================================> " + qnaDto.getFilename());
         int value = qnaService.createQna(qnaDto);
 
         String path="";
@@ -187,7 +186,7 @@ public class QnaController {
             HttpSession session,
             @RequestParam("attachfile") MultipartFile attachfile) {
 
-        String uploadDir = System.getProperty("user.dir") + File.separator + "uploads";
+        String uploadDir = "D:/team_Pr/workspace/uploads";
 
         if (!attachfile.isEmpty()) {
             try {
@@ -213,7 +212,7 @@ public class QnaController {
             } catch (IOException e) {
                 e.printStackTrace();
                 redirectAttributes.addFlashAttribute("msg", "파일 업로드 중 오류가 발생했습니다.");
-                return "redirect:/qna/qnaWrite";
+                return "redirect:/qna/qnaModify";
             }
         }
 
@@ -243,10 +242,10 @@ public class QnaController {
         QnaDto qna = qnaService.getQnaDetail(articlePk);
         model.addAttribute("qna", qna);
 
-        int authorPk = (int) session.getAttribute("userPk");
+        int authLevel = (int) session.getAttribute("authLevel");
 
         String path="";
-        if(authorPk == 7) {
+        if(authLevel == 7) {
             int value = qnaService.hasQnaReply(qna);
             if (value > 1) {
                 redirectAttributes.addFlashAttribute("msg", "이미 답변이 존재합니다.");
@@ -267,7 +266,7 @@ public class QnaController {
             HttpSession session,
             @RequestParam("attachfile") MultipartFile attachfile) {
 
-        String uploadDir = System.getProperty("user.dir") + File.separator + "uploads";
+        String uploadDir = "D:/team_Pr/workspace/uploads";
 
         if (!attachfile.isEmpty()) {
             try {
@@ -293,7 +292,7 @@ public class QnaController {
             } catch (IOException e) {
                 e.printStackTrace();
                 redirectAttributes.addFlashAttribute("msg", "파일 업로드 중 오류가 발생했습니다.");
-                return "redirect:/free/freeWrite";
+                return "redirect:/qna/qnaModify";
             }
         }
 

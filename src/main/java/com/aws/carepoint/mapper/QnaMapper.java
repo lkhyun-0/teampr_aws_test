@@ -47,8 +47,8 @@ public interface QnaMapper {
     QnaDto getQnaDetail(int articlePk);
 
     // 게시글 작성
-    @Insert("INSERT INTO article (title, content, user_pk, board_pk)" +
-            "VALUES (#{title}, #{content}, #{userPk}, 1)")
+    @Insert("INSERT INTO article (title, filename, content, user_pk, board_pk)" +
+            "VALUES (#{title}, #{filename}, #{content}, #{userPk}, 1)")
     @Options(useGeneratedKeys = true, keyProperty = "articlePk")
     int insertArticle(QnaDto qna);
 
