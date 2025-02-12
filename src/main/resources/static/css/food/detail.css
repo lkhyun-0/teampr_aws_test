@@ -22,7 +22,7 @@ body {
 }
 
 .popup {
-    width: 660px;
+    width: 700px;
     height: 830px;
     background: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -133,7 +133,7 @@ h1 {
     position: relative;
     border-bottom: 1px dashed #ddd;
     padding-bottom: 1px;
-    width: 310px;
+    width: 370px;
 }
 
 .meal-menu span {
@@ -151,7 +151,7 @@ h1 {
     position: absolute;
     bottom: 0; /* 줄 위치를 정확히 하단에 고정 */
     left: 0;
-    width: 310px;
+    width: 370px;
     height: 1px;
     border-bottom: 1px dashed #424242; /* 줄 스타일을 점선으로 설정 */
 }

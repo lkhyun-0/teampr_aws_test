@@ -29,10 +29,9 @@
     gap: 10px;
 }
 
-
 /* 작성 날짜 스타일 */
 .info-left span:last-child {
-    font-size: 0.8em; /* 글씨 크기 축소 */
+    font-size: 1.0em; /* 글씨 크기 축소 */
     color: #999; /* 연한 색상 */
     margin-top: 2px;
 }
@@ -85,4 +84,9 @@
 
 .btn:hover {
     background-color: #3156b3;
+}
+
+.uploaded-image img {
+    max-width: 80%; /* 화면 너비에 맞게 크기 조정 */
+    height: auto; /* 원본 비율 유지 */
 }
