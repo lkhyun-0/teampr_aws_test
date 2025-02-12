@@ -50,7 +50,8 @@
 
 </script>&lt;!&ndash;모달 팝업 띄우기&ndash;&gt;--> <!-- 모달팝업 나중에 주석풀어야함 todo-->
 
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 
 <!-- 약관 동의 모달 팝업 -->
 <div id="termsModal" class="modal">
@@ -163,9 +164,10 @@
     </section>
 </main>
 
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 <!-- jQuery 및 JavaScript 파일 로드 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/js/signUp.js"></script>
+<script th:src="@{/js/signUp.js}"></script>  <!-- Thymeleaf 경로 바인딩 -->
 </body>
 </html>

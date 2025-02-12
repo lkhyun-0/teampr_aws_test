@@ -2,10 +2,8 @@ package com.aws.carepoint.controller;
 
 import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
-import com.aws.carepoint.dto.FoodDto;
-import com.aws.carepoint.dto.FoodListDto;
-import com.aws.carepoint.dto.FoodRecordRequest;
-import com.aws.carepoint.dto.UpdateMealRequest;
+import com.aws.carepoint.dto.*;
+import com.aws.carepoint.mapper.DetailMapper;
 import com.aws.carepoint.service.FoodService;
 import com.aws.carepoint.service.MealService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +21,7 @@ public class FoodController {
 
     private final FoodService foodService;
     private final MealService mealService;
+    private final DetailMapper detailMapper;
 
 
 
@@ -32,23 +31,15 @@ public class FoodController {
         return "food/foodRecord"; // templates/food/foodRecord.html
     }
 
-    // 📌 특정 사용자의 식단 목록 조회
-//    @GetMapping("/foodList")
-//    @ResponseBody
-//    public List<Food> getFoodList(@RequestParam("userPk") int userPk) {
-//        return foodService.getFoodList(userPk);
-//    }
-
     // 사용자가 브라우저에서 /food/foodList 방문 시, HTML 반환
     @GetMapping("/foodList")
     public String showListPage() {
         return "food/foodList";  // templates/food/foodList.html
     }
 
-    // JavaScript에서 AJAX로 데이터를 가져올 때 호출할 JSON API
     @GetMapping("/foodList/data")
     @ResponseBody
-    public List<FoodListDto> getFoodList(@RequestParam(value = "userPk", required = false, defaultValue = "1") int userPk) {
+    public List<FoodListDto> getFoodList(@SessionAttribute("userPk") int userPk) {
         return foodService.getFoodList(userPk);
     }
 
@@ -86,8 +77,14 @@ public class FoodController {
 
     @PostMapping("/record")
     @ResponseBody
-    public String recordFood(@RequestBody FoodRecordRequest request) {
+    public String recordFood(@RequestBody FoodRecordRequest request,
+                             @SessionAttribute(name = "userPk", required = false) Integer userPk) {
+        if (userPk == null) {
+            return "Session userPk is null";
+        }
+
         try {
+            request.setUserPk(userPk);
             foodService.recordFood(request);
             return "success";
         } catch (Exception e) {
@@ -96,21 +93,23 @@ public class FoodController {
     }
 
 
+
     //특정 날짜의 식단 가져오기
     @GetMapping("/detail/data")
     @ResponseBody
-    public List<FoodList> getFoodByDate(@RequestParam("userPk") int userPk, @RequestParam("selectDate") String selectDate) {
+    public List<FoodList> getFoodByDate(@SessionAttribute("userPk") int userPk,
+                                        @RequestParam("selectDate") String selectDate) {
         return foodService.getFoodByDate(userPk, selectDate);
     }
 
     // 음식 삭제
     @DeleteMapping("/delete")
     @ResponseBody
-    public String deleteFood(@RequestBody Map<String, Object> request) {
+    public String deleteFood(@RequestBody Map<String, Object> request,
+                             @SessionAttribute("userPk") int userPk) {
         int foodListPk = (int) request.get("foodListPk");
         String selectDate = (String) request.get("selectDate");
         String foodType = (String) request.get("foodType");
-        int userPk = (int) request.get("userPk");
 
         foodService.deleteFood(foodListPk, selectDate, foodType, userPk);
         return "success";
@@ -118,7 +117,9 @@ public class FoodController {
 
     @PostMapping("/updateMeal")
     @ResponseBody
-    public String updateMeal(@RequestBody UpdateMealRequest request) {
+    public String updateMeal(@RequestBody UpdateMealRequest request,
+                             @SessionAttribute("userPk") int userPk) {
+        request.setUserPk(userPk);
         foodService.updateMeal(request);
         return "success";
     }
@@ -136,6 +137,22 @@ public class FoodController {
     public String showResultPage() {
         return "food/foodResult"; // templates/food/foodresult.html
     }
+
+
+    @GetMapping("/weeklyStats")
+    @ResponseBody
+    public List<WeeklyFoodStatsDto> getWeeklyFoodStats(@SessionAttribute("userPk") int userPk) {
+        return foodService.getWeeklyFoodStats(userPk);
+    }
+
+    // 사용자 나이와 성별 가져오기
+    @GetMapping("/getUserDetail")
+    @ResponseBody
+    public DetailDto getUserDetail(@SessionAttribute("userPk") int userPk) {
+        return detailMapper.getUserDetail(userPk);
+    }
+
+
 
 
 }

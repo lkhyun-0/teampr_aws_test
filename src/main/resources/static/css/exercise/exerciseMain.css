@@ -71,6 +71,7 @@
     height: 110px;
     margin: 0 auto;
     margin-top: 30px;
+    position: relative;
 }
 
 .target-box > div > div:first-child {
@@ -109,9 +110,10 @@
 }
 
 .target-progress {
-    width: 33%;
+    width: 0px;
     height: 30px;
     background-color: rgba(129, 199, 132, 0.8); /* 연한 핑크색 */
+    transition: width 0.3s ease;
 }
 
 .target-box > button {
@@ -121,6 +123,32 @@
     bottom: 10px; /* 아래쪽으로부터 10px */
     right: 10px; /* 오른쪽으로부터 10px */
     font-size: 14px;
+}
+
+.target-write-btn:disabled {
+    cursor: not-allowed !important;  /* 🚫 클릭 불가능 */
+    background-color: #BCB9B9FF !important; /* 🔳 버튼 색 변경 */
+    color: #FFFFFF; /* 글자색 (선택 사항) */
+    opacity: 0.7 !important; /* 약간 투명하게 */
+    border: none !important;
+}
+
+.success-stamp {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-25deg);
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    display: none;
+    background-color: gold;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    justify-content: center;
+    align-items: center;
 }
 
 /*그래프 수치 입력 폼*/
@@ -172,6 +200,14 @@
     height: 35px;
     width: 100px;
     font-size: 14px;
+}
+
+.save-button:disabled {
+    cursor: not-allowed !important;  /* 🚫 클릭 불가능 */
+    background-color: #BCB9B9FF !important; /* 🔳 버튼 색 변경 */
+    color: #FFFFFF; /* 글자색 (선택 사항) */
+    opacity: 0.7 !important; /* 약간 투명하게 */
+    border: none !important;
 }
 
 /*누적 횟수 표시 폼*/
@@ -393,6 +429,14 @@
     width: 100px;
     height: 40px;
     font-size: 14px;
+}
+
+.exercise-save:disabled {
+    cursor: not-allowed !important;  /* 🚫 클릭 불가능 */
+    background-color: #BCB9B9FF !important; /* 🔳 버튼 색 변경 */
+    color: #FFFFFF; /* 글자색 (선택 사항) */
+    opacity: 0.7 !important; /* 약간 투명하게 */
+    border: none !important;
 }
 
 /*운동 종류 선택 팝업*/

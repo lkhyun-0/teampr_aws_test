@@ -262,14 +262,13 @@ FROM board;
 ========= article 프로시저 =========
 DELIMITER $$
 
-CREATE PROCEDURE InsertArticleProc(
+CREATE PROCEDURE InsertArticleProc (
     IN PARAM_NAME VARCHAR(20) -- IN 키워드 추가 (SQLyog 호환)
 )
 BEGIN
     DECLARE i INT DEFAULT 1; -- 초기값 설정 방법 변경
 
-    WHILE i <= 300
-        DO
+    WHILE i <= 300 DO
             INSERT INTO article (title, content, user_pk, board_pk)
             VALUES (CONCAT(PARAM_NAME, i), CONCAT('게시글 내용', i), 2, 1);
 
@@ -304,7 +303,5 @@ FROM article;
 DELETE
 FROM board;
 
-ALTER TABLE article
-    AUTO_INCREMENT = 1;
-ALTER TABLE board
-    AUTO_INCREMENT = 1;
+ALTER TABLE article AUTO_INCREMENT = 1;
+ALTER TABLE board AUTO_INCREMENT = 1;

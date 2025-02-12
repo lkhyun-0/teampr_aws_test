@@ -21,17 +21,16 @@ public class DetailService {
     @Autowired
     public DetailService(DetailMapper detailMapper, UserMapper userMapper) {
         this.detailMapper = detailMapper;
-
         this.userMapper = userMapper;
     }
 
-  public void insertDetail(DetailDto detailDto) {     // 회원가입
+    public void insertDetail(DetailDto detailDto) {     // 회원가입
         detailMapper.insertDetail(detailDto);
-      System.out.println("DB에 저장할 데이터: " + detailDto);
-        System.out.println("회원가입 DB 저장 완료!");
+/*        System.out.println("DB에 저장할 데이터: " + detailDto);
+        System.out.println("회원가입 DB 저장 완료!");*/
     }
 
-    public Map<String, Object> getUserFullInfo(int userPk) {
+    public Map<String, Object> getUserFullInfo(int userPk) {        // 상세정보 + 기본정보 다 담아오는 !!!
         UsersDto userInfo = userMapper.getUserById(userPk);
         DetailDto userDetail = detailMapper.getUserDetail(userPk);
 
@@ -46,10 +45,14 @@ public class DetailService {
         userFullInfo.put("userInfo", userInfo);
         userFullInfo.put("userDetail", userDetail);
 
+
         return userFullInfo;
     }
 
-
+//    public void updateUserInfo(DetailDto detailDto) {
+//        System.out.println("📢 [DEBUG] 서비스에서 업데이트 실행: " + detailDto);
+//        detailMapper.updateUserInfo(detailDto);
+//    }
 
 
 }

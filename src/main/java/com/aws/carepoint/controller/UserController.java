@@ -6,14 +6,17 @@ import com.aws.carepoint.mapper.DetailMapper;
 import com.aws.carepoint.mapper.UserMapper;
 import com.aws.carepoint.service.DetailService;
 import com.aws.carepoint.service.UserService;
+import com.aws.carepoint.util.RandomPassword;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -21,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller // @RestController= @Controller + @ResponseBody
+@Controller  // @RestController= @Controller + @ResponseBody
 @RequestMapping("/user/")
 public class UserController {
 
@@ -44,8 +47,8 @@ public class UserController {
 
     // 아이디 중복 체크
     @GetMapping("checkUserId")
-    public ResponseEntity<Boolean> checkUserId(@RequestParam("userid") String userid) {
-        boolean isDuplicate = userMapper.countByUserId(userid) > 0;
+    public ResponseEntity<Boolean> checkUserId(@RequestParam("userId") String userId) {
+        boolean isDuplicate = userMapper.countByUserId(userId) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
     // 닉네임 중복 체크
@@ -73,7 +76,7 @@ public class UserController {
             System.out.println("유저 DTO 확인: " + usersDto);
 
             session.setAttribute("detailInsert", true);
-            session.setAttribute("user_pk", usersDto.getUserPk());
+            session.setAttribute("userPk", usersDto.getUserPk());
 
             return ResponseEntity.ok(Map.of(
                     "message", "회원가입 성공! 상세정보를 입력해주세요 !",
@@ -95,7 +98,9 @@ public class UserController {
         return "user/signIn";
     }
 
-    @PostMapping("/doSignIn")       // 로그인 동작
+
+
+    @PostMapping("doSignIn") // 일반 로그인
     public ResponseEntity<Map<String, Object>> doSignIn(
             @RequestBody Map<String, String> loginData,  // ✅ JSON 데이터 받기
             HttpSession session) {
@@ -105,7 +110,7 @@ public class UserController {
 
         Map<String, Object> response = new HashMap<>();
 
-        // 🔹 유효성 검사
+        // 1. 유효성 검사 (아이디/비밀번호 입력 확인)
         if (userId == null || userPwd == null || userId.isEmpty() || userPwd.isEmpty()) {
             response.put("error", "아이디 또는 비밀번호를 입력해주세요.");
             response.put("success", false);
@@ -116,20 +121,21 @@ public class UserController {
         if (usersDto != null) {
             if (userService.checkPwd(userPwd, usersDto.getUserPwd())) {
 
-                // 🔹 세션 저장
-                session.setAttribute("userPk", usersDto.getUserPk());
-                session.setAttribute("authLevel", usersDto.getAuthLevel());
-                session.setAttribute("userName", usersDto.getUserName());
-                session.setAttribute("userNick", usersDto.getUserNick());
-                session.setAttribute("joinDate", usersDto.getJoinDate());
-                session.setAttribute("phone", usersDto.getPhone());
-                session.setAttribute("email", usersDto.getEmail());
-               // ✅ 세션 저장 확인 로그 추가
-                System.out.println("로그인 성공! 세션 설정 usePk: " + usersDto.getUserPk());
+        // 5. 로그인 성공 → 세션 저장
+        session.setAttribute("userPk", usersDto.getUserPk());
+        session.setAttribute("authLevel", usersDto.getAuthLevel());
+        session.setAttribute("socialLoginStatus", usersDto.getSocialLoginStatus());
+        session.setAttribute("userName", usersDto.getUserName());
+        session.setAttribute("userNick", usersDto.getUserNick());
+        session.setAttribute("joinDate", usersDto.getJoinDate());
+        session.setAttribute("phone", usersDto.getPhone());
+        session.setAttribute("email", usersDto.getEmail());
 
-                // 🔹 리다이렉트 처리
-                String redirectUrl = (session.getAttribute("saveUrl") != null) ?
-                        session.getAttribute("saveUrl").toString() : "/user/mainPage";
+        //System.out.println("로그인 성공! 세션 설정 userPk: " + usersDto.getUserPk()); 세션에 담긴지 확인
+
+        // 6. 리다이렉트 URL 결정 (세션에 저장된 `saveUrl`이 있으면 해당 경로로 이동)
+        String redirectUrl = (session.getAttribute("saveUrl") != null) ?
+                session.getAttribute("saveUrl").toString() : "/user/mainPage";
 
                 response.put("message", "로그인 성공");
                 response.put("success", true);
@@ -154,26 +160,25 @@ public class UserController {
     }
 
     @PostMapping("doInsertDetail")
-    public ResponseEntity<Map<String, Object>> doInsertDetail(@RequestBody DetailDto detailDto) {
+    public ResponseEntity<Map<String, Object>> doInsertDetail(@RequestBody DetailDto detailDto, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            System.out.println("📢 doInsertDetail 실행됨!");
-            System.out.println("📢 전달된 데이터: " + detailDto);
+            //System.out.println("doInsertDetail 실행됨!");
+            //System.out.println("전달된 데이터: " + detailDto);
 
-            // 기본값 처리
-            detailDto.setRegDate(LocalDateTime.now());
-            detailDto.setUpdateDate(LocalDateTime.now());
+            // 세션에서 userPk 가져오기     이거 때문에 소셜로그인은 못씀 세션에 없어서
+            Integer userPk = (Integer) session.getAttribute("userPk");
 
-            if (detailDto.getTargetCount() == null) {
-                detailDto.setTargetCount(0);
+            if (userPk == null) {       // 일반 로그인 한 사람이 상세정보 입력하려면 오류 !!
+                System.out.println("🚨 세션에 userPk 없음! 로그인 필요");
+                response.put("status", "error");
+                response.put("message", "로그인이 필요합니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-            if (detailDto.getSmoke() == null) {
-                detailDto.setSmoke(0); // 기본값: 비흡연
-            }
-            if (detailDto.getDrink() == null) {
-                detailDto.setDrink(0); // 기본값: 음주 안 함
-            }
+            //  userPk를 DetailDto에 설정 이 값은 동일해야하는지 ?
+            detailDto.setUserPk(userPk);
+            detailDto.setDetailPk(userPk);
 
             detailService.insertDetail(detailDto);
 
@@ -197,8 +202,8 @@ public class UserController {
     public String myPage(HttpSession session, Model model) {
         Integer userPk = (Integer) session.getAttribute("userPk");
 
-        // ✅ 세션 값이 제대로 저장되었는지 로그 확인
-        System.out.println("마이페이지 접근 userPk: " + userPk);
+        // 세션 값이 제대로 저장되었는지 로그 확인
+        // System.out.println("마이페이지 접근 userPk: " + userPk);
 
         if (userPk == null) {
             return "redirect:/user/signIn"; // 세션이 없으면 로그인 페이지로 이동
@@ -218,12 +223,78 @@ public class UserController {
 
         // ✅ 모델에 사용자 정보 추가
         model.addAttribute("userInfo", userInfo);
-        model.addAttribute("detailDto", detailDto); // 🛑 여기 추가!
+        model.addAttribute("detailDto", detailDto); // 여기 추가!
 
         return "user/myPage";
     }
 
+    // ==== 세션 회원 번호 로그아웃 매핑 ====
+    @GetMapping("session")     // 여기는 로그인 여부 판단하는 곳
+    public ResponseEntity<Map<String, Object>> getSessionInfo(HttpSession session) {
+        Object userPk = session.getAttribute("userPk"); // ✅ 로그인 정보 확인
 
+        Map<String, Object> response = new HashMap<>();
+        if (userPk != null) {
+
+            response.put("loggedIn", true);
+            response.put("userPk", userPk.toString());  // 🔥 명확하게 String으로 변환
+        } else {
+            response.put("loggedIn", false);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("kakaoSignIn")
+    public ResponseEntity<Map<String, Object>> kakaoSignIn(@RequestBody UsersDto kakaoUser, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 📌 전화번호로 userPk 조회 (String 타입으로 반환될 가능성 있음)
+        String findUserPk = userMapper.findPhoneByPhone(kakaoUser.getPhone());
+
+        // 🔹 String → Integer 변환 (예외 방지)
+        Integer userPk = (findUserPk != null && !findUserPk.isEmpty()) ? Integer.parseInt(findUserPk) : null;
+
+        UsersDto existingUser = userMapper.findByEmail(kakaoUser.getEmail());
+        String redirectUrl;
+
+        if (existingUser == null) {
+            // ✅ 랜덤 비밀번호 생성 및 설정
+            String randomPwd = RandomPassword.generateRandomPassword();
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            kakaoUser.setUserPwd(passwordEncoder.encode(randomPwd));
+            kakaoUser.setUserName(kakaoUser.getUserNick()); // userName이 없으면 userNick 사용
+            kakaoUser.setSocialLoginStatus(1);
+
+            userMapper.insertUser(kakaoUser); // 사용자 정보 삽입
+
+            // 📌 회원정보 다시 조회
+            if (kakaoUser.getUserPk() == 0) {
+                existingUser = userMapper.findByEmail(kakaoUser.getEmail());
+            } else {
+                existingUser = kakaoUser;
+            }
+
+            session.setAttribute("detailInsert", true);
+            session.setAttribute("userPk", existingUser.getUserPk());
+
+            redirectUrl = "/user/userDetail";
+        } else {
+            redirectUrl = "/user/mainPage";
+        }
+
+        // 📌 조회된 userPk 값을 세션에 저장 (기존 데이터보다 우선 적용)
+        if (userPk != null) {
+            session.setAttribute("userPk", userPk);
+        }
+
+        // 📌 응답 메시지 추가
+        response.put("message", "카카오 로그인 성공!");
+        response.put("success", true);
+        response.put("redirect", redirectUrl);
+
+        return ResponseEntity.ok(response);
+    }
 
 
 
@@ -237,48 +308,17 @@ public class UserController {
         return "user/selfCheckList";
     }
 
-
-    // ==== 세션 회원 번호 로그아웃 매핑 ====
-    @GetMapping("/session")     //
-    public ResponseEntity<Map<String, Object>> getSessionInfo(HttpSession session) {
-        Object userPk = session.getAttribute("userPk"); // ✅ 로그인 정보 확인
-
-        Map<String, Object> response = new HashMap<>();
-        if (userPk != null) {
-
-            response.put("loggedIn", true);
-            response.put("userPk", userPk.toString());  // 🔥 명확하게 String으로 변환
-            System.out.println("✅ 현재 로그인된 사용자 Pk: " + userPk);
-        } else {
-            System.out.println("❌ 세션에 로그인 정보 없음");
-            response.put("loggedIn", false);
-        }
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("logout")
+    @GetMapping("logout")       // 세션에 담긴 값 삭제 초기화
     public ResponseEntity<Map<String, String>> logout(HttpSession session) {
         session.invalidate(); // ✅ 세션 삭제
         Map<String, String> response = new HashMap<>();
         response.put("message", "로그아웃되었습니다.");
-        response.put("redirect", "/user/mainPage"); // 🚀 메인 페이지로 이동
+        response.put("redirect", "/user/mainPage");
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("getUserPk")
-    public ResponseEntity<Map<String, Object>> getUserPk(HttpSession session) {
-        Integer userPk = (Integer) session.getAttribute("user_pk");
 
-        if (userPk == null) {
-            System.out.println("🚨 userPk 없음: 로그인 필요");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인 필요"));
-        }
-
-        System.out.println("✅ 로그인된 userPk: " + userPk);
-        return ResponseEntity.ok(Map.of("userPk", userPk));
-    }
 
 
 

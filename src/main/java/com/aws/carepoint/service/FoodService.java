@@ -2,10 +2,7 @@ package com.aws.carepoint.service;
 
 import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
-import com.aws.carepoint.dto.FoodDto;
-import com.aws.carepoint.dto.FoodListDto;
-import com.aws.carepoint.dto.FoodRecordRequest;
-import com.aws.carepoint.dto.UpdateMealRequest;
+import com.aws.carepoint.dto.*;
 import com.aws.carepoint.mapper.FoodMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +45,7 @@ public class FoodService {
                     "&type=json");
 
             // 요청 URI 확인
-            System.out.println("API 요청 URI: " + uri);
+            //System.out.println("API 요청 URI: " + uri);
 
             // API 호출 (getForObject 사용)
             String responseBody = restTemplate.getForObject(uri, String.class);
@@ -101,6 +98,7 @@ public class FoodService {
             foodList.setProtein(foodDto.getProtein());
             foodList.setCarbohydrate(foodDto.getCarbohydrate());
             foodList.setFat(foodDto.getFat());
+            foodList.setAmount(foodDto.getAmount()); // 그람수
             foodList.setFoodPk(food.getFoodPk()); // 외래키 설정
             foodMapper.insertFoodList(foodList);
         }
@@ -171,6 +169,7 @@ public class FoodService {
                 updatedFood.setProtein(foodDto.getProtein());
                 updatedFood.setCarbohydrate(foodDto.getCarbohydrate());
                 updatedFood.setFat(foodDto.getFat());
+                updatedFood.setAmount(foodDto.getAmount());
 
                 foodMapper.updateFood(updatedFood);
             } else {
@@ -181,6 +180,7 @@ public class FoodService {
                 newFood.setProtein(foodDto.getProtein());
                 newFood.setCarbohydrate(foodDto.getCarbohydrate());
                 newFood.setFat(foodDto.getFat());
+                newFood.setAmount(foodDto.getAmount());
                 newFood.setFoodPk(foodPk); // 기존 식사에 연결된 foodPk 사용
 
                 foodMapper.insertFoodList(newFood);
@@ -190,6 +190,11 @@ public class FoodService {
 
     public List<FoodListDto> getFoodList(int userPk) {
         return foodMapper.getFoodList(userPk);
+    }
+
+    // 그래프 통계
+    public List<WeeklyFoodStatsDto> getWeeklyFoodStats(int userPk) {
+        return foodMapper.getWeeklyFoodStats(userPk);
     }
 
 

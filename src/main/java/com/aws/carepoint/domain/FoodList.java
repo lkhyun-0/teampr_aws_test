@@ -21,6 +21,7 @@ public class FoodList {
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
     private int foodPk;
+    private int amount;
 
     // JSON 변환을 위한 포맷 지정
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

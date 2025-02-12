@@ -30,7 +30,10 @@
         </tbody>
         <tr class="write-tr">
             <td class="write-td" colspan="4">
-                <a href="/notice/noticeWrite"><button>글 작성</button></a>
+                <!-- 관리자만 글쓰기 버튼 보이도록 설정 -->
+                <th:block th:if="${authLevel == 7}">
+                    <a href="/notice/noticeWrite"><button>글 작성</button></a>
+                </th:block>
             </td>
         </tr>
     </table>
