@@ -62,7 +62,14 @@ public class PlanService {
         return planMapper.getMedicineRecent(medicineName);
     }
 
-    public List<MedicineDto> getMedicineDetail(int medicinePk, String selectDate) {
-        return planMapper.getMedicineDetail(medicinePk, selectDate);
+    public List<MedicineDto> getMedicineDetail(String selectDate) {
+        return planMapper.getMedicineDetail(selectDate);
+    }
+
+    public boolean deleteMedicine(List<Integer> medicinePkList, Integer userPk) {
+        int deletedPlans = planMapper.deleteMedicinePlan(medicinePkList, userPk);
+        int deleteMedicine = planMapper.deleteMedicine(medicinePkList, userPk);
+
+        return (deletedPlans > 0 || deleteMedicine > 0);
     }
 }

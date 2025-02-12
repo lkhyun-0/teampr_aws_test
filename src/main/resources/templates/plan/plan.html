@@ -18,7 +18,7 @@
     </div>
     <div class="detail-content active" id="tab1">
         <button onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-        <div class="content-title hospital-title">🏥 2025-01-01 병원 일정</div>
+        <div class="content-title hospital-title">일정이 없습니다.</div>
         <div class="content-info">
             <table class="hospital-table">
                 <tr>
@@ -40,12 +40,12 @@
                     </td>
                 </tr>
             </table>
-            <button class="btn delete-btn" onclick="">삭제</button>
+            <button class="btn delete-btn hospital" onclick="">삭제</button>
         </div>
     </div>
     <div class="detail-content" id="tab2">
         <button onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-        <div class="content-title medicine-title"><img class="medicine" src="/images/medicine.jpg" alt=""> 2025-01-01 약 일정</div>
+        <div class="content-title medicine-title">일정이 없습니다.</div>
         <div class="content-info">
             <table class="medicine-table">
                 <tr>
@@ -55,7 +55,7 @@
                     <th>약 유형</th>
                 </tr>
             </table>
-            <button class="btn delete-btn" onclick="">삭제</button>
+            <button class="btn delete-btn medicine" onclick="">삭제</button>
         </div>
     </div>
 </div>
@@ -128,7 +128,7 @@
                         <div class="time-input">
                             <label for="medicine-time">시간 :</label>
                             <input type="time" id="medicine-time" name="medicine-time" required>
-                            <button type="button" class="add-time"><i class="fa-solid fa-circle-plus"></i></button>
+<!--                            <button type="button" class="add-time"><i class="fa-solid fa-circle-plus"></i></button>-->
                             <div class="time-container"></div>
                         </div>
                         <div class="name-input">

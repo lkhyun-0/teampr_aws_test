@@ -219,13 +219,46 @@ public class PlanController {
         }
     }
 
-    @GetMapping("/getMedicineDetail/{medicinePk}")
+    @GetMapping("/getMedicineDetail")
     @ResponseBody
     public List<MedicineDto> getMedicineDetail(
-            @PathVariable("medicinePk") int medicinePk,
             @RequestParam("selectDate") String selectDate
     ) {
+        return planService.getMedicineDetail(selectDate);
+    }
 
-        return planService.getMedicineDetail(medicinePk, selectDate);
+    @DeleteMapping("/deleteMedicine")
+    @ResponseBody
+    public ResponseEntity<?> deleteMedicine(
+            @RequestBody Map<String, List<Integer>> request,
+            HttpSession session
+    ) {
+        try {
+            Integer userPk = (Integer) session.getAttribute("userPk");
+
+            if (userPk == null || userPk < 1) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("로그인이 필요합니다.");
+            }
+
+            List<Integer> medicinePkList = request.get("medicinePkList");
+
+            if (medicinePkList == null || medicinePkList.isEmpty()) {
+                return ResponseEntity.badRequest().body("삭제할 약 일정이 없습니다.");
+            }
+
+            System.out.println("medicinePkList: " + medicinePkList);
+
+            boolean deleted = planService.deleteMedicine(medicinePkList, userPk);
+
+            if (deleted) {
+                return ResponseEntity.ok("일정이 삭제되었습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("일정을 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("서버 오류: " + e.getMessage());
+        }
     }
 }

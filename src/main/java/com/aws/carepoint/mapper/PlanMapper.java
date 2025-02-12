@@ -126,9 +126,35 @@ public interface PlanMapper {
             SELECT m.* , mp.*
             FROM medicine m 
             JOIN medicine_plan mp ON m.medicine_pk = mp.medicine_pk
-            WHERE m.medicine_pk = #{medicinePk} AND #{selectDate} BETWEEN mp.start_date AND mp.end_date
+            WHERE #{selectDate} BETWEEN mp.start_date AND mp.end_date
             """)
     @ResultMap("medicineResultMap")
-    List<MedicineDto> getMedicineDetail(@Param("medicinePk") int medicinePk, @Param("selectDate") String selectDate);
+    List<MedicineDto> getMedicineDetail(@Param("selectDate") String selectDate);
+
+    @Delete("""
+            <script>
+                DELETE FROM medicine_plan
+                WHERE medicine_pk IN
+                <foreach item='id' collection='medicinePkList' open='(' separator=',' close=')'>
+                    #{id}
+                </foreach>
+                AND medicine_pk IN
+                (SELECT medicine_pk FROM medicine WHERE user_pk = #{userPk})
+            </script>
+        """)
+    int deleteMedicinePlan(@Param("medicinePkList") List<Integer> medicinePkList, @Param("userPk") Integer userPk);
+
+
+    @Delete("""
+            <script>
+            DELETE FROM medicine
+            WHERE medicine_pk IN
+            <foreach item='id' collection='medicinePkList' open='(' separator=',' close=')'>
+                #{id}
+            </foreach>
+            AND user_pk = #{userPk}
+            </script>
+            """)
+    int deleteMedicine(@Param("medicinePkList") List<Integer> medicinePkList, @Param("userPk") Integer userPk);
 
 }

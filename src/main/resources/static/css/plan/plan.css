@@ -222,6 +222,10 @@ table {
     padding: 5px 10px;
 }
 
+.tab.hidden {
+    display: none;
+}
+
 .tab.active {
     background-color: #4169E1;
     color: white;
