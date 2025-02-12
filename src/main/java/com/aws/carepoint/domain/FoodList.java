@@ -9,9 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@Getter
-@Setter
-public class FoodList {
+public class FoodList { // 공공데이터 api용 domain
     private int foodListPk;
     private String menu;
     private float protein;
@@ -21,6 +19,7 @@ public class FoodList {
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
     private int foodPk;
+    private int amount;
 
     // JSON 변환을 위한 포맷 지정
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

@@ -23,7 +23,11 @@ public class GraphService {
     @Transactional
     public void saveGraph(GraphDto graphDto) {
         graphMapper.insertGraph(graphDto);
+        graphMapper.updateWeightValue(graphDto.getWeight(), graphDto.getUserPk()); // user_detail 테이블 업데이트
         graphMapper.updateValueCount(graphDto.getUserPk(), graphDto.getRegDate()); // target 테이블 업데이트
-        graphMapper.updateWeightValue(graphDto.getWeight(), graphDto.getUserPk());
+    }
+
+    public boolean hasTodayGraphData(int userPk) {
+        return graphMapper.hasTodayGraphData(userPk) > 0;
     }
 }

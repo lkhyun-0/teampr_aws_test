@@ -4,8 +4,9 @@ import com.aws.carepoint.mapper.sql.QnaSqlProvider;
 import com.aws.carepoint.util.SearchCriteria;
 import com.aws.carepoint.dto.QnaDto;
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.jdbc.SQL;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -46,8 +47,8 @@ public interface QnaMapper {
     QnaDto getQnaDetail(int articlePk);
 
     // 게시글 작성
-    @Insert("INSERT INTO article (title, content, user_pk, board_pk)" +
-            "VALUES (#{title}, #{content}, 2, 1)")
+    @Insert("INSERT INTO article (title, filename, content, user_pk, board_pk)" +
+            "VALUES (#{title}, #{filename}, #{content}, #{userPk}, 1)")
     @Options(useGeneratedKeys = true, keyProperty = "articlePk")
     int insertArticle(QnaDto qna);
 
@@ -71,11 +72,11 @@ public interface QnaMapper {
             "WHERE article_pk = #{articlePk} " +
             "AND user_pk = #{userPk}")
     @ResultMap("qnaResultMap")
-    void updateQna(QnaDto qna);
+    int updateQna(QnaDto qna);
 
     // 답변글 작성
     @Insert("INSERT INTO article (title, content, origin_num, level_, user_pk, board_pk) " +
-            "VALUES (#{title}, #{content}, #{originNum}, 1, 1, 1)")
+            "VALUES (#{title}, #{content}, #{originNum}, 1, #{userPk}, 1)")
     @Options(useGeneratedKeys = true, keyProperty = "articlePk")
     @ResultMap("qnaResultMap")
     int insertQnaReply(QnaDto qna);
@@ -85,6 +86,9 @@ public interface QnaMapper {
             "WHERE origin_num = #{originNum} " +
             "AND del_status = 0")
     int countReplies(int originNum);
+
+    @Select("SELECT origin_num FROM article WHERE user_pk = #{userPk}")
+    List<Integer> getUserOriginNums(int userPk);
 
 
 }

@@ -10,6 +10,7 @@ public class FoodDto { //클라이언트와 데이터를 주고받을 DTO
     private float protein; // float로 변경 (소수 가능)
     private float fat;
     private float carbohydrate;
+    private int amount;  //추가 (사용자가 입력한 g 단위)
 }
 
 

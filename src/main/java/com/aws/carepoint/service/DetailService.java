@@ -26,8 +26,8 @@ public class DetailService {
 
     public void insertDetail(DetailDto detailDto) {     // 회원가입
         detailMapper.insertDetail(detailDto);
-        System.out.println("DB에 저장할 데이터: " + detailDto);
-        System.out.println("회원가입 DB 저장 완료!");
+/*        System.out.println("DB에 저장할 데이터: " + detailDto);
+        System.out.println("회원가입 DB 저장 완료!");*/
     }
 
     public Map<String, Object> getUserFullInfo(int userPk) {        // 상세정보 + 기본정보 다 담아오는 !!!
@@ -44,7 +44,7 @@ public class DetailService {
         Map<String, Object> userFullInfo = new HashMap<>();
         userFullInfo.put("userInfo", userInfo);
         userFullInfo.put("userDetail", userDetail);
-        System.out.println("fullinfo" + userFullInfo);
+
 
         return userFullInfo;
     }

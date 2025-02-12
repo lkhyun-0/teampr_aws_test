@@ -1,6 +1,8 @@
 package com.aws.carepoint.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -15,4 +17,5 @@ public class NoticeDto {
     private String title;
     private String boardType;
     private Integer userPk;
+    private MultipartFile attachfile;
 }

@@ -49,7 +49,7 @@
 <div class="page">
     <ul>
         <!-- 이전 페이지 버튼 -->
-        <li th:if="${pageMaker.prev}">
+        <li th:if="${pageMaker != null and pageMaker.prev}">
             <a class="prev" th:href="@{/qna/qnaList(page=${pageMaker.startPage - 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">◀</a>
         </li>
 
@@ -60,7 +60,7 @@
         </li>
 
         <!-- 다음 페이지 버튼 -->
-        <li th:if="${pageMaker.next}">
+        <li th:if="${pageMaker != null and pageMaker.next}">
             <a class="next" th:href="@{/qna/qnaList(page=${pageMaker.endPage + 1}, keyword=${scri.keyword}, searchType=${scri.searchType})}">▶</a>
         </li>
     </ul>

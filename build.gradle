@@ -47,6 +47,7 @@ dependencies {
     implementation 'org.json:json:20210307'                                      // ✅ JSON 파싱 지원
 
 
+
 }
 
 tasks.named('test') {

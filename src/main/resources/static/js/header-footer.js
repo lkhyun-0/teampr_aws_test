@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ DOM 로드 완료");
 
+
+
     function updateHeaderMenu() {
         console.log("🚀 updateHeaderMenu() 실행됨!");
 
@@ -8,28 +10,23 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 console.log("📌 로그인 상태 확인:", data);
+                console.log("✅ 로그인된 userPk:", data.userPk);
 
                 let signupMenu = document.getElementById("signup-menu");
                 let loginMenu = document.getElementById("login-menu");
                 let myPageMenu = document.getElementById("mypage-menu");
                 let logoutMenu = document.getElementById("logout-menu");
 
-                console.log("✅ 초기 상태: ");
-                console.log("signupMenu:", signupMenu ? signupMenu.style.display : "없음");
-                console.log("loginMenu:", loginMenu ? loginMenu.style.display : "없음");
-                console.log("myPageMenu:", myPageMenu ? myPageMenu.style.display : "없음");
-                console.log("logoutMenu:", logoutMenu ? logoutMenu.style.display : "없음");
-
                 if (data.loggedIn) {
                     console.log("✅ 로그인 상태 감지됨! 메뉴 변경");
 
                     if (signupMenu) {
                         signupMenu.style.display = "none";
-                        console.log("❌ signupMenu 숨김");
+
                     }
                     if (loginMenu) {
                         loginMenu.style.display = "none";
-                        console.log("❌ loginMenu 숨김");
+
                     }
                     if (myPageMenu) {
                         myPageMenu.style.display = "block";
@@ -52,11 +49,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     if (myPageMenu) {
                         myPageMenu.style.display = "none";
-                        console.log("❌ myPageMenu 숨김");
                     }
                     if (logoutMenu) {
                         logoutMenu.style.display = "none";
-                        console.log("❌ logoutMenu 숨김");
+
                     }
                 }
             })

@@ -1,6 +1,7 @@
 package com.aws.carepoint.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -20,4 +21,5 @@ public class QnaDto {
     private String title;
     private String boardType;
     private Integer userPk;
+    private MultipartFile attachfile;
 }

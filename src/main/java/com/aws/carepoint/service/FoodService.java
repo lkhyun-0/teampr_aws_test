@@ -98,6 +98,7 @@ public class FoodService {
             foodList.setProtein(foodDto.getProtein());
             foodList.setCarbohydrate(foodDto.getCarbohydrate());
             foodList.setFat(foodDto.getFat());
+            foodList.setAmount(foodDto.getAmount()); // 그람수
             foodList.setFoodPk(food.getFoodPk()); // 외래키 설정
             foodMapper.insertFoodList(foodList);
         }
@@ -168,6 +169,7 @@ public class FoodService {
                 updatedFood.setProtein(foodDto.getProtein());
                 updatedFood.setCarbohydrate(foodDto.getCarbohydrate());
                 updatedFood.setFat(foodDto.getFat());
+                updatedFood.setAmount(foodDto.getAmount());
 
                 foodMapper.updateFood(updatedFood);
             } else {
@@ -178,6 +180,7 @@ public class FoodService {
                 newFood.setProtein(foodDto.getProtein());
                 newFood.setCarbohydrate(foodDto.getCarbohydrate());
                 newFood.setFat(foodDto.getFat());
+                newFood.setAmount(foodDto.getAmount());
                 newFood.setFoodPk(foodPk); // 기존 식사에 연결된 foodPk 사용
 
                 foodMapper.insertFoodList(newFood);
