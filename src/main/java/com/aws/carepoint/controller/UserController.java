@@ -37,19 +37,16 @@ public class UserController {
     }
 
     /**
-     * 🔹 전화번호 정규화 함수 (010XXXXXXXX 형식)
+     * 전화번호 정규화 함수 (010XXXXXXXX 형식)
      */
     private String normalizePhoneNumber(String phone) {
         if (phone == null || phone.isEmpty()) {
             return null;
         }
-
-        // 1. 국제번호 (+82) 제거
+        // 1. 국제번호 제거
         phone = phone.replaceAll("^\\+82\\s*", "0");
-
         // 2. 숫자 외 모든 문자 제거 (공백, 하이픈 등)
         phone = phone.replaceAll("[^0-9]", "");
-
         return phone;
     }
 
@@ -72,8 +69,6 @@ public class UserController {
         boolean isDuplicate = userMapper.countByUserNick(userNick) > 0;
         return ResponseEntity.ok(isDuplicate);
     }
-
-
 
     @ResponseBody
     @PostMapping("dosignUp")        // 회원가입 동작

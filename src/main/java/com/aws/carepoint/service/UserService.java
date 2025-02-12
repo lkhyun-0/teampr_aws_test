@@ -124,14 +124,19 @@ public class UserService {
         }
 
 // 조회된 정보 출력 (usersDto가 null이 아닐 때만)
-        System.out.println("📌 DB 조회 성공: userName=" + usersDto.getUserName() + ", userId=" + usersDto.getUserId() + ", phone=" + usersDto.getPhone());
+        System.out.println("📌 DB 조회 성공: userPk=" + usersDto.getUserPk());
 
         // 2. 임시 비밀번호 생성
         String tempPassword = generateRandomPassword();
         String encodedPassword = passwordEncoder.encode(tempPassword);
 
         // 3. 데이터베이스에서 비밀번호 업데이트
-        userMapper.updateUserPassword(usersDto.getUserPk(), encodedPassword);
+
+        int updatedRows = userMapper.updateUserPassword(usersDto.getUserPk(), encodedPassword);
+        if (updatedRows == 0) {
+            System.out.println("⚠️ 비밀번호 업데이트 실패: userPk=" + usersDto.getUserPk());
+            return false;
+        }
 
         // 4. 문자 발송
         String message = "임시 비밀번호: " + tempPassword + " (로그인 후 변경해주세요)";
