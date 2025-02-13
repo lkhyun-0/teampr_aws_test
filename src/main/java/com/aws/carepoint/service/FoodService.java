@@ -40,7 +40,7 @@ public class FoodService {
             URI uri = new URI(API_URL +
                     "?serviceKey=" + API_KEY +
                     "&FOOD_NM_KR=" + encodedQuery +
-                    "&numOfRows=30" +
+                    "&numOfRows=50" +
                     "&pageNo=1" +
                     "&type=json");
 
@@ -67,6 +67,7 @@ public class FoodService {
                     foodDto.setProtein((float) item.path("AMT_NUM3").asDouble());
                     foodDto.setFat((float) item.path("AMT_NUM4").asDouble());
                     foodDto.setCarbohydrate((float) item.path("AMT_NUM7").asDouble());
+                    foodDto.setServingSize((float) item.path("Z10500").asDouble()); // 1인분 기준양
                     foodList.add(foodDto);
                 }
             } else {
