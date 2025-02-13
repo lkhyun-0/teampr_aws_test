@@ -48,7 +48,6 @@ public class UserService {
         String encodedPwd = passwordEncoder.encode(usersDto.getUserPwd());
         usersDto.setUserPwd(encodedPwd);
         userMapper.insertUser(usersDto);
-        //System.out.println("회원가입 DB 저장 완료!");
     }
 
 
@@ -72,9 +71,7 @@ public class UserService {
             //  1. JSON 형식으로 변환 후 콘솔 출력
             ObjectMapper objectMapper = new ObjectMapper();
             String kakaoUserJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(kakaoUser);
-            //System.out.println("📌 카카오에서 받은 사용자 정보 (JSON): \n" + kakaoUserJson);
         } catch (Exception e) {     // 오류 출력
-            //System.out.println("🚨 JSON 변환 중 오류 발생: " + e.getMessage());
         }
 
         // 2. 카카오에서 받은 사용자 정보 파싱

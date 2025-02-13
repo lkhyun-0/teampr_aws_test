@@ -1,8 +1,12 @@
 package com.aws.carepoint.controller;
 
 import com.aws.carepoint.dto.DetailDto;
+import com.aws.carepoint.dto.FreeDto;
+import com.aws.carepoint.dto.QnaDto;
 import com.aws.carepoint.dto.UsersDto;
 import com.aws.carepoint.mapper.DetailMapper;
+import com.aws.carepoint.mapper.FreeMapper;
+import com.aws.carepoint.mapper.QnaMapper;
 import com.aws.carepoint.mapper.UserMapper;
 import com.aws.carepoint.service.DetailService;
 import com.aws.carepoint.service.UserService;
@@ -18,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller  // @RestController= @Controller + @ResponseBody
@@ -28,12 +33,17 @@ public class UserController {
     private final UserMapper userMapper; // 🔹 userMapper 추가
     private final DetailService detailService;
     private final DetailMapper detailMapper;
+    private final FreeMapper freeMapper;
+    private final QnaMapper qnaMapper;
 
-    public UserController(UserService userService, UserMapper userMapper, DetailService detailService, DetailMapper detailMapper) {
+
+    public UserController(UserService userService, UserMapper userMapper, DetailService detailService, DetailMapper detailMapper, FreeMapper freeMapper, QnaMapper qnaMapper) {
         this.userService = userService;
         this.userMapper = userMapper; // 🔹 생성자에서 주입
         this.detailService = detailService;
         this.detailMapper = detailMapper;
+        this.freeMapper = freeMapper;
+        this.qnaMapper = qnaMapper;
     }
 
     /**
@@ -108,7 +118,7 @@ public class UserController {
         return "user/signIn";
     }
 
-    @PostMapping("doSignIn")
+    @PostMapping("doSignIn")        // 일반로그인
     public ResponseEntity<Map<String, Object>> doSignIn(
             @RequestBody Map<String, String> loginData,
             HttpSession session) {
@@ -165,31 +175,21 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-
-
     @GetMapping("userDetail")
     public String userDetail() {
         return "user/userDetail";
     }
 
-    @PostMapping("doInsertDetail")
+    @PostMapping("doInsertDetail")      // 상세정보 입력
     public ResponseEntity<Map<String, Object>> doInsertDetail(@RequestBody DetailDto detailDto, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
-
         try {
-            //System.out.println("doInsertDetail 실행됨!");
-            //System.out.println("전달된 데이터: " + detailDto);
-
-            // 세션에서 userPk 가져오기     이거 때문에 소셜로그인은 못씀 세션에 없어서
             Integer userPk = (Integer) session.getAttribute("userPk");
-
             if (userPk == null) {       // 기본 회원정보 없으면 상세정보 입력불가
-                System.out.println("세션에 userPk 없음! 로그인 필요");
                 response.put("status", "error");
                 response.put("message", "로그인이 필요합니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-            //  userPk를 DetailDto에 설정 이 값은 동일해야하는지 ?
             detailDto.setUserPk(userPk);
             detailDto.setDetailPk(userPk);
 
@@ -208,74 +208,64 @@ public class UserController {
     }
 
 
-
-
-
-    @GetMapping("myPage")
+    @GetMapping("myPage")       // 마이페이지에 들어오면 보여야 할 회원정보들 주문받기
     public String myPage(HttpSession session, Model model) {
         Integer userPk = (Integer) session.getAttribute("userPk");
-
-        // 세션 값이 제대로 저장되었는지 로그 확인
-        // System.out.println("마이페이지 접근 userPk: " + userPk);
 
         if (userPk == null) {
             return "redirect:/user/signIn"; // 세션이 없으면 로그인 페이지로 이동
         }
-
         UsersDto userInfo = userMapper.getUserById(userPk);
-        // ✅ 사용자 추가 정보 (키, 체중 등) 가져오기
         DetailDto detailDto = detailMapper.getUserDetailById(userPk);
-        System.out.println("조회된 사용자 추가 정보: " + detailDto);
-
-        // ✅ DB에서 사용자 정보를 제대로 가져오는지 확인
-        System.out.println("조회된 사용자 정보: " + userInfo);
 
         if (userInfo == null) {
             return "redirect:/user/signIn"; // DB에서 조회 실패하면 로그인 페이지로 이동
-        }
 
-        // ✅ 모델에 사용자 정보 추가
+        }
+        // 최근 5개 글 조회
+        List<FreeDto> recentFree = freeMapper.getRecentFree(userPk);
+        List<QnaDto> recentQna = qnaMapper.getRecentQna(userPk);
+
+
+        // 모델에 사용자 정보 추가해서 마이페이지로 보내기
         model.addAttribute("userInfo", userInfo);
         model.addAttribute("detailDto", detailDto); // 여기 추가!
+        model.addAttribute("recentFree", recentFree);
+        model.addAttribute("recentQna", recentQna);
 
         return "user/myPage";
     }
 
-    // ==== 세션 회원 번호 로그아웃 매핑 ====
+    // ==== 세션에 담긴 회원 번호 초기화로 로그아웃 ====
     @GetMapping("session")     // 여기는 로그인 여부 판단하는 곳
     public ResponseEntity<Map<String, Object>> getSessionInfo(HttpSession session) {
-        Object userPk = session.getAttribute("userPk"); // ✅ 로그인 정보 확인
-
+        Object userPk = session.getAttribute("userPk");
         Map<String, Object> response = new HashMap<>();
         if (userPk != null) {
-
             response.put("loggedIn", true);
-            response.put("userPk", userPk.toString());  // 🔥 명확하게 String으로 변환
+            response.put("userPk", userPk.toString());
         } else {
             response.put("loggedIn", false);
         }
-
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("kakaoSignIn")
+    @PostMapping("kakaoSignIn")     // 카카오로그인+회원가입
     public ResponseEntity<Map<String, Object>> kakaoSignIn(@RequestBody UsersDto kakaoUser, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
 
-        // 📌 전화번호로 userPk 조회 (String 타입으로 반환될 가능성 있음)
         String findUserPk = userMapper.findPhoneByPhone(kakaoUser.getPhone());
 
         String phone = normalizePhoneNumber(kakaoUser.getPhone());
-        System.out.println("전화번호 정규화 !! " + phone); //이거 기준으로 가져올건데 카카오 유저랑 일반유저가 다름
+       // System.out.println("전화번호 정규화 !! " + phone); //이거 기준으로 가져올건데 카카오 유저랑 일반유저가 다름
 
-        // 🔹 String → Integer 변환 (예외 방지)
         Integer userPk = (findUserPk != null && !findUserPk.isEmpty()) ? Integer.parseInt(findUserPk) : null;
 
         UsersDto existingUser = userMapper.findByEmail(kakaoUser.getEmail());
         String redirectUrl;
 
         if (existingUser == null) {
-            // ✅ 랜덤 비밀번호 생성 및 설정
+            // 랜덤 비밀번호 생성 및 설정
             String randomPwd = RandomPassword.generateRandomPassword();
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             kakaoUser.setUserPwd(passwordEncoder.encode(randomPwd));
@@ -299,20 +289,16 @@ public class UserController {
             redirectUrl = "/user/mainPage";
         }
 
-        // 📌 조회된 userPk 값을 세션에 저장 (기존 데이터보다 우선 적용)
         if (userPk != null) {
             session.setAttribute("userPk", userPk);
         }
 
-        // 📌 응답 메시지 추가
         response.put("message", "카카오 로그인 성공!");
         response.put("success", true);
         response.put("redirect", redirectUrl);
 
         return ResponseEntity.ok(response);
     }
-
-
 
     @GetMapping("mainPage")
     public String mainPage() {
@@ -334,8 +320,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-
-    @PostMapping("findPassword")
+    @PostMapping("findPassword")        // 비번 찾기
     public ResponseEntity<?> findPassword(@RequestBody Map<String, String> request) {
         System.out.println("📌 받은 데이터: " + request); // 요청 데이터 출력
         String userName = request.get("userName");
@@ -349,7 +334,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("deleteUser")
+    @PostMapping("deleteUser")      // 회원 탈퇴
     public ResponseEntity<Map<String, Object>> deleteUser(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
 
@@ -386,6 +371,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+
 
 
 
