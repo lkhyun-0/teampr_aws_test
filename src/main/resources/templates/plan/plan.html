@@ -5,6 +5,9 @@
     <title>병원/약 일정관리</title>
     <link href="/css/plan/plan.css" type="text/css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <!--컬러 피커 코드-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
 </head>
 <body>
 <!--header-->
@@ -124,6 +127,7 @@
                             <input type="date" id="start-date" name="start-date" required>
                             <label for="end-date"> - </label>
                             <input type="date" id="end-date" name="end-date" required>
+                            <input type="text" data-coloris>
                         </div>
                         <div class="time-input">
                             <label for="medicine-time">시간 :</label>

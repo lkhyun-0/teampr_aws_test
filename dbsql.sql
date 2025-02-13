@@ -39,20 +39,6 @@ CREATE TABLE user_detail
     CONSTRAINT fk_user_detail_user FOREIGN KEY (user_pk) REFERENCES users (user_pk)
 );
 
-CREATE TABLE graph
-(
-    graph_pk    INT AUTO_INCREMENT PRIMARY KEY NOT NULL,                             -- 기본키
-    weight      INT DEFAULT 0,                                                       -- 체중
-    blood_press INT DEFAULT 0,                                                       -- 혈압
-    blood_sugar INT DEFAULT 0,                                                       -- 혈당
-    reg_date    DATE                           NOT NULL,                             -- 작성일
-    user_pk     INT                            NOT NULL,                             -- 외래 키 (users 테이블의 user_pk 참조)
-    target_pk   INT,                                                                 -- 외래 키 (target 테이블의 target_pk 참조)
-    CONSTRAINT fk_graph_users FOREIGN KEY (user_pk) REFERENCES users (user_pk),      -- 외래 키 설정
-    CONSTRAINT fk_graph_target FOREIGN KEY (target_pk) REFERENCES target (target_pk) -- 외래 키 설정
-);
-
-
 CREATE TABLE board
 (
     board_pk    INT AUTO_INCREMENT PRIMARY KEY       NOT NULL,                    -- 기본키
@@ -67,8 +53,7 @@ CREATE TABLE article
     article_pk  INT AUTO_INCREMENT PRIMARY KEY       NOT NULL,                     -- 기본키
     title       VARCHAR(100)                         NOT NULL,                     -- 제목
     content     TEXT                                 NOT NULL,                     -- 내용
-    filename    VARCHAR(200),                                                      -- 파일이름
-    recom       INT        DEFAULT 0,                                              -- 추천수
+    filename    VARCHAR(200),                                                             -- 추천수
     viewcnt     INT        DEFAULT 0,                                              -- 조회수
     origin_num  INT        DEFAULT 0,                                              -- 원글번호
     level_      INT        DEFAULT 0,                                              -- 답변레벨
@@ -129,53 +114,53 @@ CREATE TABLE foodlist
     CONSTRAINT fk_foodlist_food FOREIGN KEY (food_pk) REFERENCES food (food_pk)   -- 외래 키 설정
 );
 
-CREATE TABLE food_API
-(
-    food_api_pk  INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
-    menu         VARCHAR(100)                   NOT NULL, -- 음식메뉴
-    kcal         INT                            NOT NULL, -- 칼로리
-    protein      FLOAT,                                   -- 단백질
-    carbohydrate FLOAT,                                   -- 탄수화물
-    fat          FLOAT                                    -- 지방
+
+CREATE TABLE target (
+                        target_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
+                        exercise_target INT DEFAULT 0, -- 운동 목표 횟수
+                        exercise_count INT DEFAULT 0, -- 운동 횟수
+                        value_target INT DEFAULT 0, -- 수치 목표 횟수
+                        value_count INT DEFAULT 0, -- 수치 횟수
+                        kcal_target INT DEFAULT 0, -- 칼로리 목표
+                        kcal_sum INT DEFAULT 0, -- 칼로리 소모량
+                        start_date DATE NOT NULL, -- 목표 시작 날짜
+                        end_date DATE NOT NULL, -- 목표 종료 날짜
+                        user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
+                        CONSTRAINT fk_target_users FOREIGN KEY (user_pk) REFERENCES users (user_pk) -- 외래 키 설정
 );
 
-CREATE TABLE target
-(
-    target_pk       INT AUTO_INCREMENT PRIMARY KEY NOT NULL,                    -- 기본키
-    exercise_target INT DEFAULT 0,                                              -- 운동 목표 횟수
-    exercise_count  INT DEFAULT 0,                                              -- 운동 횟수
-    value_target    INT DEFAULT 0,                                              -- 수치 목표 횟수
-    value_count     INT DEFAULT 0,                                              -- 수치 횟수
-    kcal_target     INT DEFAULT 0,                                              -- 칼로리 목표
-    kcal_sum        INT DEFAULT 0,                                              -- 칼로리 소모량
-    start_date      DATE                           NOT NULL,                    -- 목표 시작 날짜
-    end_date        DATE                           NOT NULL,                    -- 목표 종료 날짜
-    user_pk         INT                            NOT NULL,                    -- 외래 키 (users 테이블의 user_pk 참조)
-    CONSTRAINT fk_target_users FOREIGN KEY (user_pk) REFERENCES users (user_pk) -- 외래 키 설정
+CREATE TABLE exercise (
+                          exercise_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
+                          exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
+                          kcal INT DEFAULT 0, -- 칼로리
+                          MET FLOAT DEFAULT 0, -- MET 지수
+                          value_status TINYINT(1) DEFAULT 0 NOT NULL, -- 수치기록 여부 (0= 수치기록 전, 1= 수치기록 후)
+                          reg_date DATE NOT NULL, -- 작성일
+                          `hour` INT DEFAULT 0, -- 시간
+                          `minute` INT DEFAULT 0, -- 분
+                          user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
+                          target_pk INT, -- 외래 키 (target 테이블의 target_pk 참조)
+                          CONSTRAINT fk_exercise_users FOREIGN KEY (user_pk) REFERENCES users (user_pk), -- 외래 키 설정
+                          CONSTRAINT fk_exercise_target FOREIGN KEY (target_pk) REFERENCES target (target_pk) -- 외래 키 설정
 );
 
-CREATE TABLE exercise
-(
-    exercise_pk   INT AUTO_INCREMENT PRIMARY KEY NOT NULL,                              -- 기본키
-    exercise_name VARCHAR(50)                    NOT NULL,                              -- 운동 종목
-    kcal          INT        DEFAULT 0,                                                 -- 칼로리
-    MET           FLOAT      DEFAULT 0,                                                 -- MET 지수
-    value_status  TINYINT(1) DEFAULT 0           NOT NULL,                              -- 수치기록 여부 (0= 수치기록 전, 1= 수치기록 후)
-    reg_date      DATE                           NOT NULL,                              -- 작성일
-    `hour`        INT        DEFAULT 0,                                                 -- 시간
-    `minute`      INT        DEFAULT 0,                                                 -- 분
-    user_pk       INT                            NOT NULL,                              -- 외래 키 (users 테이블의 user_pk 참조)
-    target_pk     INT,                                                                  -- 외래 키 (target 테이블의 target_pk 참조)
-    CONSTRAINT fk_exercise_users FOREIGN KEY (user_pk) REFERENCES users (user_pk),      -- 외래 키 설정
-    CONSTRAINT fk_exercise_target FOREIGN KEY (target_pk) REFERENCES target (target_pk) -- 외래 키 설정
+CREATE TABLE exercise_API (
+                              exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
+                              exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
+                              MET FLOAT DEFAULT 0 NOT NULL, -- MET 지수
+                              exercise_img VARCHAR(100) NULL -- 이미지
 );
 
-CREATE TABLE exercise_API
-(
-    exercise_api_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
-    exercise_name   VARCHAR(50)                    NOT NULL, -- 운동 종목
-    MET             FLOAT DEFAULT 0                NOT NULL, -- MET 지수
-    exercise_img    VARCHAR(100)                   NULL      -- 이미지
+CREATE TABLE graph (
+                       graph_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL, -- 기본키
+                       weight INT DEFAULT 0, -- 체중
+                       blood_press INT DEFAULT 0, -- 혈압
+                       blood_sugar INT DEFAULT 0, -- 혈당
+                       reg_date DATE NOT NULL, -- 작성일
+                       user_pk INT NOT NULL, -- 외래 키 (users 테이블의 user_pk 참조)
+                       target_pk INT, -- 외래 키 (target 테이블의 target_pk 참조)
+                       CONSTRAINT fk_graph_users FOREIGN KEY (user_pk) REFERENCES users (user_pk), -- 외래 키 설정
+                       CONSTRAINT fk_graph_target FOREIGN KEY (target_pk) REFERENCES target (target_pk) -- 외래 키 설정
 );
 
 CREATE TABLE medicine
@@ -232,7 +217,8 @@ CREATE TABLE hospital_api
     longitude       DECIMAL(11, 8),
     place_id        VARCHAR(255) UNIQUE
 );
-======= users 샘플데이터 =======
+
+======= users 관리자데이터 =======
 INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
 VALUES (7, 0, '22na', '1234', '이인아', '22na', '010-1111-1111', '22na@naver.com');
 
@@ -248,7 +234,7 @@ VALUES (3, 0, 'mimi', '1234', '최미미', 'mimi', '010-4444-4444', 'mimi@gmail.
 SELECT *
 FROM users;
 
-======= board 샘플데이터 =======
+======= board 시작데이터 =======
 INSERT INTO board (board_type)
 VALUES ('Q');
 INSERT INTO board (board_type)
@@ -259,49 +245,84 @@ VALUES ('N');
 SELECT *
 FROM board;
 
-========= article 프로시저 =========
-DELIMITER $$
+========= 운동 목표 트리거 =========
+DELIMITER //
 
-CREATE PROCEDURE InsertArticleProc (
-    IN PARAM_NAME VARCHAR(20) -- IN 키워드 추가 (SQLyog 호환)
-)
+CREATE TRIGGER trg_update_exercise_target
+    AFTER INSERT ON target
+    FOR EACH ROW
 BEGIN
-    DECLARE i INT DEFAULT 1; -- 초기값 설정 방법 변경
-
-    WHILE i <= 300 DO
-            INSERT INTO article (title, content, user_pk, board_pk)
-            VALUES (CONCAT(PARAM_NAME, i), CONCAT('게시글 내용', i), 2, 1);
-
-            SET i = i + 1;
-        END WHILE;
-END $$
+    -- 목표가 추가될 때, 기존에 등록된 운동 데이터의 target_pk를 업데이트
+    UPDATE exercise
+    SET target_pk = NEW.target_pk
+    WHERE user_pk = NEW.user_pk
+      AND reg_date BETWEEN NEW.start_date AND NEW.end_date
+      AND target_pk IS NULL;
+END //
 
 DELIMITER ;
 
-========= 프로시저 호출 =========
-CALL InsertArticleProc('게시글 제목');
+========= 목표 카운트 이벤트 =========
+SET GLOBAL event_scheduler = ON;
 
-SELECT *
-FROM article;
+DELIMITER //
 
-========= 이 부분은 쓰실 분들만 쓰세요 =========
-UPDATE article
-SET user_pk = 3
-WHERE article_pk BETWEEN 101 AND 200;
+CREATE EVENT update_exercise_count_event
+    ON SCHEDULE EVERY 5 SECOND
+    DO
+    BEGIN
+        -- 목표 설정 기간 내의 운동 횟수 업데이트
+        UPDATE target t
+        SET exercise_count = (
+            SELECT COUNT(*) FROM exercise e
+            WHERE e.user_pk = t.user_pk
+              AND e.reg_date BETWEEN t.start_date AND t.end_date
+              AND e.target_pk = t.target_pk
+        ),
+            kcal_sum = (
+                SELECT COALESCE(SUM(e.kcal), 0) FROM exercise e
+                WHERE e.user_pk = t.user_pk
+                  AND e.reg_date BETWEEN t.start_date AND t.end_date
+                  AND e.target_pk = t.target_pk
+            );
+    END //
 
-UPDATE article
-SET user_pk = 4
-WHERE article_pk BETWEEN 201 AND 300;
+DELIMITER ;
 
-UPDATE article
-SET origin_num = article_pk;
+========= 그래프 목표 트리거 =========
+DELIMITER //
 
-========= 데이터 리셋할 때 =========
-DELETE
-FROM article;
+CREATE TRIGGER trg_update_graph_target
+    AFTER INSERT ON target
+    FOR EACH ROW
+BEGIN
+    -- 목표가 추가될 때, 기존에 등록된 그래프 데이터의 target_pk를 업데이트
+    UPDATE graph
+    SET target_pk = NEW.target_pk
+    WHERE user_pk = NEW.user_pk
+      AND DATE(reg_date) BETWEEN NEW.start_date AND NEW.end_date
+      AND target_pk IS NULL;
+END //
 
-DELETE
-FROM board;
+DELIMITER ;
 
-ALTER TABLE article AUTO_INCREMENT = 1;
-ALTER TABLE board AUTO_INCREMENT = 1;
+========= 목표 카운트 이벤트 =========
+SET GLOBAL event_scheduler = ON;
+
+DELIMITER //
+
+CREATE EVENT update_graph_count_event
+    ON SCHEDULE EVERY 5 SECOND
+    DO
+    BEGIN
+        -- 목표 설정 기간 내의 그래프 기록 횟수 업데이트
+        UPDATE target t
+        SET value_count = (
+            SELECT COUNT(*) FROM graph g
+            WHERE g.user_pk = t.user_pk
+              AND DATE(g.reg_date) BETWEEN t.start_date AND t.end_date
+              AND g.target_pk = t.target_pk
+        );
+    END //
+
+DELIMITER ;
