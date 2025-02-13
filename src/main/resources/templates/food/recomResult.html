@@ -217,7 +217,9 @@
             data: { goal: goal },
             success: function(response) {
                 $("#loading").hide();  // 로딩 숨김
+
                 const mealOptions = response.meal_options;
+
                 // mealOptions[0] = 식단 1, mealOptions[1] = 식단 2, mealOptions[2] = 식단 3
                 if (mealOptions && mealOptions.length >= 3) {
                     const diet1 = parseMealOption(mealOptions[0]);

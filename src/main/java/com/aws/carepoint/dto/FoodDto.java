@@ -12,7 +12,7 @@ public class FoodDto { //클라이언트와 데이터를 주고받을 DTO
     private float fat;
     private float carbohydrate;
     private int amount;  //추가 (사용자가 입력한 g 단위)
-    private float servingSize; // 1인분
+    private String servingSize; // 1회 제공량
 }
 
 

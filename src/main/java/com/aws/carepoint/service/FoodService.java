@@ -67,7 +67,20 @@ public class FoodService {
                     foodDto.setProtein((float) item.path("AMT_NUM3").asDouble());
                     foodDto.setFat((float) item.path("AMT_NUM4").asDouble());
                     foodDto.setCarbohydrate((float) item.path("AMT_NUM7").asDouble());
-                    foodDto.setServingSize((float) item.path("Z10500").asDouble()); // 1인분 기준양
+                    JsonNode servingSizeNode = item.path("Z10500");
+
+                    if (!servingSizeNode.isMissingNode() && !servingSizeNode.isNull()) {
+                        String servingSize = servingSizeNode.asText().replace(",", "").trim(); // 쉼표 제거
+                        // .000 제거 & 단위 처리
+                        servingSize = servingSize.replaceAll("\\.0+([a-zA-Z]*)$", "$1");
+                        // g 또는 mL가 없는 경우 기본적으로 "g"를 추가
+                        if (!servingSize.matches(".*[a-zA-Z]$")) {
+                            servingSize += "g";
+                        }
+                        foodDto.setServingSize(servingSize);
+                    } else {
+                        foodDto.setServingSize("N/A"); // 값이 없으면 "N/A"로 표시
+                    }
                     foodList.add(foodDto);
                 }
             } else {
@@ -197,8 +210,4 @@ public class FoodService {
     public List<WeeklyFoodStatsDto> getWeeklyFoodStats(int userPk) {
         return foodMapper.getWeeklyFoodStats(userPk);
     }
-
-
-
-
 }
