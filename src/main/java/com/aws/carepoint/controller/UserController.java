@@ -12,15 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +36,22 @@ public class UserController {
         this.detailMapper = detailMapper;
     }
 
+    /**
+     * 전화번호 정규화 함수 (010XXXXXXXX 형식) utill 로 빼야함
+     */
+    private String normalizePhoneNumber(String phone) {
+        if (phone == null || phone.isEmpty()) {
+            return null;
+        }
+        // 1. 국제번호 제거
+        phone = phone.replaceAll("^\\+82\\s*", "0");
+        // 2. 숫자 외 모든 문자 제거 (공백, 하이픈 등)
+        phone = phone.replaceAll("[^0-9]", "");
+        return phone;
+    }
+
+
+
     @GetMapping("signUp")       // 회원가입 페이지
     public String signUp() {
         return "user/signUp";
@@ -58,8 +70,6 @@ public class UserController {
         return ResponseEntity.ok(isDuplicate);
     }
 
-
-
     @ResponseBody
     @PostMapping("dosignUp")        // 회원가입 동작
     public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody UsersDto usersDto,
@@ -72,8 +82,11 @@ public class UserController {
         }
 
         try {
+            // 🔹 전화번호 정규화 적용
+            String formattedPhone = normalizePhoneNumber(usersDto.getPhone());
+            usersDto.setPhone(formattedPhone); // 정규화된 전화번호 설정
             userService.userSignUp(usersDto);
-            System.out.println("유저 DTO 확인: " + usersDto);
+            //System.out.println("유저 DTO 확인: " + usersDto);
 
             session.setAttribute("detailInsert", true);
             session.setAttribute("userPk", usersDto.getUserPk());
@@ -90,19 +103,14 @@ public class UserController {
         }
     }
 
-
-    // ========= 회원가입 동작 완성 0206 ===============
-
     @GetMapping("signIn")       // 로그인 페이지
     public String signIn() {
         return "user/signIn";
     }
 
-
-
-    @PostMapping("doSignIn") // 일반 로그인
+    @PostMapping("doSignIn")
     public ResponseEntity<Map<String, Object>> doSignIn(
-            @RequestBody Map<String, String> loginData,  // ✅ JSON 데이터 받기
+            @RequestBody Map<String, String> loginData,
             HttpSession session) {
 
         String userId = loginData.get("userId");
@@ -117,9 +125,29 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+        // 2. 회원 정보 조회
         UsersDto usersDto = userService.checkId(userId);
-        if (usersDto != null) {
-            if (userService.checkPwd(userPwd, usersDto.getUserPwd())) {
+
+        if (usersDto == null) {
+            response.put("error", "해당하는 아이디가 없습니다.");
+            response.put("success", false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // **여기서 탈퇴 회원 여부를 체크**
+        if (usersDto.getDelStatus() == 1) {
+            response.put("error", "탈퇴한 회원입니다.");
+            response.put("success", false);
+            response.put("redirect", "/user/login");  // 로그인 페이지로 이동
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        // 4. 비밀번호 검사
+        if (!userService.checkPwd(userPwd, usersDto.getUserPwd())) {
+            response.put("error", "아이디 또는 비밀번호가 잘못되었습니다.");
+            response.put("success", false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
 
         // 5. 로그인 성공 → 세션 저장
         session.setAttribute("userPk", usersDto.getUserPk());
@@ -131,27 +159,12 @@ public class UserController {
         session.setAttribute("phone", usersDto.getPhone());
         session.setAttribute("email", usersDto.getEmail());
 
-        //System.out.println("로그인 성공! 세션 설정 userPk: " + usersDto.getUserPk()); 세션에 담긴지 확인
-
-        // 6. 리다이렉트 URL 결정 (세션에 저장된 `saveUrl`이 있으면 해당 경로로 이동)
-        String redirectUrl = (session.getAttribute("saveUrl") != null) ?
-                session.getAttribute("saveUrl").toString() : "/user/mainPage";
-
-                response.put("message", "로그인 성공");
-                response.put("success", true);
-                response.put("redirect", redirectUrl);
-                return ResponseEntity.ok(response);
-            } else {
-                response.put("error", "아이디 또는 비밀번호가 잘못되었습니다.");
-                response.put("success", false);
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-        } else {
-            response.put("error", "해당하는 아이디가 없습니다.");
-            response.put("success", false);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+        response.put("message", "로그인 성공");
+        response.put("success", true);
+        response.put("redirect", "/user/mainPage");
+        return ResponseEntity.ok(response);
     }
+
 
 
     @GetMapping("userDetail")
@@ -170,8 +183,8 @@ public class UserController {
             // 세션에서 userPk 가져오기     이거 때문에 소셜로그인은 못씀 세션에 없어서
             Integer userPk = (Integer) session.getAttribute("userPk");
 
-            if (userPk == null) {       // 일반 로그인 한 사람이 상세정보 입력하려면 오류 !!
-                System.out.println("🚨 세션에 userPk 없음! 로그인 필요");
+            if (userPk == null) {       // 기본 회원정보 없으면 상세정보 입력불가
+                System.out.println("세션에 userPk 없음! 로그인 필요");
                 response.put("status", "error");
                 response.put("message", "로그인이 필요합니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -252,6 +265,9 @@ public class UserController {
         // 📌 전화번호로 userPk 조회 (String 타입으로 반환될 가능성 있음)
         String findUserPk = userMapper.findPhoneByPhone(kakaoUser.getPhone());
 
+        String phone = normalizePhoneNumber(kakaoUser.getPhone());
+        System.out.println("전화번호 정규화 !! " + phone); //이거 기준으로 가져올건데 카카오 유저랑 일반유저가 다름
+
         // 🔹 String → Integer 변환 (예외 방지)
         Integer userPk = (findUserPk != null && !findUserPk.isEmpty()) ? Integer.parseInt(findUserPk) : null;
 
@@ -317,6 +333,60 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+
+    @PostMapping("findPassword")
+    public ResponseEntity<?> findPassword(@RequestBody Map<String, String> request) {
+        System.out.println("📌 받은 데이터: " + request); // 요청 데이터 출력
+        String userName = request.get("userName");
+        String userId = request.get("userId");
+        String phone = request.get("phone");
+        boolean isSuccess = userService.resetPasswordAndSendSMS(userName, userId, phone);
+        if (isSuccess) {
+            return ResponseEntity.ok(Map.of("success", true, "message", "임시 비밀번호가 문자로 전송되었습니다."));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "일치하는 회원 정보를 찾을 수 없습니다."));
+        }
+    }
+
+    @PostMapping("deleteUser")
+    public ResponseEntity<Map<String, Object>> deleteUser(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 1. 현재 로그인한 사용자의 userPk 가져오기
+        Integer userPk = (Integer) session.getAttribute("userPk");
+
+        if (userPk == null) {
+            response.put("error", "로그인이 필요합니다.");
+            response.put("success", false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        // 2. 회원 정보 조회
+        UsersDto usersDto = userService.checkUserByPk(userPk);
+        if (usersDto == null) {
+            response.put("error", "해당하는 회원이 없습니다.");
+            response.put("success", false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // 3. 회원 상태를 '탈퇴' 상태로 변경
+        boolean isDeleted = userService.markUserAsDeleted(userPk);
+        if (isDeleted) {
+            // 4. 세션 삭제 (로그아웃 효과)
+            session.invalidate();
+
+            response.put("message", "회원 탈퇴가 완료되었습니다.");
+            response.put("success", true);
+            response.put("redirect", "/user/signIn");  // 탈퇴 후 로그인 페이지로 이동
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("error", "회원 탈퇴에 실패했습니다.");
+            response.put("success", false);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 
 
 

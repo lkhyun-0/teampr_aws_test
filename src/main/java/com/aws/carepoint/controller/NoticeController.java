@@ -104,7 +104,7 @@ public class NoticeController {
 
     // 공지사항 내용
     @GetMapping("/noticeContent/{id}")
-    public String qnaContent(@PathVariable("id") int articlePk, Model model, RedirectAttributes rttr) {
+    public String qnaContent(@PathVariable("id") int articlePk, Model model) {
         NoticeDto notice = noticeService.getNoticeDetail(articlePk);
         model.addAttribute("notice", notice);
 
@@ -158,7 +158,8 @@ public class NoticeController {
                              @RequestParam("attachfile") MultipartFile attachfile,
                              RedirectAttributes rttr
     ) {
-        String uploadDir = "C:/KES_project/uploads";
+
+        String uploadDir = System.getProperty("user.dir") + File.separator + "uploads";
 
         if (!attachfile.isEmpty()) {
             try {

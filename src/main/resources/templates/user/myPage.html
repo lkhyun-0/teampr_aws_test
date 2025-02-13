@@ -24,7 +24,6 @@
                     <li>이메일 : <span th:text="${userInfo != null ? userInfo.email : '정보 없음'}"></span></li>
                     <li>전화번호 : <span th:text="${userInfo != null ? userInfo.phone : '정보 없음'}"></span></li>
                     <li>가입일 : <span th:text="${userInfo != null ? userInfo.joinDate : '정보 없음'}"></span></li>
-                    <!--todo    일단 가져와진다 !-->
                     <li>키 / 체중 :
                         <span th:text="${detailDto != null ? (detailDto.height + 'cm / ' + detailDto.weight + 'kg') : '정보 없음'}"></span>
                     </li>
@@ -164,7 +163,7 @@
                 </ul>
             </div>
             <div class="modal-footer">
-                <button class="modal-btn delete-btn">탈퇴하기</button>
+                <button class="modal-btn delete-btn" onclick="deleteUser();">탈퇴하기</button>
                 <button class="modal-btn save-btn" onclick="updateUserInfo();">수정하기</button>
             </div>
         </div>

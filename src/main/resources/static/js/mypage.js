@@ -18,38 +18,46 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 // 수정하기 모달창 안에 있는 흡연 음주 버튼 (active클래스)
 
-
-
 function updateUserInfo() {
-    const userPk = document.getElementById("userPk").value; // 로그인된 사용자 PK 가져오기
+    const userPk = document.getElementById("userPk").value;
 
-    // 사용자가 입력한 값 가져오기
-    const updatedData = {
+    // 📌 users 테이블 업데이트 정보
+    const userData = {
         userPk: userPk,
         phone: document.getElementById("modal-phone").value,
         email: document.getElementById("modal-email").value,
-        password: document.getElementById("password").value,
-        height: document.getElementById("height").value,
-        weight: document.getElementById("weight").value,
-        smoke: document.querySelector('input[name="smoke"]:checked').value, // 흡연 선택값
-        drink: document.querySelector('input[name="drink"]:checked').value  // 음주 선택값
+        userPwd: document.getElementById("password").value
     };
 
-    console.log("수정하기 위해 받은 데이터 :", updatedData); // 디버깅용 콘솔 로그
+    // 📌 detail 테이블 업데이트 정보
+    const detailData = {
+        userPk: userPk,
+        height: document.getElementById("height").value,
+        weight: document.getElementById("weight").value,
+        smoke: Number(document.querySelector('input[name="smoke"]:checked').value),  //  숫자로 변환
+        drink: Number(document.querySelector('input[name="drink"]:checked').value)  //  숫자로 변환
+    };
 
-    // 서버에 업데이트 요청 보내기
+    // 📌 통합 데이터 (UserDetailUpdateDto와 매칭)
+    const updateData = {
+        usersDto: userData,
+        detailDto: detailData
+    };
+
+    //console.log("전송할 데이터:", updateData); // 디버깅용
+
     fetch("/detail/updateInfo", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(updatedData)
+        body: JSON.stringify(updateData)
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("회원 정보가 성공적으로 수정되었습니다!");
-                location.reload(); // 성공 시 페이지 새로고침
+                alert("회원 정보가 성공적으로 수정되었습니다.");
+                location.reload();      // 새로고침
             } else {
                 alert("수정 실패: " + data.message);
             }
@@ -67,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (userPk) {
         loadGraphData(userPk);
     } else {
-        console.error("로그인한 사용자의 userPk를 찾을 수 없습니다.");
+        console.error("로그인한 사용자의 정보를 찾을 수 없습니다.");
     }
 });
 
@@ -188,3 +196,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// 수정하기 모달에서 탈퇴버튼 클릭시 알럿창 탈퇴하시겠습니까? 확인 or 취소 확인 하면 > 회원 탈퇴시키기
+function deleteUser() {
+    if (!confirm("정말로 탈퇴하시겠습니까?")) {
+        return;
+    }
+
+    fetch("/user/deleteUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    alert(err.error || "서버 오류 발생");
+                    return null;
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+
+            alert(data.message);
+            if (data.redirect) {
+                window.location.href = data.redirect;  // 로그인 페이지로 이동
+            }
+        })
+        .catch(error => {
+            console.error("회원 탈퇴 요청 실패:", error);
+            alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+        });
+}

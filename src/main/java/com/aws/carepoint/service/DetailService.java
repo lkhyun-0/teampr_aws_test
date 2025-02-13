@@ -6,7 +6,9 @@ import com.aws.carepoint.mapper.DetailMapper;
 import com.aws.carepoint.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
@@ -17,11 +19,13 @@ public class DetailService {
 
     private final DetailMapper detailMapper;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DetailService(DetailMapper detailMapper, UserMapper userMapper) {
+    public DetailService(DetailMapper detailMapper, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.detailMapper = detailMapper;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void insertDetail(DetailDto detailDto) {     // 회원가입
@@ -49,10 +53,24 @@ public class DetailService {
         return userFullInfo;
     }
 
-//    public void updateUserInfo(DetailDto detailDto) {
-//        System.out.println("📢 [DEBUG] 서비스에서 업데이트 실행: " + detailDto);
-//        detailMapper.updateUserInfo(detailDto);
-//    }
+
+    @Transactional
+    public boolean updateUserInfo(UsersDto usersDto) {
+            // 비밀번호가 존재하는 경우 암호화
+            if (usersDto.getUserPwd() != null && !usersDto.getUserPwd().isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(usersDto.getUserPwd());
+                usersDto.setUserPwd(encodedPassword); // 암호화된 비밀번호 저장
+                System.out.println("✅ 암호화된 비밀번호: " + encodedPassword);
+            }
+
+
+        return userMapper.updateUserInfo(usersDto) > 0;
+    }
+
+    @Transactional
+    public boolean updateDetailInfo(DetailDto detailDto) {
+        return detailMapper.updateDetailInfo(detailDto) > 0;
+    }
 
 
 }
