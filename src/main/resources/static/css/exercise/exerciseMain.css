@@ -702,10 +702,10 @@
     color: #5882FA !important;
 }
 
-/* 이벤트 스타일 */
+/*!* 이벤트 스타일 *!
 .custom-event {
     display: flex;
-    flex-direction: column; /* 세로 정렬 */
+    flex-direction: column; !* 세로 정렬 *!
     align-items: center;
     margin-top: 25px;
     padding: 5px;
@@ -728,7 +728,7 @@
     line-height: 1.4;
     color: #424242;
     text-align: left;
-    margin-top: 5px; /* 간격 추가 */
+    margin-top: 5px; !* 간격 추가 *!
 }
 
 .custom-event img {
@@ -748,6 +748,15 @@
 .fc-h-event {
     border: none !important;
     background-color: white !important;
+}*/
+
+.fc .fc-daygrid-day-events {
+    margin-top: 35px !important;
+}
+
+.fc-h-event .fc-event-title-container {
+    flex-grow: 0 !important;
+    padding-left: 5px !important;
 }
 
 /* 기본적으로 max-height 사용 */
@@ -758,15 +767,15 @@
     transition: height 0.3s ease-in-out; /* 부드러운 애니메이션 */
 }
 
-/* 오늘 날짜 셀 배경을 노란색으로 지정 */
+/* 오늘 날짜 셀 배경 */
 .fc-day-today .fc-daygrid-day-frame {
     background-color: #e3f0ff !important;
 }
 
 /* 오늘 날짜 셀 위의 이벤트 배경은 투명 처리 */
 .fc-day-today .fc-daygrid-event {
-    background-color: transparent !important;
     border: none !important; /* 테두리까지 없애고 싶다면 */
+    background-color: pink !important;
 }
 
 /* (선택) 다른 날의 이벤트는 흰 배경으로 표시하고 싶다면 */
@@ -784,7 +793,6 @@
 .fc-event-title {
     color: black; /* 텍스트 색상 설정 */
     font-size: 14px; /* 글꼴 크기 설정 */
-    visibility: visible; /* 텍스트가 보이도록 설정 */
 }
 
 .exercise-event {

@@ -31,6 +31,7 @@ function doSignIn() {
         .then(data => {
             console.log("📌 서버 응답 데이터:", data);
             if (data.success) {
+                console.log("login success 를 맻번 들어오냐잉???????????????????????????????");
                 alert(data.message);
                 window.location.href = data.redirect;
             } else {

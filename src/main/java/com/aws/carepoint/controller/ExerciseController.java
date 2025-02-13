@@ -152,7 +152,7 @@ public class ExerciseController {
 
                 exerciseService.save(exerciseApiDto);
             }
-            return "✅ 슬이언니 바보";
+            return "✅ 데이터가 저장되었습니다.";
         } catch (Exception e) {
             e.printStackTrace();
             return "에러: " + e.getMessage();

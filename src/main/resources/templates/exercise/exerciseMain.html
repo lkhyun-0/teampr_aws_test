@@ -6,6 +6,9 @@
     <link href="/css/exercise/exerciseMain.css" rel="stylesheet">
     <!-- 제이쿼리 불러오기 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script th:if="${msg}">
+      alert("[[${msg}]]");
+    </script>
     <script>
       $(document).ready(function () {
       // 버튼 클릭 하면 팝업 보여줌
@@ -161,23 +164,8 @@
                 cell.appendChild(dateEl);
               });
             }, 50);
-            setTimeout(adjustRowHeights, 50);
           },
-          events: [],
-          eventDidMount: function() {
-            setTimeout(adjustRowHeights, 50);
-          },
-          eventContent: function(info) {
-            let iconUrl = info.event.extendedProps.icon;
-            return {
-              html: `<div class="custom-event">
-                        <div class="event-top">
-                            <img src="${iconUrl}" alt="운동 아이콘" class="event-icon">
-                        </div>
-                        <div class="event-text">${info.event.title}</div>
-                     </div>`
-            };
-          }
+          events: []
         });
 
         // 📌 서버에서 운동 기록 가져와서 캘린더에 추가
@@ -186,37 +174,17 @@
           .then(exerciseList => {
             exerciseList.forEach(exercise => {
               calendar.addEvent({
-                title: `운동 종목: ${exercise.exerciseName}<br>운동 시간: ${exercise.hour}시간 ${exercise.minute}분<br>`+
-                        `총 소모 칼로리: <b class="highlight-kcal">${exercise.kcal}</b>kcal`,
-                start: exercise.regDate,
-                extendedProps: {
-                  icon: '/images/운동일러.jpg',
-                }
+                title: `${exercise.exerciseName}`,
+                start: exercise.regDate
               });
             });
           })
           .catch(error => console.error("Error loading exercises:", error));
 
-        function adjustRowHeights() {
-          requestAnimationFrame(() => {
-            document.querySelectorAll('.fc-daygrid-body tr').forEach(row => {
-              let hasEvent = row.querySelector('.fc-daygrid-event'); // 해당 주에 이벤트가 있는지 확인
-
-              let targetHeight = hasEvent ? 230 : 150;
-              let currentHeight = parseInt(window.getComputedStyle(row).height, 10);
-
-              if (currentHeight !== targetHeight) {
-                row.style.transition = 'height 0.3s ease-in-out';
-                row.style.overflow = 'hidden';
-                row.style.height = `${targetHeight}px`;
-              }
-            });
-          });
-        }
-
         calendar.render();
       });
 
+      // 운동 기록하기
       document.addEventListener("DOMContentLoaded", function () {
         const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
         const exercisePopup = document.querySelector(".exercise-type-popup");
@@ -236,7 +204,7 @@
                 .then(response => response.json())
                 .then(hasData => {
                   if (hasData && saveExerciseBtn) {
-                    disableSaveExerciseButton();
+                    // disableSaveExerciseButton();
                   }
                 })
                 .catch(error => console.error("Error checking today's exercise data:", error));
@@ -265,12 +233,10 @@
             const exerciseDiv = document.createElement("div");
             exerciseDiv.classList.add("exercise-item");
             exerciseDiv.innerHTML =
-                    `<div>${exercise.exerciseName}</div>
-                     <input type="hidden" value="${exercise.metValue}">`;
+                    `<div>${exercise.exerciseName}</div>`;
 
             // 클릭 시 선택된 운동 저장
             exerciseDiv.dataset.exerciseName = exercise.exerciseName;
-            exerciseDiv.dataset.metValue = exercise.metValue;
 
             exerciseContainer.appendChild(exerciseDiv);
           });
@@ -351,11 +317,8 @@
                             .then(exerciseList => {
                               exerciseList.forEach(exercise => {
                                 calendar.addEvent({
-                                  title: `운동 종목: ${exercise.exerciseName}<br>운동 시간: ${exercise.hour}시간 ${exercise.minute}분<br>총 소모 칼로리: <b class="highlight-kcal">742</b>kcal`,
-                                  start: exercise.regDate,
-                                  extendedProps: {
-                                    icon: '/images/운동일러.jpg',
-                                  }
+                                  title: `${exercise.exerciseName}`,
+                                  start: exercise.regDate
                                 });
                               });
                             })
@@ -367,6 +330,9 @@
                     exerciseTypeBtn.style.display = "inline-block";
                     exerciseTimeHour.value = "00";
                     exerciseTimeMinute.value = "00";
+
+                    // ✅ 페이지 새로고침
+                    window.location.reload();
 
                     // 캘린더로 포커스
                     setTimeout(() => {
@@ -381,11 +347,6 @@
                   })
                   .catch(error => console.error("Error saving exercise:", error));
         });
-
-        // ✅ 버튼을 비활성화하는 함수 (반복 사용)
-        function disableSaveExerciseButton() {
-          saveExerciseBtn.disabled = true;
-        }
 
         // ✅ 폼 제출 이벤트 리스너 추가
         if (saveExerciseBtn) {
@@ -405,9 +366,6 @@
                 .then(response => response.json())
                 .then(hasData => {
                   console.log("Has Today Graph Data:", hasData); // 디버깅 로그
-                  if (hasData && saveButton) {
-                    saveButton.disabled = true;
-                  }
                 })
                 .catch(error => console.error("Error checking today's graph data:", error));
 
@@ -458,6 +416,9 @@
               saveButton.disabled = true;
               saveButton.style.opacity = "0.5";
             }
+
+            // ✅ 페이지 새로고침
+            window.location.reload();
           })
           .catch(error => console.error('Error:', error));
         }
@@ -467,6 +428,7 @@
         }
       });
 
+      // 목표 설정
       document.addEventListener("DOMContentLoaded", function () {
         const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
         const targetWriteBtn = document.querySelector(".target-write-btn");
@@ -576,11 +538,13 @@
                     if (targetWriteBtn) {
                       targetWriteBtn.disabled = true;
                       targetWriteBtn.style.opacity = "0.5";
-                      targetWriteBtn.textContent = "이미 목표를 작성했습니다";
                     }
 
                     // ✅ 팝업 닫기
                     $('.target-popup').css('display', 'none');
+
+                    // ✅ 페이지 새로고침
+                    window.location.reload();
                   })
                   .catch(error => console.error('Error:', error));
         }
