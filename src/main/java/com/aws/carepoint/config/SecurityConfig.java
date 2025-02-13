@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity  // 🔹 Spring Security 활성화
 public class SecurityConfig {
-
     @Bean   // 🔹 비밀번호 암호화 기능
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

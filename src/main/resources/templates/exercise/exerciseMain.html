@@ -5,7 +5,7 @@
     <title>운동 페이지</title>
     <link href="/css/exercise/exerciseMain.css" rel="stylesheet">
     <!-- 제이쿼리 불러오기 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:if="${msg}">
       alert("[[${msg}]]");
     </script>
@@ -75,7 +75,7 @@
               titleFormat: { year: 'numeric', month: '2-digit' } // YYYY.MM 형식
             },
             dayGridWeek: {
-              titleFormat: { year: 'numeric', month: '2-digit'} // YYYY.MM.DD 형식
+              titleFormat: { year: 'numeric', month: '2-digit'} // YYYY.MM 형식
             }
           },
           dayCellDidMount: function(info) {
@@ -165,7 +165,10 @@
               });
             }, 50);
           },
-          events: []
+          events: '/exercise/getExerciseEvents',
+          eventClick: function (info) {
+            showEventPopup(info.event);
+          }
         });
 
         // 📌 서버에서 운동 기록 가져와서 캘린더에 추가
@@ -175,7 +178,12 @@
             exerciseList.forEach(exercise => {
               calendar.addEvent({
                 title: `${exercise.exerciseName}`,
-                start: exercise.regDate
+                start: exercise.regDate,
+                extendedProps: { // ✅ 추가 데이터 저장
+                  hour: exercise.hour, // 운동 시간
+                  minute: exercise.minute, // 운동 시간
+                  kcal: exercise.kcal // 소모 칼로리
+                }
               });
             });
           })
@@ -225,7 +233,7 @@
 
           // 검색어 필터링
           const filteredExercises = exerciseList.filter(exercise =>
-                  exercise.exerciseName.includes(searchTerm) // 검색어가 포함된 운동만 필터링
+            exercise.exerciseName.includes(searchTerm) // 검색어가 포함된 운동만 필터링
           );
 
           // 필터링된 운동 리스트 표시
@@ -233,10 +241,12 @@
             const exerciseDiv = document.createElement("div");
             exerciseDiv.classList.add("exercise-item");
             exerciseDiv.innerHTML =
-                    `<div>${exercise.exerciseName}</div>`;
+                    `<div>${exercise.exerciseName}</div>
+                     <input type="hidden" value="${exercise.metValue}">`;
 
             // 클릭 시 선택된 운동 저장
             exerciseDiv.dataset.exerciseName = exercise.exerciseName;
+            exerciseDiv.dataset.metValue = exercise.metValue;
 
             exerciseContainer.appendChild(exerciseDiv);
           });
@@ -302,50 +312,31 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(exerciseData)
           })
-                  .then(response => {
-                    if (!response.ok) {
-                      throw new Error("Network response was not ok");
-                    }
-                    return response.json();
-                  })
-                  .then(result => {
-                    alert(result.message); // 올바른 JSON 응답 처리
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then(result => {
+            alert(result.message); // 올바른 JSON 응답 처리
 
-                    // 서버에서 운동 기록 가져와서 캘린더에 추가
-                    fetch('/exercise/getExerciseEvents')
-                            .then(response => response.json())
-                            .then(exerciseList => {
-                              exerciseList.forEach(exercise => {
-                                calendar.addEvent({
-                                  title: `${exercise.exerciseName}`,
-                                  start: exercise.regDate
-                                });
-                              });
-                            })
-                            .catch(error => console.error("Error loading exercises:", error));
+            // 입력 필드 초기화
+            exerciseTypeDisplay.textContent = "";
+            exerciseTypeDisplay.style.display = "none";
+            exerciseTypeBtn.style.display = "inline-block";
+            exerciseTimeHour.value = "00";
+            exerciseTimeMinute.value = "00";
 
-                    // 입력 필드 초기화
-                    exerciseTypeDisplay.textContent = "";
-                    exerciseTypeDisplay.style.display = "none";
-                    exerciseTypeBtn.style.display = "inline-block";
-                    exerciseTimeHour.value = "00";
-                    exerciseTimeMinute.value = "00";
+            // ✅ 스크롤 이동 플래그 저장 (localStorage 사용)
+            localStorage.setItem("scrollToCalendar", "true");
 
-                    // ✅ 페이지 새로고침
-                    window.location.reload();
-
-                    // 캘린더로 포커스
-                    setTimeout(() => {
-                      var calendarEl = document.getElementById('calendar'); // 캘린더의 DOM 요소 가져오기
-                      if (calendarEl) {
-                        calendarEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); // 스크롤 이동
-                        calendarEl.focus(); // 포커스 설정 (선택사항)
-                      }
-                    }, 300);
-
-                    calendar.render();
-                  })
-                  .catch(error => console.error("Error saving exercise:", error));
+            // ✅ 100ms 후 새로고침 실행
+            setTimeout(() => {
+              window.location.reload();
+            }, 100);
+          })
+          .catch(error => console.error("Error saving exercise:", error));
         });
 
         // ✅ 폼 제출 이벤트 리스너 추가
@@ -353,6 +344,52 @@
           saveExerciseBtn.addEventListener("click", saveExercise);
         }
       });
+
+      window.onload = function () {
+        // ✅ 새로고침 후 이동 플래그 확인
+        if (localStorage.getItem("scrollToCalendar") === "true") {
+          localStorage.removeItem("scrollToCalendar"); // ✅ 플래그 삭제 (한 번만 실행)
+
+          setTimeout(() => {
+            var calendarEl = document.getElementById('calendar');
+            if (calendarEl) {
+              console.log("📌 캘린더로 스크롤 이동 실행"); // 디버깅 로그
+              calendarEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); // ✅ 스크롤 이동
+              calendarEl.focus(); // ✅ 포커스 설정 (선택 사항)
+            }
+          }, 500); // ✅ 1초 후 실행 (렌더링 완료 후 실행되도록 딜레이 추가)
+        }
+      };
+
+      // ✅ 팝업 표시 함수
+      function showEventPopup(event) {
+        const modal = document.getElementById("event-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalContent = document.getElementById("modal-content");
+
+        /// ✅ 선택한 날짜 가져오기 (YYYY-MM-DD 형식)
+        const eventDate = event.start.toISOString().split('T')[0];
+
+        // ✅ 추가 데이터 가져오기
+        const { minute, hour, kcal } = event.extendedProps;
+
+        modalTitle.innerText = `${eventDate}`;
+
+        // ✅ 운동 상세 정보 표시
+        modalContent.innerHTML = `
+          <p><strong>운동명:</strong> <span>${event.title}</span></p>
+          <p><strong>운동 시간:</strong> <span>${hour}시간 ${minute}분</span></p>
+          <p><strong>소모 칼로리:</strong> <span>${kcal} kcal</span></p>
+        `;
+
+
+        modal.style.display = "flex"; // 모달 띄우기
+      }
+
+      // ✅ 모달 닫기 기능
+      function closeModal() {
+        document.getElementById("event-modal").style.display = "none";
+      }
     </script>
     <script>
       // 그래프 저장
@@ -361,11 +398,14 @@
         const saveButton = document.querySelector(".save-button"); // 저장 버튼
         const saveForm = document.getElementById("graph-form");// ✅ 폼 제출 이벤트 리스너 추가
 
+        let hasTodayData = false; // 오늘 데이터가 있는지 여부 확인 변수
+
         // ✅ 오늘 날짜에 그래프 데이터가 있는지 확인
         fetch(`/graph/has-today-graph?userPk=${userPk}`)
                 .then(response => response.json())
                 .then(hasData => {
                   console.log("Has Today Graph Data:", hasData); // 디버깅 로그
+                  hasTodayData = hasData;
                 })
                 .catch(error => console.error("Error checking today's graph data:", error));
 
@@ -394,17 +434,20 @@
             weight: weight || null
           };
 
-          fetch('/graph/saveGraph', {
+          // 저장할 URL 결정 (오늘 날짜에 기존 수치 데이터가 있으면 update, 없으면 save)
+          const url = hasTodayData ? '/graph/updateGraph' : '/graph/saveGraph'
+
+          fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
           })
-          .then(response =>{
-                  console.log("📡 서버 응답 코드:", response.status);
-                  return response.text();
+          .then(response => {
+            console.log("📡 서버 응답 코드:", response.status);
+            return response;
           })
           .then(result => {
-            alert(result);
+            alert(hasTodayData ? "오늘의 수치가 업데이트되었습니다." : "오늘의 수치가 저장되었습니다.");
 
             // ✅ 입력 필드 초기화
             bloodSugarInput.value = "";
@@ -525,28 +568,58 @@
             },
             body: JSON.stringify(data)
           })
-                  .then(response => response.json())
-                  .then(result => {
-                    alert(result.message); // 저장 성공 메시지
+          .then(response => response.json())
+          .then(result => {
+            // ✅ 로딩 메시지 표시 (선택 사항)
+            const loadingMessage = document.createElement("div");
+            loadingMessage.style.position = "fixed";
+            loadingMessage.style.display = "flex";
+            loadingMessage.style.alignItems = "center";
+            loadingMessage.style.justifyContent = "center";
+            loadingMessage.style.top = "50%";
+            loadingMessage.style.left = "50%";
+            loadingMessage.style.transform = "translate(-50%, -50%)";
+            loadingMessage.style.width = "100%";  // 화면에 꽉 차게
+            loadingMessage.style.height = "100%";  // 화면에 꽉 차게
+            loadingMessage.style.backgroundColor = "rgba(232,229,229,0.9)";
+            loadingMessage.style.color = "white";
+            loadingMessage.style.fontSize = "20px";
+            loadingMessage.style.fontWeight = "bold";
+            loadingMessage.style.zIndex = "10000"; // 화면 맨 위로 배치
+            loadingMessage.style.gap = "10px"; // 텍스트와 스피너 간격 추가
+            document.body.appendChild(loadingMessage);
 
-                    // ✅ 입력 필드 초기화
-                    exerciseTargetInput.value = "";
-                    valueTargetInput.value = "";
-                    kcalTargetInput.value = "";
+            // ✅ 로딩 텍스트 추가
+            const loadingText = document.createElement("span");
+            loadingText.innerText = "이번주에 작성했던 기록을 목표에 반영 중입니다";
 
-                    // ✅ 목표 작성 완료 시 버튼 비활성화
-                    if (targetWriteBtn) {
-                      targetWriteBtn.disabled = true;
-                      targetWriteBtn.style.opacity = "0.5";
-                    }
+            // ✅ 원형 로딩 스피너 추가
+            const spinner = document.createElement("div");
+            spinner.style.width = "20px";
+            spinner.style.height = "20px";
+            spinner.style.border = "3px solid white";
+            spinner.style.borderTop = "3px solid transparent"; // 한쪽만 투명하게 만들어 회전 효과
+            spinner.style.borderRadius = "50%";
+            spinner.style.animation = "spin 1s linear infinite"; // 애니메이션 적용
 
-                    // ✅ 팝업 닫기
-                    $('.target-popup').css('display', 'none');
+            loadingMessage.appendChild(loadingText);
+            loadingMessage.appendChild(spinner);
+            document.body.appendChild(loadingMessage);
 
-                    // ✅ 페이지 새로고침
-                    window.location.reload();
-                  })
-                  .catch(error => console.error('Error:', error));
+            // ✅ 2초 후 "저장 중" 메시지 숨기고 alert 띄우기
+            setTimeout(() => {
+              loadingMessage.remove(); // "저장 중" 메시지 및 스피너 제거
+              alert(result.message); // ✅ alert 띄움
+
+              // ✅ 입력 필드 초기화
+              exerciseTargetInput.value = "";
+              valueTargetInput.value = "";
+              kcalTargetInput.value = "";
+
+              window.location.reload();
+            }, 5000); // "저장 중" 메시지는 2초간 유지 후 alert 창 띄우기
+          })
+          .catch(error => console.error('Error:', error));
         }
 
         // ✅ 폼 제출 이벤트 리스너 추가
@@ -617,6 +690,16 @@
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
+<!-- ✅ 이벤트 클릭 시 표시할 모달 -->
+<div id="event-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h2 id="modal-title"></h2>
+    <p id="modal-content"></p>
+  </div>
+</div>
+
+<!-- ✅ 목표 작성 버튼 클릭 시 표시할 모달 -->
 <div class="target-popup">
   <div class="target-popup-content">
     <div class="target-popup__head">
@@ -641,12 +724,13 @@
             <input type="number" name="kcal_target" min="0" step="1"> kcal
           </li>
         </ul>
-        <button type="submit" class="target-save-btn" onclick="targetSaveCheck()">저 장</button>
+        <button type="submit" class="target-save-btn">저 장</button>
       </form>
     </div>
   </div>
 </div>
 
+<!-- ✅ 운동명 더보기 버튼 클릭 시 표시할 모달 -->
 <div class="exercise-type-popup">
   <div class="exercise-type-popup-content">
     <div class="exercise-type-popup__head">
@@ -665,6 +749,7 @@
   </div>
 </div>
 
+<!-- 메인 -->
 <section class="main">
 
   <div class="top-service">

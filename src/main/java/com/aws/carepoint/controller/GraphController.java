@@ -25,10 +25,15 @@ public class GraphController {
 
     // 그래프 저장
     @PostMapping("/saveGraph")
-    public String saveGraph(@RequestBody(required = false) GraphDto graphDto, RedirectAttributes rttr) {
+    public String saveGraph(@RequestBody(required = false) GraphDto graphDto) {
         graphService.saveGraph(graphDto);
+        return "redirect:/exercise/exerciseMain";
+    }
 
-        rttr.addFlashAttribute("msg", "오늘의 수치가 저장되었습니다.");
+    // 그래프 저장
+    @PostMapping("/updateGraph")
+    public String updateGraph(@RequestBody(required = false) GraphDto graphDto) {
+        graphService.updateGraph(graphDto);
         return "redirect:/exercise/exerciseMain";
     }
 

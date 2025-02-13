@@ -27,6 +27,13 @@ public class GraphService {
         graphMapper.updateValueCount(graphDto.getUserPk(), graphDto.getRegDate()); // target 테이블 업데이트
     }
 
+    // 오늘의 수치 수정
+    @Transactional
+    public void updateGraph(GraphDto graphDto) {
+        graphMapper.updateGraph(graphDto);
+        graphMapper.updateWeightValue(graphDto.getWeight(), graphDto.getUserPk()); // user_detail 테이블 업데이트
+    }
+
     public boolean hasTodayGraphData(int userPk) {
         return graphMapper.hasTodayGraphData(userPk) > 0;
     }

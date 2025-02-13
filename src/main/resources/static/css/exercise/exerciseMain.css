@@ -358,6 +358,12 @@
     height: 30px;
 }
 
+/*목표 저장 스피너*/
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* 운동 시간 적는 폼 */
 .exercise-entry {
     display: flex;
@@ -429,14 +435,6 @@
     width: 100px;
     height: 40px;
     font-size: 14px;
-}
-
-.exercise-save:disabled {
-    cursor: not-allowed !important;  /* 🚫 클릭 불가능 */
-    background-color: #BCB9B9FF !important; /* 🔳 버튼 색 변경 */
-    color: #FFFFFF; /* 글자색 (선택 사항) */
-    opacity: 0.7 !important; /* 약간 투명하게 */
-    border: none !important;
 }
 
 /*운동 종류 선택 팝업*/
@@ -577,25 +575,8 @@
 
 /* 캘린더 */
 .calendar {
-    margin-top: 100px;
     width: 1300px;
-    margin-left: auto;  /* 왼쪽 여백 자동 */
-    margin-right: auto; /* 오른쪽 여백 자동 */
-    height: 230px;
-}
-
-.fc .fc-daygrid-day-frame {
-    height: 100px;
-}
-
-/* 일요일 (red 계열) */
-.fc-day-sun {
-    color: #FA5858; /* 텍스트 색상 (좀 더 어두운 톤) */
-}
-
-/* 토요일 (blue 계열) */
-.fc-day-sat {
-    color: #5882FA; /* 텍스트 색상 (좀 더 어두운 톤) */
+    margin: 100px auto 0 auto;  /* 왼쪽 여백 자동 */
 }
 
 /* 캘린더 next, prev 버튼 조정 */
@@ -671,6 +652,8 @@
 
 .fc-daygrid-day {
     position: relative; /* 날짜 위치 기준을 이 요소로 설정 */
+    height: 150px !important; /* 정사각형 형태 유지 */
+    min-height: 150px !important;
 }
 
 .fc-daygrid-day-number {
@@ -702,69 +685,8 @@
     color: #5882FA !important;
 }
 
-/*!* 이벤트 스타일 *!
-.custom-event {
-    display: flex;
-    flex-direction: column; !* 세로 정렬 *!
-    align-items: center;
-    margin-top: 25px;
-    padding: 5px;
-    font-size: 14px;
-    border: none;
-}
-
-.event-top {
-    display: flex;
-    align-items: center;
-}
-
-.event-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 8px;
-}
-
-.event-text {
-    line-height: 1.4;
-    color: #424242;
-    text-align: left;
-    margin-top: 5px; !* 간격 추가 *!
-}
-
-.custom-event img {
-    width: 100px;
-    height: 100px;
-    margin-right: 5px;
-}
-
-.fc-daygrid-event {
-    border: none;
-    background: none;
-    color: #424242;
-    font-weight: bold;
-    white-space: break-spaces !important;
-}
-
-.fc-h-event {
-    border: none !important;
-    background-color: white !important;
-}*/
-
 .fc .fc-daygrid-day-events {
     margin-top: 35px !important;
-}
-
-.fc-h-event .fc-event-title-container {
-    flex-grow: 0 !important;
-    padding-left: 5px !important;
-}
-
-/* 기본적으로 max-height 사용 */
-.fc .fc-daygrid-body tr {
-    position: relative;
-    height: 150px; /* 기본값 */
-    overflow: hidden;
-    transition: height 0.3s ease-in-out; /* 부드러운 애니메이션 */
 }
 
 /* 오늘 날짜 셀 배경 */
@@ -775,7 +697,8 @@
 /* 오늘 날짜 셀 위의 이벤트 배경은 투명 처리 */
 .fc-day-today .fc-daygrid-event {
     border: none !important; /* 테두리까지 없애고 싶다면 */
-    background-color: pink !important;
+    background-color: #9EDE9EFF;
+    cursor: pointer;
 }
 
 /* (선택) 다른 날의 이벤트는 흰 배경으로 표시하고 싶다면 */
@@ -787,27 +710,59 @@
 /* 운동시간 이벤트 추가 */
 .fc-h-event .fc-event-main {
     color: #424242;
-    text-align: center;
+    flex-grow: 0 !important;
+    padding-left: 5px !important;
 }
 
 .fc-event-title {
     color: black; /* 텍스트 색상 설정 */
-    font-size: 14px; /* 글꼴 크기 설정 */
+    font-size: 16px; /* 글꼴 크기 설정 */
 }
 
-.exercise-event {
-    margin-top: 5px;
-    background-color: #6495ED;
-    color: #E6E6E6;
-    height: 25px;
+/* 운동 이벤트 모달 팝업 */
+.modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     align-items: center;
-    align-content: center;
-    border-radius: 4px;
+    justify-content: center;
 }
 
-/*소모 칼로리 폰트 키우기*/
-.highlight-kcal {
+/* ✅ 모달 내부 컨텐츠 스타일 */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    position: relative;
+    height: 200px;
+}
+
+.modal-content > p {
+    text-align: left;
+}
+
+.modal-content strong {
+    margin-left: 30px;
+}
+
+#modal-title {
+    margin-bottom: 30px;
+}
+
+/* ✅ 닫기 버튼 */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
     font-size: 20px;
+    cursor: pointer;
 }
 
 
