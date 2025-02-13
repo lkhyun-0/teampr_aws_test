@@ -1,4 +1,4 @@
-package com.aws.carepoint.interceptor;
+/*package com.aws.carepoint.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,4 +25,4 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         return true; // 로그인했으면 요청 계속 진행
     }
-}
+}*/
