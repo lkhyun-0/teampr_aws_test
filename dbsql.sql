@@ -30,7 +30,7 @@ CREATE TABLE user_detail
     smoke        TINYINT(1)                          NOT NULL,                    -- 흡연 여부 ( 0= 비흡연자 , 1= 흡연자)
     exercise_cnt VARCHAR(20)                         NOT NULL,                    -- 운동빈도 (아예안함, 주1~2회, 주3~4회, 주 5회 이상)
     drink        TINYINT(1)                          NOT NULL,                    -- 음주 여부 ( 0= 비음주자 , 1= 음주자)
-    gender       CHAR(1)                             NOT NULL,
+    gender       CHAR(1)                             NOT NULL,			  -- 성별
     photo        VARCHAR(100),                                                    -- 프로필사진
     target_count INT,                                                             -- 주간달성횟수
     reg_date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,                    -- 작성일
@@ -108,6 +108,7 @@ CREATE TABLE foodlist
     carbohydrate FLOAT,                                                           -- 탄수화물
     fat          FLOAT,                                                           -- 지방
     kcal         INT                                 NOT NULL,                    -- 칼로리
+    amount       INT	   DEFAULT 100		     NOT NULL,			  -- 100g
     reg_date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,                    -- 작성일
     update_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일
     food_pk      INT                                 NOT NULL,                    -- 외래 키 (food 테이블의 food_pk 참조)
@@ -134,7 +135,6 @@ CREATE TABLE exercise (
                           exercise_name VARCHAR(50) NOT NULL, -- 운동 종목
                           kcal INT DEFAULT 0, -- 칼로리
                           MET FLOAT DEFAULT 0, -- MET 지수
-                          value_status TINYINT(1) DEFAULT 0 NOT NULL, -- 수치기록 여부 (0= 수치기록 전, 1= 수치기록 후)
                           reg_date DATE NOT NULL, -- 작성일
                           `hour` INT DEFAULT 0, -- 시간
                           `minute` INT DEFAULT 0, -- 분
@@ -179,7 +179,8 @@ CREATE TABLE medicine_plan
     medicine_plan_pk INT AUTO_INCREMENT PRIMARY KEY NOT NULL,                                        -- 기본키
     start_date       DATE                           NOT NULL,                                        -- 시작일
     end_date         DATE                           NOT NULL,                                        -- 선택일
-    select_time      TIME                           NOT NULL,                                        -- 분
+    select_time      TIME                           NOT NULL,                                        -- 선택시간
+    color            VARCHAR(7)			    NOT NULL,
     medicine_pk      INT                            NOT NULL,                                        -- 외래 키 (medicine 테이블의 medicine_pk 참조)
     CONSTRAINT fk_medicine_plan_medicine FOREIGN KEY (medicine_pk) REFERENCES medicine (medicine_pk) -- 외래 키 설정
 );
@@ -236,14 +237,44 @@ FROM users;
 
 ======= board 시작데이터 =======
 INSERT INTO board (board_type)
-VALUES ('Q');
+VALUES ('N');
 INSERT INTO board (board_type)
 VALUES ('F');
 INSERT INTO board (board_type)
-VALUES ('N');
+VALUES ('Q');
 
 SELECT *
 FROM board;
+
+DELETE FROM board
+ALTER TABLE board AUTO_INCREMENT = 1;
+
+========= article 프로시저 =========
+DELIMITER $$
+
+CREATE PROCEDURE InsertArticleProc (
+    IN PARAM_NAME VARCHAR(20) -- IN 키워드 추가 (SQLyog 호환)
+)
+BEGIN
+    DECLARE i INT DEFAULT 1; -- 초기값 설정 방법 변경
+
+    WHILE i <= 300 DO
+            INSERT INTO article (title, content, user_pk, board_pk)
+            VALUES (CONCAT(PARAM_NAME, i), CONCAT('게시글 내용', i), 2, 2);
+
+            SET i = i + 1;
+        END WHILE;
+END $$
+
+DELIMITER ;
+
+========= 프로시저 호출 =========
+CALL InsertArticleProc('게시글 제목');
+
+SELECT *
+FROM article;
+
+
 
 ========= 운동 목표 트리거 =========
 DELIMITER //
