@@ -25,13 +25,11 @@
 
     <!-- 탭 -->
     <div class="tabs">
-        <div class="tab active" data-tab="tab1">식단 1 🍴</div>
-        <div class="tab" data-tab="tab2">식단 2 🍴</div>
-        <div class="tab" data-tab="tab3">식단 3 🍴</div>
+        <div class="tab" data-tab="tab1">식단 1 🍴</div>
     </div>
 
     <!-- 식단1 표 -->
-    <div id="tab1" class="tab-content active">
+    <div id="tab1 active" class="tab-content active">
         <table>
             <thead>
             <tr>
@@ -122,6 +120,7 @@
 <div th:insert="~{/common/footer.html}"></div>
 
 <script>
+    // 식단 텍스트를 파싱해서 각 끼니별 데이터를 추출하는 함수
     function parseMealOption(text) {
         const lines = text.split("\n").map(line => line.trim());
         let currentSection = null;
@@ -139,8 +138,9 @@
         };
 
         for (let line of lines) {
+            // "### 식단 1:" 같은 헤더는 건너뜁니다.
             if (line.startsWith("### ")) {
-                continue; // "### 식단 1:"은 건너뜀
+                continue;
             }
             if (line.startsWith("**아침**")) {
                 currentSection = "breakfast";
@@ -178,10 +178,10 @@
                 }
             }
         }
-
         return data;
     }
 
+    // 파싱된 데이터를 HTML의 해당 위치에 렌더링하는 함수
     function renderDietToHTML(dietData, tabIndex) {
         // 아침
         $(`#tab${tabIndex}-breakfast`).empty().append(dietData.breakfast.map(item => `<li>${item}</li>`));
@@ -210,7 +210,7 @@
         }
         $("#goal-title").text(`${goal}를 위한 AI 추천 식단`);
 
-        // 서버로부터 식단 응답
+        // 서버로부터 식단 응답 (이제 단일 식단이 반환됩니다.)
         $.ajax({
             url: "http://localhost:8000/recommend",
             type: "GET",
@@ -218,35 +218,22 @@
             success: function(response) {
                 $("#loading").hide();  // 로딩 숨김
 
-                const mealOptions = response.meal_options;
+                // 이전에는 meal_option(복수 식단)을 받았었는데, 이제 meal_options(단일 식단)을 받습니다.
+                const mealOption = response.meal_options;
 
-                // mealOptions[0] = 식단 1, mealOptions[1] = 식단 2, mealOptions[2] = 식단 3
-                if (mealOptions && mealOptions.length >= 3) {
-                    const diet1 = parseMealOption(mealOptions[0]);
-                    renderDietToHTML(diet1, 1);
-
-                    const diet2 = parseMealOption(mealOptions[1]);
-                    renderDietToHTML(diet2, 2);
-
-                    const diet3 = parseMealOption(mealOptions[2]);
-                    renderDietToHTML(diet3, 3);
+                if (mealOption) {
+                    const dietData = parseMealOption(mealOption);
+                    renderDietToHTML(dietData, 1);
+                } else {
+                    alert("추천된 식단이 없습니다.");
                 }
             },
             error: function() {
                 alert("추천을 가져오는 데 실패했습니다.");
             }
         });
-
-        // 탭 전환
-        $(".tab").on("click", function() {
-            $(".tab").removeClass("active");
-            $(this).addClass("active");
-
-            $(".tab-content").removeClass("active");
-            const target = $(this).data("tab");
-            $(`#${target}`).addClass("active");
-        });
     });
 </script>
+
 </body>
 </html>
