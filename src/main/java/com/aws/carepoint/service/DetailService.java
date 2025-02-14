@@ -60,7 +60,7 @@ public class DetailService {
             if (usersDto.getUserPwd() != null && !usersDto.getUserPwd().isEmpty()) {
                 String encodedPassword = passwordEncoder.encode(usersDto.getUserPwd());
                 usersDto.setUserPwd(encodedPassword); // 암호화된 비밀번호 저장
-                System.out.println("✅ 암호화된 비밀번호: " + encodedPassword);
+                //System.out.println(" 암호화된 비밀번호: " + encodedPassword);
             }
 
 
