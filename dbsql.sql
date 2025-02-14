@@ -250,11 +250,11 @@ FROM users;
 
 ======= board 샘플데이터 =======
 INSERT INTO board (board_type)
-VALUES ('Q');
+VALUES ('N');
 INSERT INTO board (board_type)
 VALUES ('F');
 INSERT INTO board (board_type)
-VALUES ('N');
+VALUES ('Q');
 
 SELECT *
 FROM board;

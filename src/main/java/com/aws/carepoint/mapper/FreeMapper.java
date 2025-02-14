@@ -82,6 +82,12 @@ public interface FreeMapper {
             """)
     int deleteArticle(int articlePk);
 
-    @Select("SELECT ")
+    @Select("SELECT * " +
+            "FROM article " +
+            "WHERE board_pk = 2 " +
+            "AND user_pk = #{userPk} " +
+            "ORDER BY reg_date DESC " +
+            "LIMIT 5")
+    @ResultMap("freeResultMap")
     List<FreeDto> getRecentFree(int userPk);
 }

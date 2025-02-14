@@ -66,7 +66,7 @@ function updateUserInfo() {
 }
 
 // "수정하기" 버튼 클릭 시 업데이트 실행
-document.querySelector(".save-btn").addEventListener("click", updateUserInfo);
+//document.querySelector(".save-btn").addEventListener("click", updateUserInfo);
 
 
 // 그래프 스크립트
@@ -147,27 +147,43 @@ function loadGraphData(userPk) {
         .catch(error => console.error('Error fetching graph data:', error));
 }
 
-// 게시글 보여줄 때 탭 !
-$(function () {
-    // 모든 탭 콘텐츠 숨기기
-    $('.tabcontent > div').removeClass('active');
+$(document).ready(function () {
+    // 모든 탭 내용 숨기고 자유 게시판만 표시
+    $('.tabcontent .tab-pane').removeClass('active').hide();
+    $('#free-list').addClass('active').show(); // 자유 게시판 기본 표시
+    $('.tab-bar li:first-child a').addClass('active'); // 첫 번째 탭 활성화
 
     // 탭 클릭 이벤트 처리
-    $('.tab-bar a').click(function (e) {
+    $('.tab-bar a').on('click', function (e) {
         e.preventDefault(); // 기본 동작 방지
 
-        // 모든 콘텐츠 숨기고 선택된 콘텐츠만 표시
-        $('.tabcontent > div').removeClass('active');
-        $($(this).attr('href')).addClass('active');
+        let targetTab = $(this).attr('href'); // 클릭한 탭의 ID 가져오기
 
-        // 활성화 클래스 처리
+        // 모든 탭 숨기고 해당 탭만 표시
+        $('.tabcontent .tab-pane').removeClass('active').hide();
+        $(targetTab).addClass('active').fadeIn(200); // 부드럽게 표시
+
+        // 탭 활성화 스타일 적용
         $('.tab-bar a').removeClass('active');
         $(this).addClass('active');
     });
 
-    // 첫 번째 탭 자동 활성화
-    $('.tab-bar a').first().click();
+    // 디버깅: 데이터 확인
+    console.log("자유 게시판 데이터 개수:", $('#free-list tbody tr').length);
+    console.log("Q&A 게시판 데이터 개수:", $('#qna-list tbody tr').length);
+
+    // 자유 게시판 테이블이 숨겨져 있는지 확인 후 표시
+    if ($('#free-list tbody tr').length > 0) {
+        $('#free-list').addClass('active').show();
+    } else {
+        console.warn("🚨 자유 게시판에 데이터가 있음에도 보이지 않음! CSS 확인 필요");
+    }
 });
+
+
+
+
+
 
 // 회원정보 열기 닫기 (수정하기 위한 모달 창)
 // 모달 열기/닫기 기능

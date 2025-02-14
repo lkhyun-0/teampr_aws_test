@@ -168,6 +168,7 @@ public class UserController {
         session.setAttribute("joinDate", usersDto.getJoinDate());
         session.setAttribute("phone", usersDto.getPhone());
         session.setAttribute("email", usersDto.getEmail());
+        session.setAttribute("del_status", usersDto.getDelStatus());
 
         response.put("message", "로그인 성공");
         response.put("success", true);
@@ -229,7 +230,7 @@ public class UserController {
 
         // 모델에 사용자 정보 추가해서 마이페이지로 보내기
         model.addAttribute("userInfo", userInfo);
-        model.addAttribute("detailDto", detailDto); // 여기 추가!
+        model.addAttribute("detailDto", detailDto);
         model.addAttribute("recentFree", recentFree);
         model.addAttribute("recentQna", recentQna);
 

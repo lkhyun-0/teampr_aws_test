@@ -92,6 +92,18 @@ public interface QnaMapper {
     List<Integer> getUserOriginNums(int userPk);
 
 
+
+
+
+
+
+    @Select("SELECT * " +
+            "FROM article " +
+            "WHERE board_pk = 3 " +
+            "AND user_pk = #{userPk} " +
+            "ORDER BY reg_date DESC " +
+            "LIMIT 5")
+    @ResultMap("qnaResultMap")
     List<QnaDto> getRecentQna(int userPk);
 }
 
