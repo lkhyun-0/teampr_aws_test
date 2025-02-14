@@ -1,21 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOM 로드 완료");
-
-
-
     function updateHeaderMenu() {
-        console.log("🚀 updateHeaderMenu() 실행됨!");
-
         fetch("/user/session", { method: "GET", credentials: "include" })
             .then(response => response.json())
             .then(data => {
-                console.log("📌 로그인 상태 확인:", data);
-                console.log("✅ 로그인된 userPk:", data.userPk);
-
                 let signupMenu = document.getElementById("signup-menu");
                 let loginMenu = document.getElementById("login-menu");
                 let myPageMenu = document.getElementById("mypage-menu");
                 let logoutMenu = document.getElementById("logout-menu");
+
+                let categoryLogin = document.getElementById("category-login");  // 로그인 링크
+                let categorySignup = document.getElementById("category-signup"); // 회원가입 링크
 
                 if (data.loggedIn) {
                     console.log("✅ 로그인 상태 감지됨! 메뉴 변경");
@@ -36,6 +30,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         logoutMenu.style.display = "block";
                         console.log("✅ logoutMenu 표시");
                     }
+
+                    // 로그인/회원가입 -> 마이페이지/로그아웃으로 변경
+                    if (categoryLogin) {
+                        categoryLogin.href = "/user/myPage";
+                        categoryLogin.innerText = "마이페이지";
+                    }
+                    if (categorySignup) {
+                        categorySignup.href = "/user/logout";
+                        categorySignup.innerText = "로그아웃";
+                    }
                 } else {
                     console.log("❌ 로그아웃 상태 감지됨!");
 
@@ -52,7 +56,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     if (logoutMenu) {
                         logoutMenu.style.display = "none";
+                    }
 
+                    // 마이페이지/로그아웃 -> 로그인/회원가입으로 변경
+                    if (categoryLogin) {
+                        categoryLogin.href = "/user/signIn";
+                        categoryLogin.innerText = "로그인";
+                    }
+                    if (categorySignup) {
+                        categorySignup.href = "/user/signUp";
+                        categorySignup.innerText = "회원가입";
                     }
                 }
             })
