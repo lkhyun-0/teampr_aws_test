@@ -297,10 +297,10 @@
         $("#add-diet").click(function(){
             if(confirm("식단을 추가하시겠습니까?")) {
                 let nextTabIndex;
-                if ($("#tab2").is(":hidden")) {
+                if ($(`.tab[data-tab="tab2"]`).is(":hidden")) {
                     nextTabIndex = 2;
                     $(`.tab[data-tab="tab2"]`).show();
-                } else if ($("#tab3").is(":hidden")) {
+                } else if ($(`.tab[data-tab="tab3"]`).is(":hidden")) {
                     nextTabIndex = 3;
                     $(`.tab[data-tab="tab3"]`).show();
                 } else {
