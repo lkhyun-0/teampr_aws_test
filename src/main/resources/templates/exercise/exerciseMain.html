@@ -5,7 +5,7 @@
     <title>운동 페이지</title>
     <link href="/css/exercise/exerciseMain.css" rel="stylesheet">
     <!-- 제이쿼리 불러오기 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:if="${msg}">
       alert("[[${msg}]]");
     </script>
@@ -56,7 +56,7 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/ko.js"></script>
-    <script>
+    <script th:inline="javascript">
       let calendar;
       let calendarEl;
 
@@ -65,6 +65,8 @@
         calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridWeek', // 주 단위로 표시
           height: 'auto',
+          dayMaxEvents: 3,
+          contentHeight: 'auto', // 일정이 많아도 높이 유지
           headerToolbar: {
             left: 'prev',
             center: 'title',
@@ -321,6 +323,15 @@
           .then(result => {
             alert(result.message); // 올바른 JSON 응답 처리
 
+            // ✅ 주간 목표 달성 수 가져오기
+            fetch(`/target/count?userPk=${userPk}`)
+                    .then(response => response.json())
+                    .then(count => {
+                      console.log("운동 입력 후 targetcount!!!!!!!! : ", count);
+                      document.getElementById("weekly-goal-count").textContent = `${count}회`;
+                    })
+                    .catch(error => console.error("Error fetching weekly goal count:", error));
+
             // 입력 필드 초기화
             exerciseTypeDisplay.textContent = "";
             exerciseTypeDisplay.style.display = "none";
@@ -391,7 +402,7 @@
         document.getElementById("event-modal").style.display = "none";
       }
     </script>
-    <script>
+    <script th:inline="javascript">
       // 그래프 저장
       document.addEventListener("DOMContentLoaded", function () {
         const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
@@ -454,12 +465,6 @@
             bloodPressInput.value = "";
             weightInput.value = "";
 
-            // ✅ 저장 후 버튼 비활성화
-            if (saveButton) {
-              saveButton.disabled = true;
-              saveButton.style.opacity = "0.5";
-            }
-
             // ✅ 페이지 새로고침
             window.location.reload();
           })
@@ -488,6 +493,7 @@
         fetch(`/target/count?userPk=${userPk}`)
                 .then(response => response.json())
                 .then(count => {
+                  console.log("targetcount!!!!!!!! : ", count);
                   document.getElementById("weekly-goal-count").textContent = `${count}회`;
                 })
                 .catch(error => console.error("Error fetching weekly goal count:", error));
@@ -570,45 +576,12 @@
           })
           .then(response => response.json())
           .then(result => {
-            // ✅ 로딩 메시지 표시 (선택 사항)
-            const loadingMessage = document.createElement("div");
-            loadingMessage.style.position = "fixed";
-            loadingMessage.style.display = "flex";
-            loadingMessage.style.alignItems = "center";
-            loadingMessage.style.justifyContent = "center";
-            loadingMessage.style.top = "50%";
-            loadingMessage.style.left = "50%";
-            loadingMessage.style.transform = "translate(-50%, -50%)";
-            loadingMessage.style.width = "100%";  // 화면에 꽉 차게
-            loadingMessage.style.height = "100%";  // 화면에 꽉 차게
-            loadingMessage.style.backgroundColor = "rgba(232,229,229,0.9)";
-            loadingMessage.style.color = "white";
-            loadingMessage.style.fontSize = "20px";
-            loadingMessage.style.fontWeight = "bold";
-            loadingMessage.style.zIndex = "10000"; // 화면 맨 위로 배치
-            loadingMessage.style.gap = "10px"; // 텍스트와 스피너 간격 추가
-            document.body.appendChild(loadingMessage);
 
-            // ✅ 로딩 텍스트 추가
-            const loadingText = document.createElement("span");
-            loadingText.innerText = "이번주에 작성했던 기록을 목표에 반영 중입니다";
-
-            // ✅ 원형 로딩 스피너 추가
-            const spinner = document.createElement("div");
-            spinner.style.width = "20px";
-            spinner.style.height = "20px";
-            spinner.style.border = "3px solid white";
-            spinner.style.borderTop = "3px solid transparent"; // 한쪽만 투명하게 만들어 회전 효과
-            spinner.style.borderRadius = "50%";
-            spinner.style.animation = "spin 1s linear infinite"; // 애니메이션 적용
-
-            loadingMessage.appendChild(loadingText);
-            loadingMessage.appendChild(spinner);
-            document.body.appendChild(loadingMessage);
+            $("#loading-screen").fadeIn();
 
             // ✅ 2초 후 "저장 중" 메시지 숨기고 alert 띄우기
             setTimeout(() => {
-              loadingMessage.remove(); // "저장 중" 메시지 및 스피너 제거
+              $("#loading-screen").fadeOut(); // "저장 중" 메시지 및 스피너 제거
               alert(result.message); // ✅ alert 띄움
 
               // ✅ 입력 필드 초기화
@@ -674,7 +647,16 @@
                       body: JSON.stringify({ userPk }),
                     })
                             .then(response => response.json())
-                            .then(result => console.log("Target count updated:", result))
+                            .then(result => {
+                              // ✅ 주간 목표 달성 수 가져오기
+                              fetch(`/target/count?userPk=${userPk}`)
+                                      .then(response => response.json())
+                                      .then(count => {
+                                        console.log("targetcount!!!!!!!! : ", count);
+                                        document.getElementById("weekly-goal-count").textContent = `${count}회`;
+                                      })
+                                      .catch(error => console.error("Error fetching weekly goal count:", error));
+                            })
                             .catch(error => console.error("Error updating target count:", error));
                   } else {
                     console.log("이번 주에는 이미 목표 달성 보상이 지급되었습니다!");
@@ -689,6 +671,15 @@
 
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
+
+<!-- 목표 저장 로딩 모달 -->
+<div id="loading-screen" style="display: none;">
+    <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+      <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+    </svg>
+    <p>이번 주에 기록한 내용을 반영 중 입니다...</p>
+  </div>
+</div>
 
 <!-- ✅ 이벤트 클릭 시 표시할 모달 -->
 <div id="event-modal" class="modal">
