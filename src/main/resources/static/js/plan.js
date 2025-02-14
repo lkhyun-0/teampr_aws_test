@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
         selectable: false,
         contentHeight: 'auto', // 일정이 많아도 높이 유지
         dayMaxEvents: 3,
-        eventOrder: function(eventA, eventB) {
+        eventOrder: function (eventA, eventB) {
             if (eventA.extendedProps.category === "hospital" && eventB.extendedProps.category === "medicine") {
                 return -1; // 병원이 위쪽으로 정렬
             } else if (eventA.extendedProps.category === "medicine" && eventB.extendedProps.category === "hospital") {
@@ -53,29 +53,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }, 0);
         },
-        eventClick: function (info){
+        eventClick: function (info) {
 
         },
         dateClick: function (info) {
             let events = window.calendar.getEvents();
             let selectDate = new Date(info.date);
 
-            console.log("📅 현재 캘린더에 등록된 이벤트 목록:", events);
-
             // 선택한 날짜에 해당하는 병원 일정 찾기
             let hospitalEvent = events.find(event => {
                 let eventDate = new Date(event.start).toISOString().split("T")[0]; // YYYY-MM-DD 추출
                 let selectedDateStr = selectDate.toISOString().split("T")[0]; // YYYY-MM-DD 추출
 
-                console.log("selectedDateStr: " + selectedDateStr);
-                console.log("eventDate: " + eventDate);
-
-                console.log("데이터 타입 비교:", typeof selectedDateStr, typeof eventDate);
-
                 return eventDate === selectedDateStr
             });
-
-            console.log("🔍 찾은 병원 일정:", hospitalEvent);
 
             // 선택한 날짜에 해당하는 약 일정 찾기
             let medicineEvent = events.find(event => {
@@ -87,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (hospitalEvent || medicineEvent) {
                 // 둘 다 일정이 있으면 병원 & 약 일정 데이터를 가져옴
                 if (hospitalEvent) {
-                    console.log("hospitalEvent.id:" + hospitalEvent.id)
                     fetchHospitalDetails(hospitalEvent.id, info.dateStr);
                 }
                 if (medicineEvent) {
@@ -111,8 +101,8 @@ document.addEventListener('DOMContentLoaded', function () {
 function loadAllPlans(calendar) {
 
     Promise.all([
-        $.ajax({ url: "/plan/getAllHospitalPlansAjax", type: "GET" }),
-        $.ajax({ url: "/plan/getAllMedicinePlansAjax", type: "GET" })
+        $.ajax({url: "/plan/getAllHospitalPlansAjax", type: "GET"}),
+        $.ajax({url: "/plan/getAllMedicinePlansAjax", type: "GET"})
     ])
         .then(([hospitalData, medicineData]) => {
 
@@ -187,7 +177,7 @@ function initMap() {
                     content: marker.title
                 });
 
-                marker.addListener("click", function() {
+                marker.addListener("click", function () {
                     infowindow.open(map, marker);
                 });
             },
@@ -223,7 +213,7 @@ function addMarker(position, title, targetMap, iconUrl) {
         position: position,
         map: targetMap,
         title: title,
-        icon:{
+        icon: {
             url: "/images/hospital.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
@@ -495,30 +485,6 @@ function deleteHospital(hospitalPk) {
     });
 }
 
-// // 약 시간 추가 함수
-// $(".add-time").click(function () {
-//     let timeContainer = $(this).closest("form").find(".time-container");
-//
-//     if (timeContainer.find(".time-field").length >= 2) { // 최대 2개까지만 추가 가능
-//         alert("최대 2개의 시간을 추가할 수 있습니다.");
-//         return;
-//     }
-//
-//     let newTimeInput = `
-//         <div class="time-list">
-//             <input type="time" class="time-field" name="select-time" step="900">
-//             <button type="button" class="remove-time">🗑</button>
-//         </div>
-//         `;
-//
-//     timeContainer.append(newTimeInput);
-//
-//     // 새로 추가된 삭제 버튼에 이벤트 연결
-//     timeContainer.find(".remove-time").off("click").on("click", function () {
-//         $(this).closest(".time-list").remove();
-//     });
-// });
-
 // 약 유형 선택함수
 $(".medicine-type").click(function () {
     $(".medicine-type").removeClass("selected");
@@ -684,7 +650,7 @@ function deleteMedicine(medicinePk) {
         url: "/plan/deleteMedicine",
         type: "DELETE",
         contentType: "application/json",
-        data: JSON.stringify({ medicinePkList: selectedMedicineIds }),
+        data: JSON.stringify({medicinePkList: selectedMedicineIds}),
         success: function (response) {
             alert("선택한 약 일정이 삭제되었습니다.");
 
@@ -768,4 +734,23 @@ $(".tab").click(function () {
     // 클릭한 버튼 활성화 & 해당 콘텐츠 표시
     $(this).addClass("active");
     $("#" + $(this).data("tab")).addClass("active");
+});
+
+// 컬러피커
+Coloris({
+    el: '.colorPicker',
+    theme: 'default',   //default, large, polaroid, pill
+    themeMode: 'light', //light , dark 모드
+    margin: 2,  //입력 필드와 색선택시 사이 여백
+    alpha: true,    //불투명도 조절
+    format: 'hex',  //포맷  hex rgb hsl auto mixed
+    formatToggle: false,    //포맷 토글
+    clearButton: true,
+    clearLabel: 'Clear',
+    swatches: ['#264653', '#2a9d8f', '#e9c46a', 'rgb(244,162,97)', '#e76f51', '#d62828', 'navy', '#07b', '#0096c7', '#00b4d880', 'rgba(0,119,182,0.8)'],
+    inline: false,
+});
+
+document.querySelector('.color-field').addEventListener('click', function() {
+    document.querySelector('.colorPicker').click();
 });

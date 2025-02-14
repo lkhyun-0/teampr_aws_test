@@ -155,11 +155,4 @@ public class FoodController {
     public DetailDto getUserDetail(@SessionAttribute("userPk") int userPk) {
         return detailMapper.getUserDetail(userPk);
     }
-
-
-
-
 }
-
-
-

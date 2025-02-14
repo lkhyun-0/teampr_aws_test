@@ -23,7 +23,7 @@
                     <li>아이디 : <span th:text="${userInfo != null ? userInfo.userId : '정보 없음'}"></span></li>
                     <li>이메일 : <span th:text="${userInfo != null ? userInfo.email : '정보 없음'}"></span></li>
                     <li>전화번호 : <span th:text="${userInfo != null ? userInfo.phone : '정보 없음'}"></span></li>
-                    <li>가입일 : <span th:text="${userInfo != null ? userInfo.joinDate : '정보 없음'}"></span></li>
+                    <li>가입일 : <span th:text="${userInfo != null ? #temporals.format(userInfo.joinDate, 'yyyy-MM-dd') : '정보 없음'}"></span></li>
                     <li>키 / 체중 :
                         <span th:text="${detailDto != null ? (detailDto.height + 'cm / ' + detailDto.weight + 'kg') : '정보 없음'}"></span>
                     </li>
@@ -43,6 +43,8 @@
             </p>
         </div>
     </div>
+
+
     <div class="post-container">
         <ul class="tab-bar">
             <li><a href="#free-list">자유</a></li>
@@ -50,7 +52,7 @@
         </ul>
         <div class="tabcontent">
             <!-- 자유 글 목록 -->
-            <div id="free-list" class="tab-pane active">
+            <div id="free-list" class="tab-pane">
                 <table class="table-style">
                     <thead>
                     <tr>
@@ -60,18 +62,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2025.01.05</td>
-                        <td>내가 작성한 자유글1</td>
-                        <td>3</td>
+                    <tr th:each="free : ${recentFree}">
+                        <td th:text="${#temporals.format(free.regDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${free.title}"></td>
+                        <td th:text="${free.viewcnt}"></td>
                     </tr>
-                    <!-- 반복 데이터 -->
-                    <tr>
-                        <td>2025.01.05</td>
-                        <td>내가 작성한 자유글 2</td>
-                        <td>3</td>
-                    </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -87,16 +82,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2025.01.05</td>
-                        <td>문의합니다~ 1</td>
-                        <td>3</td>
+                    <tr th:each="qna : ${recentQna}">
+                        <td th:text="${#temporals.format(qna.regDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${qna.title}"></td>
+                        <td th:text="${qna.viewcnt}"></td>
                     </tr>
-                    <!-- 반복 데이터 -->
-
                     </tbody>
                 </table>
-            </div><!-- tabcontent -->
+            </div>
+        </div><!-- tabcontent -->
         </div><!-- post-container -->
 
     </div>

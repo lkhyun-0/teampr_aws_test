@@ -1,6 +1,7 @@
 package com.aws.carepoint.mapper;
 
 import com.aws.carepoint.dto.FreeDto;
+import com.aws.carepoint.dto.QnaDto;
 import com.aws.carepoint.util.SearchCriteria;
 import org.apache.ibatis.annotations.*;
 
@@ -80,4 +81,13 @@ public interface FreeMapper {
             WHERE article_pk = #{articlePk}
             """)
     int deleteArticle(int articlePk);
+
+    @Select("SELECT * " +
+            "FROM article " +
+            "WHERE board_pk = 2 " +
+            "AND user_pk = #{userPk} " +
+            "ORDER BY reg_date DESC " +
+            "LIMIT 5")
+    @ResultMap("freeResultMap")
+    List<FreeDto> getRecentFree(int userPk);
 }

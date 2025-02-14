@@ -1,6 +1,7 @@
 package com.aws.carepoint.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,8 @@ public class FoodList { // 공공데이터 api용 domain
     private LocalDateTime updateDate;
     private int foodPk;
     private int amount;
+    private String servingSize; // 1회 제공량
+
 
     // JSON 변환을 위한 포맷 지정
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
