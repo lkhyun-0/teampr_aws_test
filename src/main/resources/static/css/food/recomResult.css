@@ -43,6 +43,13 @@ h1 {
     border-bottom: none;
 }
 
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+
 .table-container {
     width: 740px;
     height: auto;
