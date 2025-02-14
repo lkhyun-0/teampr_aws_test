@@ -60,22 +60,13 @@ document.addEventListener('DOMContentLoaded', function () {
             let events = window.calendar.getEvents();
             let selectDate = new Date(info.date);
 
-            console.log("📅 현재 캘린더에 등록된 이벤트 목록:", events);
-
             // 선택한 날짜에 해당하는 병원 일정 찾기
             let hospitalEvent = events.find(event => {
                 let eventDate = new Date(event.start).toISOString().split("T")[0]; // YYYY-MM-DD 추출
                 let selectedDateStr = selectDate.toISOString().split("T")[0]; // YYYY-MM-DD 추출
 
-                console.log("selectedDateStr: " + selectedDateStr);
-                console.log("eventDate: " + eventDate);
-
-                console.log("데이터 타입 비교:", typeof selectedDateStr, typeof eventDate);
-
                 return eventDate === selectedDateStr
             });
-
-            console.log("🔍 찾은 병원 일정:", hospitalEvent);
 
             // 선택한 날짜에 해당하는 약 일정 찾기
             let medicineEvent = events.find(event => {
@@ -87,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (hospitalEvent || medicineEvent) {
                 // 둘 다 일정이 있으면 병원 & 약 일정 데이터를 가져옴
                 if (hospitalEvent) {
-                    console.log("hospitalEvent.id:" + hospitalEvent.id)
                     fetchHospitalDetails(hospitalEvent.id, info.dateStr);
                 }
                 if (medicineEvent) {
