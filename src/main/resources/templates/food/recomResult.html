@@ -23,13 +23,15 @@
 <div class="wrapper">
     <h1 id="goal-title">AI가 추천하는 3가지 식단</h1>
 
-    <!-- 탭 -->
+    <!-- 탭 (2, 3은 처음에 숨김) -->
     <div class="tabs">
-        <div class="tab" data-tab="tab1">식단 1 🍴</div>
+        <div class="tab active" data-tab="tab1">식단 1 🍴</div>
+        <div class="tab" data-tab="tab2" style="display: none;">식단 2 🍴</div>
+        <div class="tab" data-tab="tab3" style="display: none;">식단 3 🍴</div>
     </div>
 
     <!-- 식단1 표 -->
-    <div id="tab1 active" class="tab-content active">
+    <div id="tab1" class="tab-content active">
         <table>
             <thead>
             <tr>
@@ -113,6 +115,7 @@
     <div class="buttons">
         <button class="button" onclick="window.location.href='/food/recom'">다른 목표 선택</button>
         <button class="button" onclick="window.location.href='/user/mainPage'">메인화면</button>
+        <button class="button" id="add-diet">식단 추가</button>
     </div>
 </div>
 
@@ -120,7 +123,7 @@
 <div th:insert="~{/common/footer.html}"></div>
 
 <script>
-    // 식단 텍스트를 파싱해서 각 끼니별 데이터를 추출하는 함수
+    // 식단 텍스트를 파싱하는 함수
     function parseMealOption(text) {
         const lines = text.split("\n").map(line => line.trim());
         let currentSection = null;
@@ -138,7 +141,7 @@
         };
 
         for (let line of lines) {
-            // "### 식단 1:" 같은 헤더는 건너뜁니다.
+            // "### 식단 1:" 등의 헤더는 건너뛰기
             if (line.startsWith("### ")) {
                 continue;
             }
@@ -184,23 +187,75 @@
     // 파싱된 데이터를 HTML의 해당 위치에 렌더링하는 함수
     function renderDietToHTML(dietData, tabIndex) {
         // 아침
-        $(`#tab${tabIndex}-breakfast`).empty().append(dietData.breakfast.map(item => `<li>${item}</li>`));
-        $(`#tab${tabIndex}-breakfast-nutrition`).empty().append(dietData.breakfastNutrition.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-breakfast`).empty().append(
+            dietData.breakfast.map(item => `<li>${item}</li>`)
+        );
+        $(`#tab${tabIndex}-breakfast-nutrition`).empty().append(
+            dietData.breakfastNutrition.map(item => `<li>${item}</li>`)
+        );
         $(`#tab${tabIndex}-breakfast-tip`).text(dietData.breakfastTip.join(" "));
 
         // 점심
-        $(`#tab${tabIndex}-lunch`).empty().append(dietData.lunch.map(item => `<li>${item}</li>`));
-        $(`#tab${tabIndex}-lunch-nutrition`).empty().append(dietData.lunchNutrition.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-lunch`).empty().append(
+            dietData.lunch.map(item => `<li>${item}</li>`)
+        );
+        $(`#tab${tabIndex}-lunch-nutrition`).empty().append(
+            dietData.lunchNutrition.map(item => `<li>${item}</li>`)
+        );
         $(`#tab${tabIndex}-lunch-tip`).text(dietData.lunchTip.join(" "));
 
         // 저녁
-        $(`#tab${tabIndex}-dinner`).empty().append(dietData.dinner.map(item => `<li>${item}</li>`));
-        $(`#tab${tabIndex}-dinner-nutrition`).empty().append(dietData.dinnerNutrition.map(item => `<li>${item}</li>`));
+        $(`#tab${tabIndex}-dinner`).empty().append(
+            dietData.dinner.map(item => `<li>${item}</li>`)
+        );
+        $(`#tab${tabIndex}-dinner-nutrition`).empty().append(
+            dietData.dinnerNutrition.map(item => `<li>${item}</li>`)
+        );
         $(`#tab${tabIndex}-dinner-tip`).text(dietData.dinnerTip.join(" "));
     }
 
+    // 탭 활성화 함수
+    function activateTab(tabId) {
+        $(".tab").removeClass("active");
+        $(".tab-content").removeClass("active").hide();
+        $(`.tab[data-tab="${tabId}"]`).addClass("active");
+        $(`#${tabId}`).addClass("active").show();
+    }
+
+    // AJAX 요청으로 새로운 식단을 가져오는 함수
+    function fetchNewDiet(tabIndex) {
+        const goal = localStorage.getItem("goal");
+        if (!goal) {
+            alert("추천받은 식단이 없습니다. 다시 추천을 받아주세요.");
+            window.location.href = "/food/recom";
+            return;
+        }
+        $("#loading").show();
+        $.ajax({
+            url: "http://localhost:8000/recommend",
+            type: "GET",
+            data: { goal: goal },
+            success: function(response) {
+                $("#loading").hide();
+                const mealOption = response.meal_options;
+                if (mealOption) {
+                    const dietData = parseMealOption(mealOption);
+                    renderDietToHTML(dietData, tabIndex);
+                    // 새 탭 활성화
+                    activateTab("tab" + tabIndex);
+                } else {
+                    alert("추천된 식단이 없습니다.");
+                }
+            },
+            error: function() {
+                $("#loading").hide();
+                alert("추천을 가져오는 데 실패했습니다.");
+            }
+        });
+    }
+
     $(document).ready(function(){
-        $("#loading").show();  // 로딩 시작
+        $("#loading").show();
 
         const goal = localStorage.getItem("goal");
         if (!goal) {
@@ -210,26 +265,49 @@
         }
         $("#goal-title").text(`${goal}를 위한 AI 추천 식단`);
 
-        // 서버로부터 식단 응답 (이제 단일 식단이 반환됩니다.)
+        // 초기 식단(식단1) 요청 및 렌더링
         $.ajax({
             url: "http://localhost:8000/recommend",
             type: "GET",
             data: { goal: goal },
             success: function(response) {
-                $("#loading").hide();  // 로딩 숨김
-
-                // 이전에는 meal_option(복수 식단)을 받았었는데, 이제 meal_options(단일 식단)을 받습니다.
+                $("#loading").hide();
                 const mealOption = response.meal_options;
-
                 if (mealOption) {
                     const dietData = parseMealOption(mealOption);
                     renderDietToHTML(dietData, 1);
+                    activateTab("tab1");
                 } else {
                     alert("추천된 식단이 없습니다.");
                 }
             },
             error: function() {
+                $("#loading").hide();
                 alert("추천을 가져오는 데 실패했습니다.");
+            }
+        });
+
+        // 탭 클릭 이벤트 (각 탭을 클릭하면 해당 탭 내용이 보이도록)
+        $(".tab").click(function(){
+            const tabId = $(this).attr("data-tab");
+            activateTab(tabId);
+        });
+
+        // '식단 추가' 버튼 클릭 이벤트
+        $("#add-diet").click(function(){
+            if(confirm("식단을 추가하시겠습니까?")) {
+                let nextTabIndex;
+                if ($("#tab2").is(":hidden")) {
+                    nextTabIndex = 2;
+                    $(`.tab[data-tab="tab2"]`).show();
+                } else if ($("#tab3").is(":hidden")) {
+                    nextTabIndex = 3;
+                    $(`.tab[data-tab="tab3"]`).show();
+                } else {
+                    alert("더 이상 추가할 수 없습니다.");
+                    return;
+                }
+                fetchNewDiet(nextTabIndex);
             }
         });
     });
