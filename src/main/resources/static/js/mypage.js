@@ -18,38 +18,46 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 // 수정하기 모달창 안에 있는 흡연 음주 버튼 (active클래스)
 
-
-
 function updateUserInfo() {
-    const userPk = document.getElementById("userPk").value; // 로그인된 사용자 PK 가져오기
+    const userPk = document.getElementById("userPk").value;
 
-    // 사용자가 입력한 값 가져오기
-    const updatedData = {
+    // 📌 users 테이블 업데이트 정보
+    const userData = {
         userPk: userPk,
         phone: document.getElementById("modal-phone").value,
         email: document.getElementById("modal-email").value,
-        password: document.getElementById("password").value,
-        height: document.getElementById("height").value,
-        weight: document.getElementById("weight").value,
-        smoke: document.querySelector('input[name="smoke"]:checked').value, // 흡연 선택값
-        drink: document.querySelector('input[name="drink"]:checked').value  // 음주 선택값
+        userPwd: document.getElementById("password").value
     };
 
-    console.log("수정하기 위해 받은 데이터 :", updatedData); // 디버깅용 콘솔 로그
+    // 📌 detail 테이블 업데이트 정보
+    const detailData = {
+        userPk: userPk,
+        height: document.getElementById("height").value,
+        weight: document.getElementById("weight").value,
+        smoke: Number(document.querySelector('input[name="smoke"]:checked').value),  //  숫자로 변환
+        drink: Number(document.querySelector('input[name="drink"]:checked').value)  //  숫자로 변환
+    };
 
-    // 서버에 업데이트 요청 보내기
+    // 📌 통합 데이터 (UserDetailUpdateDto와 매칭)
+    const updateData = {
+        usersDto: userData,
+        detailDto: detailData
+    };
+
+    //console.log("전송할 데이터:", updateData); // 디버깅용
+
     fetch("/detail/updateInfo", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(updatedData)
+        body: JSON.stringify(updateData)
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("회원 정보가 성공적으로 수정되었습니다!");
-                location.reload(); // 성공 시 페이지 새로고침
+                alert("회원 정보가 성공적으로 수정되었습니다.");
+                location.reload();      // 새로고침
             } else {
                 alert("수정 실패: " + data.message);
             }
@@ -58,7 +66,7 @@ function updateUserInfo() {
 }
 
 // "수정하기" 버튼 클릭 시 업데이트 실행
-document.querySelector(".save-btn").addEventListener("click", updateUserInfo);
+//document.querySelector(".save-btn").addEventListener("click", updateUserInfo);
 
 
 // 그래프 스크립트
@@ -67,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (userPk) {
         loadGraphData(userPk);
     } else {
-        console.error("로그인한 사용자의 userPk를 찾을 수 없습니다.");
+        console.error("로그인한 사용자의 정보를 찾을 수 없습니다.");
     }
 });
 
@@ -139,27 +147,43 @@ function loadGraphData(userPk) {
         .catch(error => console.error('Error fetching graph data:', error));
 }
 
-// 게시글 보여줄 때 탭 !
-$(function () {
-    // 모든 탭 콘텐츠 숨기기
-    $('.tabcontent > div').removeClass('active');
+$(document).ready(function () {
+    // 모든 탭 내용 숨기고 자유 게시판만 표시
+    $('.tabcontent .tab-pane').removeClass('active').hide();
+    $('#free-list').addClass('active').show(); // 자유 게시판 기본 표시
+    $('.tab-bar li:first-child a').addClass('active'); // 첫 번째 탭 활성화
 
     // 탭 클릭 이벤트 처리
-    $('.tab-bar a').click(function (e) {
+    $('.tab-bar a').on('click', function (e) {
         e.preventDefault(); // 기본 동작 방지
 
-        // 모든 콘텐츠 숨기고 선택된 콘텐츠만 표시
-        $('.tabcontent > div').removeClass('active');
-        $($(this).attr('href')).addClass('active');
+        let targetTab = $(this).attr('href'); // 클릭한 탭의 ID 가져오기
 
-        // 활성화 클래스 처리
+        // 모든 탭 숨기고 해당 탭만 표시
+        $('.tabcontent .tab-pane').removeClass('active').hide();
+        $(targetTab).addClass('active').fadeIn(200); // 부드럽게 표시
+
+        // 탭 활성화 스타일 적용
         $('.tab-bar a').removeClass('active');
         $(this).addClass('active');
     });
 
-    // 첫 번째 탭 자동 활성화
-    $('.tab-bar a').first().click();
+    // 디버깅: 데이터 확인
+    console.log("자유 게시판 데이터 개수:", $('#free-list tbody tr').length);
+    console.log("Q&A 게시판 데이터 개수:", $('#qna-list tbody tr').length);
+
+    // 자유 게시판 테이블이 숨겨져 있는지 확인 후 표시
+    if ($('#free-list tbody tr').length > 0) {
+        $('#free-list').addClass('active').show();
+    } else {
+        console.warn("🚨 자유 게시판에 데이터가 있음에도 보이지 않음! CSS 확인 필요");
+    }
 });
+
+
+
+
+
 
 // 회원정보 열기 닫기 (수정하기 위한 모달 창)
 // 모달 열기/닫기 기능
@@ -188,3 +212,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// 수정하기 모달에서 탈퇴버튼 클릭시 알럿창 탈퇴하시겠습니까? 확인 or 취소 확인 하면 > 회원 탈퇴시키기
+function deleteUser() {
+    if (!confirm("정말로 탈퇴하시겠습니까?")) {
+        return;
+    }
+
+    fetch("/user/deleteUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    alert(err.error || "서버 오류 발생");
+                    return null;
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+
+            alert(data.message);
+            if (data.redirect) {
+                window.location.href = data.redirect;  // 로그인 페이지로 이동
+            }
+        })
+        .catch(error => {
+            console.error("회원 탈퇴 요청 실패:", error);
+            alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+        });
+}

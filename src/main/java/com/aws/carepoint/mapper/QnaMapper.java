@@ -1,5 +1,6 @@
 package com.aws.carepoint.mapper;
 
+import com.aws.carepoint.dto.FreeDto;
 import com.aws.carepoint.mapper.sql.QnaSqlProvider;
 import com.aws.carepoint.util.SearchCriteria;
 import com.aws.carepoint.dto.QnaDto;
@@ -91,6 +92,19 @@ public interface QnaMapper {
     List<Integer> getUserOriginNums(int userPk);
 
 
+
+
+
+
+
+    @Select("SELECT * " +
+            "FROM article " +
+            "WHERE board_pk = 3 " +
+            "AND user_pk = #{userPk} " +
+            "ORDER BY reg_date DESC " +
+            "LIMIT 5")
+    @ResultMap("qnaResultMap")
+    List<QnaDto> getRecentQna(int userPk);
 }
 
 

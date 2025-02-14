@@ -158,7 +158,8 @@
                             data-fat="${food.fat}">
                             <td>${food.menu}</td>
                             <td>${food.kcal} kcal</td>
-                            <td>단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g</td>
+                            <td>단백질: ${food.protein}g | 탄수화물: ${food.carbohydrate}g | 지방: ${food.fat}g
+                            <br>1인분 기준 : ${food.servingSize}</td>
                             <td>
                                 <input type="number" class="food-amount" value="100" min="1" step="10"> g
                             </td>
@@ -167,13 +168,20 @@
                     `;
             tableBody.append(row);
           });
-
           $(".search-results").fadeIn();
         },
         error: function () {
           alert("음식 검색에 실패했습니다.");
         }
       });
+    });
+
+    // Enter 키 입력 시 실행
+    $(".search-bar").keypress(function (event) {
+      if (event.key === "Enter") {  // 또는 event.keyCode === 13 (옛날 방식)
+        event.preventDefault(); // 폼 제출 방지
+        $(".search-button").click(); // 검색 버튼 클릭 이벤트 실행
+      }
     });
 
     // 검색 결과 클릭 시 선택 메뉴에 추가

@@ -140,6 +140,15 @@ table {
     position: relative;
 }
 
+.date-input {
+    display: flex;
+}
+
+.date-input > input{
+    display: flex;
+    margin: 0 5px;
+}
+
 /* 검색 결과 리스트 스타일 */
 #hospital-list {
     position: absolute;
@@ -356,4 +365,16 @@ table {
 /*지도*/
 #popup-map {
     height: 350px !important;
+}
+
+/*컬러피커*/
+.color-field {
+
+}
+
+.color-field > button {
+}
+
+.colorPicker {
+
 }

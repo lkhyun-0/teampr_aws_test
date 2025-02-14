@@ -1,6 +1,6 @@
 package com.aws.carepoint.config;
 
-import com.aws.carepoint.interceptor.LoginInterceptor;
+//import com.aws.carepoint.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .setCachePeriod(3600); // 캐싱(초 단위) - 선택사항
     }
 
-    @Override
+/*    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**") // 모든 요청에 대해 인터셉터 적용
@@ -32,5 +32,5 @@ public class WebConfig implements WebMvcConfigurer {
                         "/notice/noticeList", // 공지사항 목록 제외
                         "/css/**", "/js/**", "/images/**" // 정적 리소스 제외
                 );
-    }
+    }*/
 }

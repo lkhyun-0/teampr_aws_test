@@ -151,11 +151,14 @@ img {
 
 
 .tabcontent > div {
+    display: none; /* 기본적으로 숨김 */
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
+
 .tabcontent > div.active {
+    display: block;
     visibility: visible;
     opacity: 1;
 }
@@ -199,10 +202,7 @@ img {
     color: white; /* 헤더 텍스트 색상 */
 }
 
-.tabcontent {
-    position: relative; /* 콘텐츠 위치 고정 */
-    width: 100%;
-}
+
 
 .tab-pane {
     display: none; /* 기본적으로 숨김 */
