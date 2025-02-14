@@ -37,19 +37,9 @@ public class ExerciseController {
 
     // 운동 메인페이지
     @GetMapping("/exerciseMain")
-    public String exerciseMain(
-        Model model,
-        HttpSession session,
-        RedirectAttributes redirectAttributes) {
+    public String exerciseMain(Model model, HttpSession session) {
 
-        int userPk;
-
-        if (session.getAttribute("userPk") == null) {
-            redirectAttributes.addFlashAttribute("msg", "로그인 후 이용 가능합니다.");
-            return "redirect:/user/signIn";
-        }
-
-        userPk = (Integer) session.getAttribute("userPk");
+        int userPk = (Integer) session.getAttribute("userPk");
 
         model.addAttribute("userPk", userPk);
         return "exercise/exerciseMain";
@@ -152,7 +142,7 @@ public class ExerciseController {
 
                 exerciseService.save(exerciseApiDto);
             }
-            return "✅ 슬이언니 바보";
+            return "✅ 데이터가 저장되었습니다.";
         } catch (Exception e) {
             e.printStackTrace();
             return "에러: " + e.getMessage();
