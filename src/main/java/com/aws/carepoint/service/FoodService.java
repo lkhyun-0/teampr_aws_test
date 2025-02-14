@@ -97,14 +97,14 @@ public class FoodService {
 
     @Transactional
     public void recordFood(FoodRecordRequest request) {
-        // `food` 테이블에 식단 기록 추가
+        // food 테이블에 식단 기록 추가
         Food food = new Food();
         food.setSelectDate(LocalDate.parse(request.getSelectDate()));
         food.setFoodType(request.getFoodType());
         food.setUserPk(request.getUserPk());
         foodMapper.insertFood(food); // `food_pk` 자동 생성됨
 
-        // `foodlist` 테이블에 개별 음식 저장
+        // foodlist 테이블에 개별 음식 저장
         for (var foodDto : request.getFoodList()) {
             FoodList foodList = new FoodList();
             foodList.setMenu(foodDto.getMenu());
@@ -175,7 +175,7 @@ public class FoodService {
             FoodDto foodDto = newFoodList.get(i);
 
             if (foodDto.getFoodListPk() != null) {
-                // 🛠 기존 음식이면 UPDATE
+                // 기존 음식이면 UPDATE
                 FoodList updatedFood = new FoodList();
                 updatedFood.setFoodListPk(foodDto.getFoodListPk());
                 updatedFood.setMenu(foodDto.getMenu());
@@ -187,7 +187,7 @@ public class FoodService {
 
                 foodMapper.updateFood(updatedFood);
             } else {
-                // 🛠 새로운 음식이면 INSERT
+                // 새로운 음식이면 INSERT
                 FoodList newFood = new FoodList();
                 newFood.setMenu(foodDto.getMenu());
                 newFood.setKcal(foodDto.getKcal());
