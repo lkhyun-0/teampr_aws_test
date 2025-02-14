@@ -58,10 +58,6 @@ body, a, li, ul {
     display: block;
 }
 
-
-
-
-
 /* 오버레이 효과 */
 .overlay {
     position: absolute;
@@ -69,7 +65,7 @@ body, a, li, ul {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(65, 105, 225, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -78,7 +74,7 @@ body, a, li, ul {
 }
 
 .overlay-text {
-    color: #fff; /* 글자 색상 */
+    color: #333; /* 글자 색상 */
     font-size: 24px; /* 제목 글자 크기 */
     font-weight: bold; /* 제목 굵게 */
     text-align: center;
