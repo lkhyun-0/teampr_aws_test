@@ -167,6 +167,7 @@ public class PlanController {
             event.put("title", medicineDto.getMedicineName());
             event.put("start", medicineDto.getStartDate().toString()); // ✅ String (YYYY-MM-DD) 변환
             event.put("end", medicineDto.getEndDate() != null ? medicineDto.getEndDate().toString() : null);
+            event.put("color", medicineDto.getColor());
 
             return event;
         }).collect(Collectors.toList());
