@@ -26,8 +26,6 @@ public class DetailController {
     public DetailController(DetailService detailService, UserService userService) {
         this.detailService = detailService;
         this.userService = userService;
-
-
     }
     @GetMapping("{userPk}/info")        // 기본 회원정보 마이페이지에 보이는 것 수정 xx
     public String getUserInfo(@PathVariable int userPk, Model model) {
@@ -52,15 +50,9 @@ public class DetailController {
     @PostMapping("updateInfo")
     public ResponseEntity<?> updateInfo(@RequestBody Map<String, Object> requestBody) {
         try {
-            //System.out.println("받은 데이터: " + requestBody);  // JSON 데이터 확인
-            // JSON에서 usersDto 데이터 추출
             ObjectMapper objectMapper = new ObjectMapper();
             UsersDto usersDto = objectMapper.convertValue(requestBody.get("usersDto"), UsersDto.class);
             DetailDto detailDto = objectMapper.convertValue(requestBody.get("detailDto"), DetailDto.class);
-
-            //System.out.println("변환된 UsersDto: " + usersDto);
-            //System.out.println("변환된 DetailDto: " + detailDto);
-
 
             // 두 개의 DTO 업데이트 실행
             boolean isUserUpdated = detailService.updateUserInfo(usersDto);

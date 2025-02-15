@@ -97,6 +97,7 @@
 
     <!-- 모달 창 -->
     <div id="modal" class="modal">
+        <input type="hidden" id="modal-userPk" th:value="${session.userPk}">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>회원정보 수정하기</h2>
@@ -113,9 +114,12 @@
                                th:value="${userInfo != null ? userInfo.email : ''}">
                     </li>
                     <li>
-                        <label for="password">비밀번호: </label>
-                        <input type="password" id="password" name="password"
-                               th:value="${userInfo != null ? userInfo.userPwd : ''}">
+                        <label for="password">
+                            비밀번호:
+                            <button style="background-color: #4169E1; color:#fff; font-size:11px" onclick="modifyUserPwd();">변경</button>
+                        </label>
+                        <!-- ✅ 기존 비밀번호가 보이지 않도록 value 제거 -->
+                        <input type="password" id="password" name="password" style="width: 200px">
                     </li>
                     <li>
                         <label for="height">신장(cm):</label>
@@ -162,7 +166,7 @@
             </div>
         </div>
     </div>
-</div>
+
 <!--header-->
 <div th:insert="~{/common/footer.html}"></div>
 <script th:src="@{/js/mypage.js}"></script>  <!-- Thymeleaf 경로 바인딩 -->

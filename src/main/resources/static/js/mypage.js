@@ -26,7 +26,7 @@ function updateUserInfo() {
         userPk: userPk,
         phone: document.getElementById("modal-phone").value,
         email: document.getElementById("modal-email").value,
-        userPwd: document.getElementById("password").value
+
     };
 
     // 📌 detail 테이블 업데이트 정보
@@ -67,6 +67,43 @@ function updateUserInfo() {
 
 // "수정하기" 버튼 클릭 시 업데이트 실행
 //document.querySelector(".save-btn").addEventListener("click", updateUserInfo);
+
+// 비번 변경 !
+function modifyUserPwd() {
+    const userPk = document.getElementById("modal-userPk").value;
+
+    if (!userPk) {
+        alert("회원 정보가 없습니다. 다시 로그인해 주세요.");
+        return;
+    }
+
+    let newPwd = prompt("새 비밀번호를 입력하세요:");
+
+    if (newPwd === null || newPwd.trim() === "") {
+        alert("비밀번호 변경이 취소되었습니다.");
+        return;
+    }
+
+    fetch('/user/modifyUserPwd', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userPk: userPk, newPassword: newPwd }) // ✅ userPk를 함께 전송
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("비밀번호가 변경되었습니다.");
+            } else {
+                alert("비밀번호 변경 실패: " + data.message);
+            }
+        })
+        .catch(error => console.error("에러 발생:", error));
+}
+
+
+
 
 
 // 그래프 스크립트
