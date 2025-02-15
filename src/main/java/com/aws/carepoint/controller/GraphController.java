@@ -4,6 +4,8 @@ import com.aws.carepoint.dto.GraphDto;
 import com.aws.carepoint.service.GraphService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 
@@ -23,9 +25,16 @@ public class GraphController {
 
     // 그래프 저장
     @PostMapping("/saveGraph")
-    public ResponseEntity<String> saveGraph(@RequestBody(required = false) GraphDto graphDto) {
+    public String saveGraph(@RequestBody(required = false) GraphDto graphDto) {
         graphService.saveGraph(graphDto);
-        return ResponseEntity.ok("오늘의 수치가 저장되었습니다.");
+        return "redirect:/exercise/exerciseMain";
+    }
+
+    // 그래프 저장
+    @PostMapping("/updateGraph")
+    public String updateGraph(@RequestBody(required = false) GraphDto graphDto) {
+        graphService.updateGraph(graphDto);
+        return "redirect:/exercise/exerciseMain";
     }
 
     // ✅ 오늘 데이터가 있는지 확인하는 API

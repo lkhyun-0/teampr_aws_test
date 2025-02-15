@@ -27,7 +27,9 @@ public class PageMaker {
 
         int tempEndPage = (int) (Math.ceil(totalCount / (double) scri.getPerPageNum()));
 
-        if (endPage > tempEndPage) {
+        if (tempEndPage == 0) {
+            endPage = 1;
+        } else if (endPage > tempEndPage) {
             endPage = tempEndPage;
         }
 

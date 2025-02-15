@@ -30,9 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/user/mainPage",  // 메인페이지 처리 제외
                         "/plan/hospital", // 병원찾기 제외
                         "/notice/noticeList", // 공지사항 목록 제외
-                        "/css/**", "/js/**", "/images/**", // 정적 리소스 제외
-                        "/user/checkUserId",  // 추가
-                        "/user/checkNickname"  //  추가
+                        "/css/**", "/js/**", "/images/**" // 정적 리소스 제외
                 );
     }*/
 }

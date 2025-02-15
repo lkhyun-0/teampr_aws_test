@@ -40,7 +40,7 @@ public class FoodService {
             URI uri = new URI(API_URL +
                     "?serviceKey=" + API_KEY +
                     "&FOOD_NM_KR=" + encodedQuery +
-                    "&numOfRows=30" +
+                    "&numOfRows=50" +
                     "&pageNo=1" +
                     "&type=json");
 
@@ -67,6 +67,20 @@ public class FoodService {
                     foodDto.setProtein((float) item.path("AMT_NUM3").asDouble());
                     foodDto.setFat((float) item.path("AMT_NUM4").asDouble());
                     foodDto.setCarbohydrate((float) item.path("AMT_NUM7").asDouble());
+                    JsonNode servingSizeNode = item.path("Z10500");
+
+                    if (!servingSizeNode.isMissingNode() && !servingSizeNode.isNull()) {
+                        String servingSize = servingSizeNode.asText().replace(",", "").trim(); // 쉼표 제거
+                        // .000 제거 & 단위 처리
+                        servingSize = servingSize.replaceAll("\\.0+([a-zA-Z]*)$", "$1");
+                        // g 또는 mL가 없는 경우 기본적으로 "g"를 추가
+                        if (!servingSize.matches(".*[a-zA-Z]$")) {
+                            servingSize += "g";
+                        }
+                        foodDto.setServingSize(servingSize);
+                    } else {
+                        foodDto.setServingSize("N/A"); // 값이 없으면 "N/A"로 표시
+                    }
                     foodList.add(foodDto);
                 }
             } else {
@@ -83,14 +97,14 @@ public class FoodService {
 
     @Transactional
     public void recordFood(FoodRecordRequest request) {
-        // `food` 테이블에 식단 기록 추가
+        // food 테이블에 식단 기록 추가
         Food food = new Food();
         food.setSelectDate(LocalDate.parse(request.getSelectDate()));
         food.setFoodType(request.getFoodType());
         food.setUserPk(request.getUserPk());
         foodMapper.insertFood(food); // `food_pk` 자동 생성됨
 
-        // `foodlist` 테이블에 개별 음식 저장
+        // foodlist 테이블에 개별 음식 저장
         for (var foodDto : request.getFoodList()) {
             FoodList foodList = new FoodList();
             foodList.setMenu(foodDto.getMenu());
@@ -161,7 +175,7 @@ public class FoodService {
             FoodDto foodDto = newFoodList.get(i);
 
             if (foodDto.getFoodListPk() != null) {
-                // 🛠 기존 음식이면 UPDATE
+                // 기존 음식이면 UPDATE
                 FoodList updatedFood = new FoodList();
                 updatedFood.setFoodListPk(foodDto.getFoodListPk());
                 updatedFood.setMenu(foodDto.getMenu());
@@ -173,7 +187,7 @@ public class FoodService {
 
                 foodMapper.updateFood(updatedFood);
             } else {
-                // 🛠 새로운 음식이면 INSERT
+                // 새로운 음식이면 INSERT
                 FoodList newFood = new FoodList();
                 newFood.setMenu(foodDto.getMenu());
                 newFood.setKcal(foodDto.getKcal());
@@ -196,8 +210,4 @@ public class FoodService {
     public List<WeeklyFoodStatsDto> getWeeklyFoodStats(int userPk) {
         return foodMapper.getWeeklyFoodStats(userPk);
     }
-
-
-
-
 }
