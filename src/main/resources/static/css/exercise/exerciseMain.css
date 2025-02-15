@@ -490,10 +490,21 @@
     margin-left: 50px;
 }
 
-.exercise-entry button {
+.exercise-entry .exercise-save {
     width: 100px;
     height: 40px;
     font-size: 14px;
+}
+
+#reset-exercise-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: lightcoral !important;
+    background-color: white !important;
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 10px;
 }
 
 /*운동 종류 선택 팝업*/
@@ -800,7 +811,7 @@
     width: 300px;
     text-align: center;
     position: relative;
-    height: 200px;
+    height: 250px;
 }
 
 .modal-content > p {
@@ -812,15 +823,34 @@
 }
 
 #modal-title {
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+}
+
+.exercise-delete-btn {
+    margin-top: 20px;
+    width: 100px;
+    height: 30px;
+    font-size: 15px;
+    background-color: #FA5858 !important;
+}
+
+.exercise-delete-btn:hover {
+    background-color: #D34A4AFF !important;
 }
 
 /* ✅ 닫기 버튼 */
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 20px;
+    right: 10px;
+    top: 0px;
+    font-size: 30px;
+    color: darkgray !important;
+    background-color: white !important;
+}
+
+.close-btn:hover {
+    color: lightcoral !important;
+    background-color: white !important;
     cursor: pointer;
 }
 

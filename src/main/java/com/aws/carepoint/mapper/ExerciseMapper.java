@@ -55,6 +55,7 @@ public interface ExerciseMapper {
     // 캘린더에 보여줄 운동 데이터 가져오기
     @Select("SELECT * FROM exercise WHERE user_pk = #{userPk}")  // exercise_table이 실제 테이블명
     @Results(id = "exerciseResultMap", value = {
+            @Result(property = "exercisePk", column = "exercise_pk"),
             @Result(property = "exerciseName", column = "exercise_name"),
             @Result(property = "metValue", column = "MET"),
             @Result(property = "regDate", column = "reg_date"),
@@ -73,5 +74,10 @@ public interface ExerciseMapper {
         AND reg_date = CURDATE()
     """)
     int hasTodayExerciseData(@Param("userPk") int userPk);
+
+    @Delete("DELETE " +
+            "FROM exercise " +
+            "WHERE exercise_pk = #{exercisePk};")
+    void deleteExercise(@Param("exercisePk") int exercisePk);
 
 }
