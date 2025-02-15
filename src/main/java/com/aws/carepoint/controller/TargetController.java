@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Target;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,20 +50,17 @@ public class TargetController {
     // ✅ target_count 증가
     @ResponseBody
     @PostMapping("/update-target-count")
-    public ResponseEntity<?> updateTargetCount(@RequestBody Map<String, Integer> request) {
-        Integer userPk = request.get("userPk");
+    public ResponseEntity<?> updateTargetCount(@RequestParam("userPk") int userPk, @RequestParam("action") String action) {
 
-        if (userPk == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Invalid userPk"));
+        int change = action.equals("increase") ? 1 : -1;
+        boolean updated = targetService.updateTargetCount(userPk, change);
+
+        if (!updated) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", "User not found or target update not required"));
         }
 
-        boolean isUpdated = targetService.incrementTargetCount(userPk);
-        if (isUpdated) {
-            return ResponseEntity.ok(Map.of("success", true));
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to update target count"));
-        }
+        return ResponseEntity.ok(Collections.singletonMap("message", "Target count updated successfully"));
     }
 
     // 이번 주 target_count 업데이트 여부 체크

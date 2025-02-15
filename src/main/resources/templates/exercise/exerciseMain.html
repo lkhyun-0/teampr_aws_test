@@ -170,6 +170,7 @@
           events: '/exercise/getExerciseEvents',
           eventClick: function (info) {
             showEventPopup(info.event);
+            eventSave(info.event);
           }
         });
 
@@ -184,7 +185,8 @@
                 extendedProps: { // ✅ 추가 데이터 저장
                   hour: exercise.hour, // 운동 시간
                   minute: exercise.minute, // 운동 시간
-                  kcal: exercise.kcal // 소모 칼로리
+                  kcal: exercise.kcal, // 소모 칼로리
+                  exercisePk: exercise.exercisePk
                 }
               });
             });
@@ -205,6 +207,7 @@
         const exerciseTimeMinute = document.querySelector("#minute");
         const saveExerciseBtn = document.querySelector(".exercise-save");
         const exerciseSearchInput = document.querySelector("#exercise-search");
+        const exerciseResetBtn = document.querySelector("#reset-exercise-btn");
         let selectedExercise = "";
         let selectedMet = 0; // MET 저장 변수
         let exerciseList = []; // 운동 리스트 저장
@@ -286,6 +289,34 @@
           document.querySelector("#selected-exercise-met").value = selectedMet;
 
           exercisePopup.style.display = "none";
+
+          // ✅ 운동 종목이 선택되었으므로 리셋 버튼 표시
+          exerciseResetBtn.style.display = "flex";
+        });
+
+        // 📌 운동 선택 초기화(삭제) 버튼
+        document.getElementById("reset-exercise-btn").addEventListener("click", function () {
+
+          // 선택했던 값 초기화
+          selectedExercise = null;
+          selectedMet = null;
+
+          // 모든 항목의 selected 클래스 제거
+          document.querySelectorAll(".exercise-item").forEach(div => div.classList.remove("selected"));
+
+          // 화면에 표시 중인 운동명도 제거
+          exerciseTypeBtn.style.display = "block";
+          exerciseTypeDisplay.style.display = "none";
+          exerciseTypeDisplay.textContent = "";
+
+          // 선택한 값 hidden input으로 저장 (서버 전송용)**
+          document.querySelector("#selected-exercise-name").value = selectedExercise;
+          document.querySelector("#selected-exercise-met").value = selectedMet;
+
+          // ✅ 다시 리셋 버튼 숨기기
+          exerciseResetBtn.style.display = "none";
+
+          console.log("운동 종목 선택이 초기화되었습니다.");
         });
 
         // 운동 저장 버튼 클릭 시 데이터 전송
@@ -327,7 +358,6 @@
             fetch(`/target/count?userPk=${userPk}`)
                     .then(response => response.json())
                     .then(count => {
-                      console.log("운동 입력 후 targetcount!!!!!!!! : ", count);
                       document.getElementById("weekly-goal-count").textContent = `${count}회`;
                     })
                     .catch(error => console.error("Error fetching weekly goal count:", error));
@@ -349,11 +379,6 @@
           })
           .catch(error => console.error("Error saving exercise:", error));
         });
-
-        // ✅ 폼 제출 이벤트 리스너 추가
-        if (saveExerciseBtn) {
-          saveExerciseBtn.addEventListener("click", saveExercise);
-        }
       });
 
       window.onload = function () {
@@ -372,7 +397,7 @@
         }
       };
 
-      // ✅ 팝업 표시 함수
+      // ✅ 기록한 운동 팝업 표시 함수
       function showEventPopup(event) {
         const modal = document.getElementById("event-modal");
         const modalTitle = document.getElementById("modal-title");
@@ -397,7 +422,74 @@
         modal.style.display = "flex"; // 모달 띄우기
       }
 
-      // ✅ 모달 닫기 기능
+      // ✅ 운동 기록 삭제하기
+      function eventSave(event) {
+        const exercisePk = event.extendedProps.exercisePk;
+        const userPk = [[${userPk}]]; // Model에서 가져온 userPk 값
+        if (exercisePk === 0) {
+          console.error("Invalid exercise ID");
+          return;
+        }
+
+        $(".exercise-delete-btn").off("click").on("click", function () {
+          const isConfirmed = confirm("정말 삭제하시겠습니까?");
+          if (!isConfirmed) {
+            console.log("삭제 취소됨");
+            return;
+          }
+
+          // 운동 기록 삭제 요청
+          fetch(`/exercise/deleteExercise?exercisePk=${exercisePk}`)
+                  .then(response => response.json())
+                  .then(result => {
+
+                    // ✅ 로딩 모달 문구 변경 (운동 삭제 전용 메시지)
+                    $("#loading-screen p").text("운동 기록 삭제 중입니다...");
+                    $("#loading-screen").fadeIn();
+
+                    setTimeout(() => {
+                      fetch(`/target/current-week?userPk=${userPk}`)
+                              .then(response => response.json())
+                              .then(data => {
+                                if (!data) return;
+
+                                // ✅ 4. 목표 데이터 UI 업데이트
+                                document.querySelector(".target-1 .current").textContent = `${data.exerciseCount.toLocaleString()}회`;
+                                document.querySelector(".target-1 .goal").textContent = `${data.exerciseTarget.toLocaleString()}회`;
+                                document.querySelector(".target-2 .current").textContent = `${data.valueCount.toLocaleString()}회`;
+                                document.querySelector(".target-2 .goal").textContent = `${data.valueTarget.toLocaleString()}회`;
+                                document.querySelector(".target-3 .current").textContent = `${data.kcalSum.toLocaleString()}kcal`;
+                                document.querySelector(".target-3 .goal").textContent = `${data.kcalTarget.toLocaleString()}kcal`;
+
+                                // ✅ 5. 진행 바 업데이트
+                                updateProgress(".target-1 .target-progress", data.exerciseCount, data.exerciseTarget);
+                                updateProgress(".target-2 .target-progress", data.valueCount, data.valueTarget);
+                                updateProgress(".target-3 .target-progress", data.kcalSum, data.kcalTarget);
+
+                                // ✅ 6. 목표 달성 여부 확인 및 SUCCESS 도장 표시
+                                toggleSuccessStamp(".target-1 .success-stamp", data.exerciseCount, data.exerciseTarget);
+                                toggleSuccessStamp(".target-2 .success-stamp", data.valueCount, data.valueTarget);
+                                toggleSuccessStamp(".target-3 .success-stamp", data.kcalSum, data.kcalTarget);
+
+                                // ✅ 7. 목표가 달성되지 않은 경우 target_count 감소
+                                checkAllGoalsCompleted(userPk, data);
+                              })
+                              .catch(error => console.error("Error loading target data:", error));
+
+                      $("#loading-screen").fadeOut(); // "저장 중" 메시지 및 스피너 제거
+                      // ✅ 모달 문구를 원래대로 복원 (필요하다면)
+                      $("#loading-screen p").text("이번 주에 기록한 내용을 반영 중 입니다...");
+
+                      alert(result.message); // ✅ 삭제 완료 메시지 출력
+                      window.location.reload();
+                    }, 2000); // 서버에서 삭제된 데이터를 반영할 시간을 줌
+                  })
+                  .catch(error => console.error("Delete failed:", error));
+        });
+      }
+
+
+        // ✅ 모달 닫기 기능
       function closeModal() {
         document.getElementById("event-modal").style.display = "none";
       }
@@ -493,7 +585,6 @@
         fetch(`/target/count?userPk=${userPk}`)
                 .then(response => response.json())
                 .then(count => {
-                  console.log("targetcount!!!!!!!! : ", count);
                   document.getElementById("weekly-goal-count").textContent = `${count}회`;
                 })
                 .catch(error => console.error("Error fetching weekly goal count:", error));
@@ -623,46 +714,57 @@
         }
       }
 
-      // ✅ 모든 목표 달성 여부 확인 후 target_count 증가
+      // ✅ 목표 달성 여부를 체크하고 `target_count` 업데이트
       function checkAllGoalsCompleted(userPk, data) {
         const exerciseCompleted = data.exerciseCount >= data.exerciseTarget && data.exerciseTarget > 0;
         const valueCompleted = data.valueCount >= data.valueTarget && data.valueTarget > 0;
         const kcalCompleted = data.kcalSum >= data.kcalTarget && data.kcalTarget > 0;
 
-        if (exerciseCompleted && valueCompleted && kcalCompleted) {
-          updateTargetCount(userPk); // 목표 3개 모두 달성 시 target_count 증가
-        }
+        const allGoalsCompleted = exerciseCompleted && valueCompleted && kcalCompleted;
+
+        // ✅ 현재 목표 달성 개수 가져오기 (디버깅 추가)
+        fetch(`/target/count?userPk=${userPk}`)
+                .then(response => response.json())
+                .then(count => {
+                  const currentTargetCount = count;
+                  // console.log("현재 target_count:", currentTargetCount);
+                  // console.log("현재 목표 달성 상태:", allGoalsCompleted);
+
+                  if (allGoalsCompleted && currentTargetCount === 0) {
+                    // console.log("✅ 목표를 처음 달성했으므로 증가!");
+                    updateTargetCount(userPk, "increase");
+                  } else if (!allGoalsCompleted && currentTargetCount > 0) {
+                    // console.log("⛔️ 목표가 달성되지 않았으므로 감소!");
+                    updateTargetCount(userPk, "decrease");
+                  } else {
+                    // console.log("🔄 목표 상태가 변하지 않으므로 업데이트 없음.");
+                  }
+                })
+                .catch(error => console.error("Error fetching weekly goal count:", error));
       }
 
       // ✅ 목표 달성 시 user_detail 테이블의 target_count +1 업데이트 (이번 주에 한 번만)
-      function updateTargetCount(userPk) {
-        fetch(`/target/has-updated-this-week?userPk=${userPk}`)
+      function updateTargetCount(userPk, action) {
+        console.log(`🚀 updateTargetCount 실행됨! Action: ${action}`); // 디버깅 추가
+
+        fetch(`/target/update-target-count?userPk=${userPk}&action=${action}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userPk }),
+        })
                 .then(response => response.json())
-                .then(hasUpdated => {
-                  if (!hasUpdated) {
-                    // 이번 주에 아직 증가한 적 없으면 업데이트 실행
-                    fetch(`/target/update-target-count`, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ userPk }),
-                    })
-                            .then(response => response.json())
-                            .then(result => {
-                              // ✅ 주간 목표 달성 수 가져오기
-                              fetch(`/target/count?userPk=${userPk}`)
-                                      .then(response => response.json())
-                                      .then(count => {
-                                        console.log("targetcount!!!!!!!! : ", count);
-                                        document.getElementById("weekly-goal-count").textContent = `${count}회`;
-                                      })
-                                      .catch(error => console.error("Error fetching weekly goal count:", error));
-                            })
-                            .catch(error => console.error("Error updating target count:", error));
-                  } else {
-                    console.log("이번 주에는 이미 목표 달성 보상이 지급되었습니다!");
-                  }
+                .then(result => {
+                  console.log(`✅ Target count ${action} 성공:`, result);
+                  // ✅ 주간 목표 달성 수 가져오기
+                  fetch(`/target/count?userPk=${userPk}`)
+                          .then(response => response.json())
+                          .then(count => {
+                            document.getElementById("weekly-goal-count").textContent = `${count}회`;
+                            console.log(`🎯 UI 업데이트 완료: ${count}회`);
+                          })
+                          .catch(error => console.error("Error fetching weekly goal count:", error));
                 })
-                .catch(error => console.error("Error checking update status:", error));
+                .catch(error => console.error(`❌ Target count ${action} 실패:`, error));
       }
 
     </script>
@@ -687,6 +789,7 @@
     <span class="close-btn" onclick="closeModal()">&times;</span>
     <h2 id="modal-title"></h2>
     <p id="modal-content"></p>
+    <button class="exercise-delete-btn">기록 삭제</button>
   </div>
 </div>
 
@@ -820,6 +923,7 @@
         운동 종류 :
         <span id="selected-exercise"></span>
         <i class="exercise-type-popup-btn fa-solid fa-plus"></i>
+        <button id="reset-exercise-btn" type="button" style="/*display: none;*/"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <input type="hidden" id="selected-exercise-name" name="exerciseName">
       <input type="hidden" id="selected-exercise-met" name="met">

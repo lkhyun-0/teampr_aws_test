@@ -37,9 +37,14 @@ public class ExerciseController {
 
     // 운동 메인페이지
     @GetMapping("/exerciseMain")
-    public String exerciseMain(Model model, HttpSession session) {
+    public String exerciseMain(Model model, HttpSession session, RedirectAttributes rttr) {
 
-        int userPk = (Integer) session.getAttribute("userPk");
+        Integer userPk = (Integer) session.getAttribute("userPk");
+
+        if (userPk == null || userPk < 1) {
+            rttr.addFlashAttribute("msg", "로그인 후 이용 가능합니다.");
+            return "redirect:/user/login";
+        }
 
         model.addAttribute("userPk", userPk);
         return "exercise/exerciseMain";
@@ -73,7 +78,8 @@ public class ExerciseController {
     @GetMapping("/getExerciseEvents")
     public List<ExerciseDto> getExerciseEvents(HttpSession session) {
         int userPk = (int) session.getAttribute("userPk");
-        return exerciseService.getAllExercises(userPk);
+        List<ExerciseDto> exercises = exerciseService.getAllExercises(userPk);
+        return exercises;
     }
 
     // 해당 회원이 운동 기록한 횟수 가져오기
@@ -89,6 +95,18 @@ public class ExerciseController {
     public ResponseEntity<Boolean> hasTodayExerciseData(@RequestParam("userPk") int userPk) {
         boolean hasData = exerciseService.hasTodayExerciseData(userPk);
         return ResponseEntity.ok(hasData);
+    }
+
+    // 해당 회원이 운동 기록한 횟수 가져오기
+    @ResponseBody
+    @GetMapping("/deleteExercise")
+    public ResponseEntity<Map<String, String>> deleteExercise(@RequestParam("exercisePk") int exercisePk) {
+        exerciseService.deleteExercise(exercisePk);
+        // JSON 응답으로 변경
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "운동 기록이 삭제되었습니다.");
+
+        return ResponseEntity.ok(response);
     }
 
 
