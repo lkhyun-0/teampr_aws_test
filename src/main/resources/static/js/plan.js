@@ -111,6 +111,7 @@ function loadAllPlans(calendar) {
             // 병원 일정 추가
             hospitalData.forEach(event => {
 
+                console.log("event :" + event);
 
                 let newEvent = {
                     id: event.id,
@@ -134,7 +135,7 @@ function loadAllPlans(calendar) {
                     start: event.start,
                     end: endDate.toISOString().split('T')[0],
                     allDay: true,
-                    backgroundColor: "#6dd984", // 약 일정 색상
+                    backgroundColor: event.color, // 약 일정 색상
                     category: "medicine"
                 };
                 calendar.addEvent(newEvent);
@@ -515,7 +516,8 @@ function medicineSave(event) {
         endDate: $("#end-date").val(),
         selectTime: $("#medicine-time").val(),
         medicineName: $("#medicine-name").val(),
-        medicineType: $("#medicineType").val()
+        medicineType: $("#medicineType").val(),
+        color: $("#medicineColor").val()
     };
 
     $.ajax({
@@ -535,6 +537,7 @@ function medicineSave(event) {
                 title: medicine.title,
                 start: medicine.start,
                 end: medicine.end,
+                backgroundColor: medicine.color,
             });
 
             loadAllPlans(calendar);
@@ -753,4 +756,16 @@ Coloris({
 
 document.querySelector('.color-field').addEventListener('click', function() {
     document.querySelector('.colorPicker').click();
+});
+
+const colorPicker = document.querySelector('.colorPicker');
+const medicineColorInput = document.getElementById('medicineColor');
+
+colorPicker.addEventListener('input', function () {
+    medicineColorInput.value = this.value; // hidden input 업데이트
+});
+
+// 페이지 로드 시 기존 컬러 적용
+window.addEventListener('DOMContentLoaded', function () {
+    medicineColorInput.value = colorPicker.value; // hidden input 업데이트
 });

@@ -86,8 +86,8 @@ public interface PlanMapper {
     void saveMedicine(MedicineDto medicineDto);
 
     @Insert("""
-            INSERT INTO medicine_plan(start_date, end_date,select_time, medicine_pk)
-            VALUES (#{startDate}, #{endDate}, #{selectTime}, #{medicinePk})
+            INSERT INTO medicine_plan(color, start_date, end_date,select_time, medicine_pk)
+            VALUES (#{color}, #{startDate}, #{endDate}, #{selectTime}, #{medicinePk})
             """)
     void saveMedicine_Plan(MedicineDto medicineDto);
 
@@ -104,7 +104,7 @@ public interface PlanMapper {
     MedicineDto getLastInsertedMedicine(@Param("userPk") Integer userPk);
 
     @Select("""
-            SELECT m.* , mp.start_date, mp.end_date FROM medicine m
+            SELECT m.* , mp.* FROM medicine m
             JOIN medicine_plan mp ON m.medicine_pk = mp.medicine_pk
             ORDER BY reg_date DESC;
             """)

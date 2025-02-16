@@ -373,8 +373,11 @@ table {
 }
 
 .color-field > button {
+    margin: 0;
+    padding: 0;
 }
 
 .colorPicker {
-
+    width: 20px !important;
+    cursor: pointer!important;
 }
