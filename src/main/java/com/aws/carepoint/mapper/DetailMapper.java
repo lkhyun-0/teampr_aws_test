@@ -15,7 +15,7 @@ public interface DetailMapper {
     @Select("SELECT * FROM user_detail WHERE user_pk = #{userPk} LIMIT 1")
     DetailDto getUserDetail(int userPk);
 
-    @Select("SELECT height, weight, smoke, drink FROM user_detail WHERE user_pk = #{userPk} ORDER BY user_pk DESC LIMIT 1")
+    @Select("SELECT * FROM user_detail WHERE user_pk = #{userPk} ORDER BY user_pk DESC LIMIT 1")
     @Results(id = "detailResultMap", value = {
             @Result(property = "detailPk", column = "detail_pk"),
             @Result(property = "age", column = "age"),
@@ -44,5 +44,9 @@ public interface DetailMapper {
             "WHERE user_pk = #{userPk}")
     int updateDetailInfo(DetailDto detailDto);
 
+
+    // 프사 변경
+    @Update("UPDATE user_detail SET photo = #{imagePath} WHERE user_pk = #{userPk}")
+    void updateProfileImage(@Param("userPk") int userPk, @Param("imagePath") String imagePath);
 
 }

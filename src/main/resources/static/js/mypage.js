@@ -102,6 +102,46 @@ function modifyUserPwd() {
         .catch(error => console.error("에러 발생:", error));
 }
 
+// 프로필사진 업로드 !
+function openFileInput() {
+    document.getElementById("profile-upload").click();
+}
+document.getElementById("profile-upload").addEventListener("change", function (event) {
+    let file = event.target.files[0];
+
+    if (file) {
+        let formData = new FormData();
+        formData.append("profileImage", file);
+
+        fetch("/detail/uploadProfileImage", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 새 프로필 이미지 적용
+                    let profileImage = document.getElementById("profile-image");
+                    profileImage.src = data.imagePath;
+                    profileImage.classList.remove("hidden");
+
+                    // 기본 프로필 아이콘 숨기기
+                    document.getElementById("profile-icon").classList.add("hidden");
+
+                    console.log("프로필 이미지 변경됨:", data.imagePath);
+                } else {
+                    alert("업로드 실패: " + data.message);
+                }
+            })
+            .catch(error => console.error("에러 발생:", error));
+    }
+});
+
+
+
+
+
+
 
 
 

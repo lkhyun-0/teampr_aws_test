@@ -12,10 +12,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController // ✅ JSON 데이터를 반환하도록 @RestController 사용
 @RequestMapping("/detail/") // ✅ 기본 경로 설정
@@ -71,14 +78,57 @@ public class DetailController {
     }
 
 
+    // 프로필사진업로드
+    @PostMapping("uploadProfileImage")
+    public ResponseEntity<?> uploadProfileImage(@RequestParam("profileImage") MultipartFile file, HttpSession session) {
+        Object userPkObj = session.getAttribute("userPk");
+        if (userPkObj == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "로그인이 필요합니다."));
+        }
 
+        int userPk = (Integer) userPkObj;
 
+        try {
+            // 저장할 디렉토리 경로 설정
+            String uploadDir = System.getProperty("user.dir") + "/uploads/user/" + userPk;
+            File dir = new File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
 
+            // UUID를 이용해 파일명 중복 방지
+            String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+            String filePath = uploadDir + "/" + uniqueFileName;
+            Path path = Path.of(filePath);
 
+            // 파일 저장
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
+            // DB에 저장할 경로 (웹에서 접근 가능하도록 상대 경로 저장)
+            String dbFilePath = "/uploads/user/" + userPk + "/" + uniqueFileName;
 
+            // DB 업데이트 실행
+            detailService.updateProfileImage(userPk, dbFilePath);
+            System.out.println("DB 저장 완료: " + dbFilePath); // 로그 추가
 
+            return ResponseEntity.ok(Map.of("success", true, "imagePath", dbFilePath));
 
-
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", "파일 업로드 실패: " + e.getMessage()));
+        }
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

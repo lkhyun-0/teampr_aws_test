@@ -72,5 +72,11 @@ public class DetailService {
         return detailMapper.updateDetailInfo(detailDto) > 0;
     }
 
+    // 프로필사진 업로드
+    public void updateProfileImage(int userPk, String imagePath) {
+        System.out.println("DB 업데이트 실행: userPk = " + userPk + ", imagePath = " + imagePath);
+        detailMapper.updateProfileImage(userPk, imagePath);
+    }
+
 
 }
