@@ -37,11 +37,18 @@ public interface TargetMapper {
     // ✅ target_count 증가 쿼리 실행
     @Update("""
         UPDATE user_detail 
-        SET target_count = target_count + 1, last_target_update = CURDATE() 
+        SET target_count = target_count + #{change}, 
+            last_target_update = CASE 
+                WHEN #{change} = -1 THEN NULL 
+                ELSE CURDATE() 
+            END
         WHERE user_pk = #{userPk} 
-        AND (last_target_update IS NULL OR last_target_update < CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY)
+        AND (
+            (#{change} = 1 AND (last_target_update IS NULL OR last_target_update < CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY))
+            OR #{change} = -1 -- ✅ 감소할 경우 조건을 무시하고 실행
+        )
     """)
-    int incrementTargetCount(@Param("userPk") int userPk);
+    int updateTargetCount(@Param("userPk") int userPk, @Param("change") int change);
 
     // 이번 주 target_count 업데이트 여부 체크
     @Select("""

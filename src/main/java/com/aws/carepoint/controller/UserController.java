@@ -35,15 +35,17 @@ public class UserController {
     private final DetailMapper detailMapper;
     private final FreeMapper freeMapper;
     private final QnaMapper qnaMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UserController(UserService userService, UserMapper userMapper, DetailService detailService, DetailMapper detailMapper, FreeMapper freeMapper, QnaMapper qnaMapper) {
+    public UserController(UserService userService, UserMapper userMapper, DetailService detailService, DetailMapper detailMapper, FreeMapper freeMapper, QnaMapper qnaMapper, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.userMapper = userMapper; // 🔹 생성자에서 주입
         this.detailService = detailService;
         this.detailMapper = detailMapper;
         this.freeMapper = freeMapper;
         this.qnaMapper = qnaMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -170,9 +172,17 @@ public class UserController {
         session.setAttribute("email", usersDto.getEmail());
         session.setAttribute("del_status", usersDto.getDelStatus());
 
+        // 세션에 저장된 redirectUrl을 가져옴
+        String redirectUrl = (String) session.getAttribute("redirectUrl");
+        if (redirectUrl != null) {
+            session.removeAttribute("redirectUrl"); // 사용 후 제거
+        } else {
+            redirectUrl = "/user/mainPage"; // 기본값
+        }
+
         response.put("message", "로그인 성공");
         response.put("success", true);
-        response.put("redirect", "/user/mainPage");
+        response.put("redirect", redirectUrl);
         return ResponseEntity.ok(response);
     }
 
@@ -372,6 +382,43 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    @PostMapping("modifyUserPwd")
+    public ResponseEntity<?> modifyUserPwd(@RequestBody Map<String, String> request) {
+        // ✅ 요청에서 userPk 가져오기 (세션에서 가져올 필요 없음)
+        String userPkStr = request.get("userPk");
+        String newPwd = request.get("newPassword");
+
+        if (userPkStr == null || userPkStr.trim().isEmpty()) {
+            //log.error("비밀번호 변경 실패: userPk 값이 없음");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "회원 정보가 없습니다."));
+        }
+
+        int userPk;
+        try {
+            userPk = Integer.parseInt(userPkStr);
+        } catch (NumberFormatException e) {
+            //log.error("비밀번호 변경 실패: userPk 변환 오류 - {}", userPkStr);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", "잘못된 회원 정보입니다."));
+        }
+
+        if (newPwd == null || newPwd.trim().isEmpty()) {
+            //log.error("비밀번호 변경 실패: 새로운 비밀번호 없음");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "비밀번호를 입력하세요."));
+        }
+
+        //log.info("비밀번호 변경 요청 - UserPK: {}, 입력된 비밀번호: {}", userPk, newPwd);
+
+        // ✅ 새 비밀번호 암호화 후 저장
+        String encodedPwd = passwordEncoder.encode(newPwd);
+        //log.info("비밀번호 암호화 완료 - UserPK: {}", userPk);
+
+        userService.modifyUserPwd(userPk, encodedPwd);
+        //log.info("비밀번호 변경 성공 - UserPK: {}", userPk);
+
+        return ResponseEntity.ok(Map.of("success", true));
+    }
+
 
 
 

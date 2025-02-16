@@ -155,4 +155,11 @@ public class UserService {
         return userMapper.updateDelStatus(userPk) > 0;
     }
 
+    public void modifyUserPwd(int userPk, String newPassword) {
+        log.info("비밀번호 변경 요청 - UserPK: {}", userPk);
+        userMapper.modifyUserPwd(userPk, newPassword);
+        log.info("비밀번호 변경 완료 - UserPK: {}", userPk);
+    }
+
+
 }
