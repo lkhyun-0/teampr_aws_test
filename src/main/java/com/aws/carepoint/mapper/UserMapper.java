@@ -82,6 +82,7 @@ public interface UserMapper {
     void modifyUserPwd(@Param("userPk") int userPk, @Param("newPassword") String newPassword);
 
 
-
+    @Select("SELECT phone FROM users WHERE phone IS NOT NULL")
+    List<String> getAllUserPhoneNumbers();  // 모든 회원 전화번호 가져오기
 }
 
