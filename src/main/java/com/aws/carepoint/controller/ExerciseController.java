@@ -43,7 +43,7 @@ public class ExerciseController {
 
         if (userPk == null || userPk < 1) {
             rttr.addFlashAttribute("msg", "로그인 후 이용 가능합니다.");
-            return "redirect:/user/login";
+            return "redirect:/user/signIn";
         }
 
         model.addAttribute("userPk", userPk);
