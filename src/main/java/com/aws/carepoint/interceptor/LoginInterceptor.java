@@ -1,4 +1,4 @@
-/*package com.aws.carepoint.interceptor;
+package com.aws.carepoint.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,17 +12,18 @@ public class LoginInterceptor implements HandlerInterceptor {
         Object userPk = request.getSession().getAttribute("userPk");
 
         if (userPk == null) {
+            // 현재 요청 URL (쿼리스트링 포함)
+            String targetUrl = request.getRequestURI();
+            if (request.getQueryString() != null) {
+                targetUrl += "?" + request.getQueryString();
+            }
+            // 세션에 저장 (추후 로그인 성공 시 사용)
+            request.getSession().setAttribute("redirectUrl", targetUrl);
 
-            // JavaScript alert 추가
-            response.setContentType("text/html; charset=UTF-8");
-            response.getWriter().write("""
-                <script>
-                    alert('로그인이 필요합니다.');
-                    location.href='/user/signIn';
-                </script>
-            """);
+            // 로그인 페이지로 리다이렉트
+            response.sendRedirect("/user/signIn");
             return false;
         }
-        return true; // 로그인했으면 요청 계속 진행
+        return true;
     }
-}*/
+}
