@@ -57,11 +57,11 @@ public class DetailService {
     @Transactional
     public boolean updateUserInfo(UsersDto usersDto) {
             // 비밀번호가 존재하는 경우 암호화
-            if (usersDto.getUserPwd() != null && !usersDto.getUserPwd().isEmpty()) {
+           /* if (usersDto.getUserPwd() != null && !usersDto.getUserPwd().isEmpty()) {
                 String encodedPassword = passwordEncoder.encode(usersDto.getUserPwd());
                 usersDto.setUserPwd(encodedPassword); // 암호화된 비밀번호 저장
                 //System.out.println(" 암호화된 비밀번호: " + encodedPassword);
-            }
+            }*/
 
 
         return userMapper.updateUserInfo(usersDto) > 0;
@@ -70,6 +70,12 @@ public class DetailService {
     @Transactional
     public boolean updateDetailInfo(DetailDto detailDto) {
         return detailMapper.updateDetailInfo(detailDto) > 0;
+    }
+
+    // 프로필사진 업로드
+    public void updateProfileImage(int userPk, String imagePath) {
+        System.out.println("DB 업데이트 실행: userPk = " + userPk + ", imagePath = " + imagePath);
+        detailMapper.updateProfileImage(userPk, imagePath);
     }
 
 

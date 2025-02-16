@@ -59,7 +59,6 @@ public interface UserMapper {
     @Update("UPDATE users " +
             "SET phone = IFNULL(#{phone}, phone), " +
             "email = IFNULL(#{email}, email), " +
-            "userPwd = IFNULL(#{userPwd}, userPwd), " +
             "update_date = NOW() " +
             "WHERE user_pk = #{userPk}")
     int updateUserInfo(UsersDto usersDto);
@@ -79,5 +78,11 @@ public interface UserMapper {
     @Update("UPDATE users SET del_status = 1, delDate = NOW() WHERE user_pk = #{userPk}")
     int updateDelStatus(@Param("userPk") int userPk);
 
+    @Update("UPDATE users SET userpwd = #{newPassword} WHERE user_pk = #{userPk}")
+    void modifyUserPwd(@Param("userPk") int userPk, @Param("newPassword") String newPassword);
+
+
+    @Select("SELECT phone FROM users WHERE phone IS NOT NULL")
+    List<String> getAllUserPhoneNumbers();  // 모든 회원 전화번호 가져오기
 }
 
