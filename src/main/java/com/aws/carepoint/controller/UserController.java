@@ -172,9 +172,17 @@ public class UserController {
         session.setAttribute("email", usersDto.getEmail());
         session.setAttribute("del_status", usersDto.getDelStatus());
 
+        // 세션에 저장된 redirectUrl을 가져옴
+        String redirectUrl = (String) session.getAttribute("redirectUrl");
+        if (redirectUrl != null) {
+            session.removeAttribute("redirectUrl"); // 사용 후 제거
+        } else {
+            redirectUrl = "/user/mainPage"; // 기본값
+        }
+
         response.put("message", "로그인 성공");
         response.put("success", true);
-        response.put("redirect", "/user/mainPage");
+        response.put("redirect", redirectUrl);
         return ResponseEntity.ok(response);
     }
 
