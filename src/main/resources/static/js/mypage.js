@@ -173,7 +173,7 @@ function loadGraphData(userPk) {
             const weights = data.map(entry => entry.weight);
             const bloodPressures = data.map(entry => entry.bloodPress);
             const bloodSugars = data.map(entry => entry.bloodSugar);
-
+            console.log("날짜 원본 데이터>>>>>>>>>>>>>>>>>>>>>>>", labels);
             const ctx = document.getElementById('progressChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',

@@ -3,6 +3,7 @@ package com.aws.carepoint.controller;
 
 import com.aws.carepoint.dto.GraphDto;
 import com.aws.carepoint.service.GraphService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,13 +20,22 @@ import java.util.List;
         }
 
     @GetMapping("/{userPk}")
-    public List<GraphDto> getGraphData(@PathVariable("userPk") int userPk) {
-            List<GraphDto> graphs = graphService.getGraphData(userPk);
+    public ResponseEntity<?> getGraphData(@PathVariable("userPk") int userPk) {
+        List<GraphDto> graphs = graphService.getGraphData(userPk);
+
+        if (graphs.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content 응답
+        }
+
+        
+
         System.out.println("weight =============================> " + graphs.get(0).getWeight());
         System.out.println("BloodSugar =============================> " + graphs.get(0).getBloodSugar());
         System.out.println("BloodPress =============================> " + graphs.get(0).getBloodPress());
-        return graphService.getGraphData(userPk);
+
+        return ResponseEntity.ok(graphs);
     }
+
 
     // 그래프 저장
     @PostMapping("/saveGraph")
