@@ -82,7 +82,7 @@
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
 
-<script th:inline="javascript">
+<script>
     $(document).ready(function () {
         let userPk = [[${session.userPk}]];
 
@@ -246,7 +246,6 @@
         }
     });
 </script>
-
 
 </body>
 </html>
