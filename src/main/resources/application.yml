@@ -36,6 +36,10 @@ spring:
             user-info-uri: "${kakao.user-info-url}"
             user-name-attribute: id
 
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: Asia/Seoul
+
 
 
 file:
