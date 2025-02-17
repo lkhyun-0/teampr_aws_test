@@ -19,7 +19,11 @@ import java.util.List;
         }
 
     @GetMapping("/{userPk}")
-    public List<GraphDto> getGraphData(@PathVariable int userPk) {
+    public List<GraphDto> getGraphData(@PathVariable("userPk") int userPk) {
+            List<GraphDto> graphs = graphService.getGraphData(userPk);
+        System.out.println("weight =============================> " + graphs.get(0).getWeight());
+        System.out.println("BloodSugar =============================> " + graphs.get(0).getBloodSugar());
+        System.out.println("BloodPress =============================> " + graphs.get(0).getBloodPress());
         return graphService.getGraphData(userPk);
     }
 

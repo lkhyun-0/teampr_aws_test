@@ -31,7 +31,7 @@
 <section class="main">
     <h2>문의글 답변</h2>
     <div class="edit-container">
-        <form name="frm" action="/qna/qnaReplyAction" method="post" onsubmit="return validataForm()">
+        <form name="frm" action="/qna/qnaReplyAction" method="post" enctype="multipart/form-data" onsubmit="return validataForm()">
             <input type="hidden" name="originNum" th:value="${qna.originNum}" />
 
             <div class="form-group">
