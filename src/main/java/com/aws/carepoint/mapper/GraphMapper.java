@@ -9,6 +9,11 @@ import java.util.List;
 public interface GraphMapper {
 
     @Select("SELECT graph_pk, weight, blood_press, blood_sugar, reg_date, user_pk FROM graph WHERE user_pk = #{userPk} ORDER BY reg_date")
+    @Results(id = "graphResultMap", value = {
+            @Result(property = "bloodSugar", column = "blood_sugar"),
+            @Result(property = "bloodPress", column = "blood_press"),
+            @Result(property = "userPk", column = "user_pk")
+    })
     List<GraphDto> getGraphData(int userPk);
 
     // 그래프 데이터 삽입 (target_pk 자동 할당)

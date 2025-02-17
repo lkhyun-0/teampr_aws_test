@@ -78,14 +78,18 @@ public class QnaController {
         else if(authLevel == 3) {
             // 회원이 작성한 origin_num 가져오기
             List<Integer> userOriginNums = qnaService.getUserOriginNums(userPk);
-
             // 현재 게시글의 origin_num이 회원의 origin_num 목록에 포함되어 있는지 확인
             if(userOriginNums.contains(qnaDto.getOriginNum())) {
                 path = "qna/qnaContent";
             } else {
+                // 일반 회원이지만 본인의 글이 아닐 경우
                 redirectAttributes.addFlashAttribute("msg", "열람 권한이 없습니다.");
                 path = "redirect:/qna/qnaList";
             }
+        } else {
+            // authLevel이 7,3 이외의 경우에 대한 처리 추가
+            redirectAttributes.addFlashAttribute("msg", "열람 권한이 없습니다.");
+            path = "redirect:/qna/qnaList";
         }
         return path;
     }
@@ -159,8 +163,18 @@ public class QnaController {
     @PostMapping("/qnaDeleteAction/{id}")
     public String qnaDeleteAction(
             @PathVariable("id") int articlePk,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
         QnaDto qnaDto = qnaService.getQnaDetail(articlePk);
+
+        int userPk = qnaDto.getUserPk();
+
+        if((Integer) session.getAttribute("userPk") != userPk) {
+            redirectAttributes.addFlashAttribute("msg", "본인이 작성한 게시글만 삭제 할 수 있습니다.");
+            return "redirect:/qna/qnaList";
+        }
+
+
         int value = qnaService.deleteQna(qnaDto);
 
         if (value >= 1) {
