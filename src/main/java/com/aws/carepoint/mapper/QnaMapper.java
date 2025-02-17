@@ -76,8 +76,8 @@ public interface QnaMapper {
     int updateQna(QnaDto qna);
 
     // 답변글 작성
-    @Insert("INSERT INTO article (title, content, origin_num, level_, user_pk, board_pk) " +
-            "VALUES (#{title}, #{content}, #{originNum}, 1, #{userPk}, 3)")
+    @Insert("INSERT INTO article (filename, title, content, origin_num, level_, user_pk, board_pk) " +
+            "VALUES (#{filename}, #{title}, #{content}, #{originNum}, 1, #{userPk}, 3)")
     @Options(useGeneratedKeys = true, keyProperty = "articlePk")
     @ResultMap("qnaResultMap")
     int insertQnaReply(QnaDto qna);
