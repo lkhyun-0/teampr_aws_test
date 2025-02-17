@@ -27,12 +27,6 @@ import java.util.List;
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content 응답
         }
 
-        
-
-        System.out.println("weight =============================> " + graphs.get(0).getWeight());
-        System.out.println("BloodSugar =============================> " + graphs.get(0).getBloodSugar());
-        System.out.println("BloodPress =============================> " + graphs.get(0).getBloodPress());
-
         return ResponseEntity.ok(graphs);
     }
 

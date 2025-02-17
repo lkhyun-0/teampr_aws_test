@@ -268,7 +268,6 @@ public class UserController {
         String findUserPk = userMapper.findPhoneByPhone(kakaoUser.getPhone());
 
         String phone = normalizePhoneNumber(kakaoUser.getPhone());
-       // System.out.println("전화번호 정규화 !! " + phone); //이거 기준으로 가져올건데 카카오 유저랑 일반유저가 다름
 
         Integer userPk = (findUserPk != null && !findUserPk.isEmpty()) ? Integer.parseInt(findUserPk) : null;
 
