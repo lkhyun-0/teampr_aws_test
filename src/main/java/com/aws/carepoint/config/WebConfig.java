@@ -26,7 +26,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns(
                         "/food/analysis", // 식단분석
                         "/food/foodRecord", // 식단기록
-                        "/food/foodList" // 식단 목록
+                        "/food/foodList", // 식단 목록
+                        "/plan/plan"
 
                 ); // 필요한 경로만 인터셉터 적용 하면 됩니당
     }

@@ -31,6 +31,7 @@ public interface PlanMapper {
     @Select("""
             SELECT b.* , bp.select_date, bp.select_time FROM hospital b
             JOIN hospital_plan bp ON b.hospital_pk = bp.hospital_pk
+            WHERE b.user_pk = #{userPk}
             ORDER BY reg_date DESC;
             """)
     @Results(id = "hospitalResultMap", value = {
@@ -38,6 +39,7 @@ public interface PlanMapper {
             @Result(property = "hospitalName", column = "hospital_name"),
             @Result(property = "selectTime", column = "select_time"),
             @Result(property = "selectDate", column = "select_date"),
+            @Result(property = "userPk", column = "user_pk"),
     })
     List<HospitalDto> getAllHospital(Integer userPk);
 
@@ -106,6 +108,7 @@ public interface PlanMapper {
     @Select("""
             SELECT m.* , mp.* FROM medicine m
             JOIN medicine_plan mp ON m.medicine_pk = mp.medicine_pk
+            WHERE m.user_pk = #{userPk}
             ORDER BY reg_date DESC;
             """)
     @ResultMap("medicineResultMap")
