@@ -224,23 +224,9 @@ CREATE TABLE hospital_api
     place_id        VARCHAR(255) UNIQUE
 );
 
-======= users 관리자데이터 =======
-INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
-VALUES (7, 0, '22na', '1234', '이인아', '22na', '010-1111-1111', '22na@naver.com');
 
-INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
-VALUES (3, 0, 'hong', '1234', '홍길동', 'hong', '010-2222-2222', 'hong@naver.com');
 
-INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
-VALUES (3, 0, 'pupu', '1234', '김푸푸', 'pupu', '010-3333-3333', 'pupu@gmail.com');
 
-INSERT INTO users (auth_level, social_login_status, userid, userpwd, username, usernick, phone, email)
-VALUES (3, 0, 'mimi', '1234', '최미미', 'mimi', '010-4444-4444', 'mimi@gmail.com');
-
-SELECT *
-FROM users;
-
-======= board 시작데이터 =======
 INSERT INTO board (board_type)
 VALUES ('N');
 INSERT INTO board (board_type)
@@ -248,44 +234,10 @@ VALUES ('F');
 INSERT INTO board (board_type)
 VALUES ('Q');
 
-SELECT *
-FROM board;
-
-DELETE
-FROM board
-ALTER TABLE board
-    AUTO_INCREMENT = 1;
-
-========= article 프로시저 =========
-DELIMITER $$
-
-CREATE PROCEDURE InsertArticleProc(
-    IN PARAM_NAME VARCHAR(20) -- IN 키워드 추가 (SQLyog 호환)
-)
-BEGIN
-    DECLARE i INT DEFAULT 1; -- 초기값 설정 방법 변경
-
-    WHILE i <= 300
-        DO
-            INSERT INTO article (title, content, user_pk, board_pk)
-            VALUES (CONCAT(PARAM_NAME, i), CONCAT('게시글 내용', i), 2, 2);
-
-            SET i = i + 1;
-        END WHILE;
-END $$
-
-DELIMITER ;
-
-========= 프로시저 호출 =========
-CALL InsertArticleProc('게시글 제목');
-
-SELECT *
-FROM article;
 
 
 
-========= 운동 목표 트리거 =========
-DELIMITER //
+
 
 CREATE TRIGGER trg_update_exercise_target
     AFTER INSERT
@@ -302,7 +254,7 @@ END //
 
 DELIMITER ;
 
-========= 목표 카운트 이벤트 =========
+
 SET GLOBAL event_scheduler = ON;
 
 DELIMITER //
@@ -327,7 +279,7 @@ CREATE EVENT update_exercise_count_event
 
 DELIMITER ;
 
-========= 그래프 목표 트리거 =========
+
 DELIMITER //
 
 CREATE TRIGGER trg_update_graph_target
@@ -345,7 +297,7 @@ END //
 
 DELIMITER ;
 
-========= 목표 카운트 이벤트 =========
+
 SET GLOBAL event_scheduler = ON;
 
 DELIMITER //
