@@ -764,19 +764,6 @@
     background-color: #e3f0ff !important;
 }
 
-/* 오늘 날짜 셀 위의 이벤트 배경은 투명 처리 */
-.fc-day-today .fc-daygrid-event {
-    border: none !important; /* 테두리까지 없애고 싶다면 */
-    background-color: #9EDE9EFF;
-    cursor: pointer;
-}
-
-/* (선택) 다른 날의 이벤트는 흰 배경으로 표시하고 싶다면 */
-.fc-daygrid-event {
-    background-color: #ffffff;
-    /* 필요에 따라 다른 스타일 적용 */
-}
-
 /* 운동시간 이벤트 추가 */
 .fc-h-event .fc-event-main {
     color: #424242;
