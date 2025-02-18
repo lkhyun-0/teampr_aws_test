@@ -1,11 +1,13 @@
 package com.aws.carepoint.mapper;
 
+import com.aws.carepoint.dto.FreeDto;
 import com.aws.carepoint.mapper.sql.QnaSqlProvider;
 import com.aws.carepoint.util.SearchCriteria;
 import com.aws.carepoint.dto.QnaDto;
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.jdbc.SQL;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -14,7 +16,7 @@ public interface QnaMapper {
     @Select("SELECT a.*, u.usernick " +
             "FROM article a " +
             "JOIN users u ON a.user_pk = u.user_pk " +
-            "WHERE a.board_pk = 1 " +
+            "WHERE a.board_pk = 3 " +
             "AND a.del_status = 0 " +
             "ORDER BY a.origin_num DESC, a.level_ ASC " +
             "LIMIT #{pageStart}, #{perPageNum} ")
@@ -33,7 +35,7 @@ public interface QnaMapper {
     // 총 게시글 개수 조회 (검색 조건 포함)
     @Select("SELECT COUNT(*) " +
             "FROM article " +
-            "WHERE board_pk = 1 " +
+            "WHERE board_pk = 3 " +
             "AND del_status = 0")
     int getTotalQnaCount(SearchCriteria scri);
 
@@ -46,8 +48,8 @@ public interface QnaMapper {
     QnaDto getQnaDetail(int articlePk);
 
     // 게시글 작성
-    @Insert("INSERT INTO article (title, content, user_pk, board_pk)" +
-            "VALUES (#{title}, #{content}, 2, 1)")
+    @Insert("INSERT INTO article (title, filename, content, user_pk, board_pk)" +
+            "VALUES (#{title}, #{filename}, #{content}, #{userPk}, 3)")
     @Options(useGeneratedKeys = true, keyProperty = "articlePk")
     int insertArticle(QnaDto qna);
 
@@ -71,11 +73,11 @@ public interface QnaMapper {
             "WHERE article_pk = #{articlePk} " +
             "AND user_pk = #{userPk}")
     @ResultMap("qnaResultMap")
-    void updateQna(QnaDto qna);
+    int updateQna(QnaDto qna);
 
     // 답변글 작성
-    @Insert("INSERT INTO article (title, content, origin_num, level_, user_pk, board_pk) " +
-            "VALUES (#{title}, #{content}, #{originNum}, 1, 1, 1)")
+    @Insert("INSERT INTO article (filename, title, content, origin_num, level_, user_pk, board_pk) " +
+            "VALUES (#{filename}, #{title}, #{content}, #{originNum}, 1, #{userPk}, 3)")
     @Options(useGeneratedKeys = true, keyProperty = "articlePk")
     @ResultMap("qnaResultMap")
     int insertQnaReply(QnaDto qna);
@@ -86,7 +88,23 @@ public interface QnaMapper {
             "AND del_status = 0")
     int countReplies(int originNum);
 
+    @Select("SELECT origin_num FROM article WHERE user_pk = #{userPk}")
+    List<Integer> getUserOriginNums(int userPk);
 
+
+
+
+
+
+
+    @Select("SELECT * " +
+            "FROM article " +
+            "WHERE board_pk = 1 " +
+            "AND user_pk = #{userPk} " +
+            "ORDER BY reg_date DESC " +
+            "LIMIT 5")
+    @ResultMap("qnaResultMap")
+    List<QnaDto> getRecentQna(int userPk);
 }
 
 

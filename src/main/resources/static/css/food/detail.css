@@ -22,7 +22,7 @@ body {
 }
 
 .popup {
-    width: 660px;
+    width: 700px;
     height: 830px;
     background: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -133,7 +133,7 @@ h1 {
     position: relative;
     border-bottom: 1px dashed #ddd;
     padding-bottom: 1px;
-    width: 310px;
+    width: 370px;
 }
 
 .meal-menu span {
@@ -151,7 +151,7 @@ h1 {
     position: absolute;
     bottom: 0; /* 줄 위치를 정확히 하단에 고정 */
     left: 0;
-    width: 310px;
+    width: 370px;
     height: 1px;
     border-bottom: 1px dashed #424242; /* 줄 스타일을 점선으로 설정 */
 }
@@ -198,8 +198,8 @@ table, th, td, thead, tbody, tr {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 700px;
-    height: 600px;
+    width: 800px;
+    height: 700px;
     background: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: none;
@@ -265,11 +265,11 @@ table, th, td, thead, tbody, tr {
 
 /* 검색 결과 부모 컨테이너 */
 .search-results {
-    width: 590px; /* 부모 컨테이너 너비 고정 */
-    height: 200px; /* 부모 컨테이너 높이 고정 */
+    width: 700px; /* 부모 컨테이너 너비 고정 */
+    height: 300px; /* 부모 컨테이너 높이 고정 */
     margin: 30px auto; /* 가운데 정렬 및 위아래 여백 */
     overflow-y: auto; /* 세로 스크롤 */
-    overflow-x: hidden; /* 가로 스크롤 제거 */
+    overflow-x: auto; /* 가로 스크롤 제거 */
     padding: 0; /* 내부 여백 제거 */
     box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
 }
@@ -277,6 +277,7 @@ table, th, td, thead, tbody, tr {
 /* 검색 결과 테이블 */
 .search-results table {
     width: 100%; /* 테이블이 부모 컨테이너 너비를 완전히 채움 */
+    min-width: 600px;
     border-collapse: collapse; /* 셀 간 경계선 병합 */
 }
 
@@ -293,9 +294,8 @@ table, th, td, thead, tbody, tr {
 /* 테이블 셀 */
 .search-results td {
     font-size: 15px; /* 폰트 크기 */
-    padding: 10px; /* 셀 간 여백 */
+    padding: 7px; /* 셀 간 여백 */
     white-space: nowrap; /* 텍스트 줄바꿈 방지 */
-    text-overflow: ellipsis; /* 넘치는 텍스트 생략 처리 */
     border-bottom: 1px solid #ddd; /* 하단 경계선 */
 }
 
@@ -350,10 +350,10 @@ table, th, td, thead, tbody, tr {
 
 /* 연필 아이콘 */
 .large-pencil-icon {
-    width: 100px; /* 연필 아이콘 크기 */
-    height: 100px;
+    width: 135px; /* 연필 아이콘 크기 */
+    height: 135px;
     position: relative; /* 연필 위치 조정 */
-    top: 40px; /* 아래로 이동 */
+    top: 25px; /* 아래로 이동 */
     left: 55px; /* 오른쪽으로 이동 */
 }
 
@@ -362,8 +362,8 @@ table, th, td, thead, tbody, tr {
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 380px;
-    margin-left: 100px; /* 리스트를 왼쪽으로 이동 */
+    width: 420px;
+    margin-left: 140px; /* 리스트를 왼쪽으로 이동 */
 }
 
 .selected-menu li {
@@ -422,3 +422,29 @@ button {
     text-overflow: ellipsis; /* 넘치는 텍스트에 "..." 표시 */
     flex-shrink: 0; /* 텍스트가 줄어들지 않도록 설정 */
 }
+
+/* 그람수 인풋 */
+.food-amount {
+    width: 70px;
+    text-align: center;
+    font-size: 14px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* 추가 버튼 스타일 */
+.add-food {
+    background-color: #87B9F8;
+    color: white;
+    font-size: 14px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-food:hover {
+    background-color: #4169E1;
+}
+

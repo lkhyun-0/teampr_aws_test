@@ -6,30 +6,41 @@
     <link href="/css/user/mypage.css" type="text/css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 </head>
-
-
 <body>
-
-
-<div th:insert="/common/header.html"></div>
+<div th:insert="~{/common/header.html}"></div>
 <input type="hidden" id="userPk" th:value="${session.userPk}">
 
 <div class="main-container">
     <div class="top-section">
         <!-- 회원정보 + 그래프 나타는 부분 -->
         <div class="info-container">
-            <div class="user-profile-photo"><img src="/images/필릭스.png" alt="user-profile-photo"></div>
+            <div class="user-profile-photo" onclick="openFileInput()">
+                <!-- 기본 프로필 아이콘 (파일이 없을 때만 표시) -->
+                <svg id="profile-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                     class="w-16 h-16 text-gray-400" th:classappend="${detailDto.photo != null} ? 'hidden' : ''">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 18.75a8.25 8.25 0 0115 0" />
+                </svg>
+
+                <!-- 업로드된 프로필 이미지 -->
+                <img id="profile-image" th:src="${detailDto.photo != null ? detailDto.photo : ''}"
+                     alt="" class="w-16 h-16 rounded-full object-cover" th:classappend="${detailDto.photo == null} ? 'hidden' : ''">
+
+                <!-- 파일 업로드 input -->
+                <input type="file" id="profile-upload" style="display: none;" accept="image/*">
+            </div>
+
+
+
+
             <div class="user-info">
                 <button id="openModal" class="modify-btn">수정하기</button>
                 <ul>
-
-                        <li>닉네임 : <span th:text="${userInfo != null ? userInfo.userNick : '정보 없음'}"></span></li>
-                        <li>아이디 : <span th:text="${userInfo != null ? userInfo.userId : '정보 없음'}"></span></li>
-                        <li>이메일 : <span th:text="${userInfo != null ? userInfo.email : '정보 없음'}"></span></li>
-                        <li>전화번호 : <span th:text="${userInfo != null ? userInfo.phone : '정보 없음'}"></span></li>
-                        <li>가입일 : <span th:text="${userInfo != null ? userInfo.joinDate : '정보 없음'}"></span></li><!--todo    일단 가져와진다 !-->
+                    <li>닉네임 : <span th:text="${userInfo != null ? userInfo.userNick : '정보 없음'}"></span></li>
+                    <li>아이디 : <span th:text="${userInfo != null ? userInfo.userId : '정보 없음'}"></span></li>
+                    <li>이메일 : <span th:text="${userInfo != null ? userInfo.email : '정보 없음'}"></span></li>
+                    <li>전화번호 : <span th:text="${userInfo != null ? userInfo.phone : '정보 없음'}"></span></li>
+                    <li>가입일 : <span th:text="${userInfo != null ? #temporals.format(userInfo.joinDate, 'yyyy-MM-dd') : '정보 없음'}"></span></li>
                     <li>키 / 체중 :
                         <span th:text="${detailDto != null ? (detailDto.height + 'cm / ' + detailDto.weight + 'kg') : '정보 없음'}"></span>
                     </li>
@@ -41,11 +52,7 @@
             </div>
         </div>
 
-
         <!-- 그래프 섹션 -->
-
-
-
         <div class="graph-info">
             <canvas id="progressChart"></canvas>
             <p id="noDataMessage" class="no-data-message" style="display: none;">
@@ -53,6 +60,8 @@
             </p>
         </div>
     </div>
+
+
     <div class="post-container">
         <ul class="tab-bar">
             <li><a href="#free-list">자유</a></li>
@@ -60,7 +69,7 @@
         </ul>
         <div class="tabcontent">
             <!-- 자유 글 목록 -->
-            <div id="free-list" class="tab-pane active">
+            <div id="free-list" class="tab-pane">
                 <table class="table-style">
                     <thead>
                     <tr>
@@ -70,18 +79,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2025.01.05</td>
-                        <td>내가 작성한 자유글1</td>
-                        <td>3</td>
+                    <tr th:each="free : ${recentFree}">
+                        <td th:text="${#temporals.format(free.regDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${free.title}"></td>
+                        <td th:text="${free.viewcnt}"></td>
                     </tr>
-                    <!-- 반복 데이터 -->
-                    <tr>
-                        <td>2025.01.05</td>
-                        <td>내가 작성한 자유글 2</td>
-                        <td>3</td>
-                    </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -97,25 +99,22 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2025.01.05</td>
-                        <td>문의합니다~ 1</td>
-                        <td>3</td>
+                    <tr th:each="qna : ${recentQna}">
+                        <td th:text="${#temporals.format(qna.regDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${qna.title}"></td>
+                        <td th:text="${qna.viewcnt}"></td>
                     </tr>
-                    <!-- 반복 데이터 -->
-
                     </tbody>
                 </table>
-            </div><!-- tabcontent -->
+            </div>
+        </div><!-- tabcontent -->
         </div><!-- post-container -->
 
     </div>
 
-    <!-- 수정하기 버튼 클릭시 -->
-
-
     <!-- 모달 창 -->
     <div id="modal" class="modal">
+        <input type="hidden" id="modal-userPk" th:value="${session.userPk}">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>회원정보 수정하기</h2>
@@ -123,206 +122,72 @@
                 <ul>
                     <li>
                         <label>전화번호:</label>
-                        <input type="text" id="modal-phone" value="010-1111-1111">
+                        <input type="text" id="modal-phone" name="phone"
+                               th:value="${userInfo != null ? userInfo.phone : ''}">
                     </li>
                     <li>
                         <label>이메일:</label>
-                        <input type="email" id="modal-email" value="hi@gmail.com">
+                        <input type="email" id="modal-email" name="email"
+                               th:value="${userInfo != null ? userInfo.email : ''}">
                     </li>
                     <li>
-                        <label for="password">비밀번호: </label>
-                        <input type="password" id="password" value="******">
-
+                        <label for="password">
+                            비밀번호:
+                            <button style="background-color: #4169E1; color:#fff; font-size:11px" onclick="modifyUserPwd();">변경</button>
+                        </label>
+                        <!-- ✅ 기존 비밀번호가 보이지 않도록 value 제거 -->
+                        <input type="password" id="password" name="password" style="width: 200px">
                     </li>
                     <li>
                         <label for="height">신장(cm):</label>
-                        <input type="number" id="height" value="165">
+                        <input type="number" id="height" name="height"
+                               th:value="${detailDto != null ? detailDto.height : ''}">
                     </li>
                     <li>
                         <label for="weight">체중(kg):</label>
-                        <input type="number" id="weight" value="58">
+                        <input type="number" id="weight" name="weight"
+                               th:value="${detailDto != null ? detailDto.weight : ''}">
                     </li>
+
                     <li>
                         <label>흡연:</label>
                         <div class="radio-group">
-                            <input type="radio" id="smoke-yes" name="smoke" value="yes">
-                            <label for="smoke-yes" class="radio-label">Yes</label>
-                            <input type="radio" id="smoke-no" name="smoke" value="no" checked>
-                            <label for="smoke-no" class="radio-label">No</label>
+                            <input type="radio" id="smoke-yes" name="smoke" value="1"
+                                   th:checked="${detailDto != null and detailDto.smoke == 1}">
+                            <label for="smoke-yes" class="radio-label yes-btn">Yes</label>
+
+                            <input type="radio" id="smoke-no" name="smoke" value="0"
+                                   th:checked="${detailDto != null and detailDto.smoke == 0}">
+                            <label for="smoke-no" class="radio-label no-btn">No</label>
                         </div>
                     </li>
+
                     <li>
                         <label>음주:</label>
                         <div class="radio-group">
-                            <input type="radio" id="drink-yes" name="drink" value="yes">
-                            <label for="drink-yes" class="radio-label">Yes</label>
-                            <input type="radio" id="drink-no" name="drink" value="no" checked>
-                            <label for="drink-no" class="radio-label">No</label>
+                            <input type="radio" id="drink-yes" name="drink" value="1"
+                                   th:checked="${detailDto != null and detailDto.drink == 1}">
+                            <label for="drink-yes" class="radio-label yes-btn">Yes</label>
+
+                            <input type="radio" id="drink-no" name="drink" value="0"
+                                   th:checked="${detailDto != null and detailDto.drink == 0}">
+                            <label for="drink-no" class="radio-label no-btn">No</label>
                         </div>
                     </li>
 
                 </ul>
             </div>
             <div class="modal-footer">
-                <button class="modal-btn delete-btn">탈퇴하기</button>
-                <button class="modal-btn save-btn">수정하기</button>
+                <button class="modal-btn delete-btn" onclick="deleteUser();">탈퇴하기</button>
+                <button class="modal-btn save-btn" onclick="updateUserInfo();">수정하기</button>
             </div>
         </div>
     </div>
-</div>
 
-<!--footer-->
+<!--header-->
 <div th:insert="~{/common/footer.html}"></div>
-
-
+<script th:src="@{/js/mypage.js}"></script>  <!-- Thymeleaf 경로 바인딩 -->
 </body>
-
-<!--여기가 회원정보 들어갈 곳-->
-<script>
-
-
-
-
-</script>
-
-
-<!-- 그래프 스크립트 -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const userPk = document.getElementById('userPk').value; // HTML에서 값 가져오기
-        if (userPk) {
-            loadGraphData(userPk);
-        } else {
-            console.error("로그인한 사용자의 userPk를 찾을 수 없습니다.");
-        }
-    });
-
-    function loadGraphData(userPk) {
-        fetch(`/graph/${userPk}`)
-            .then(response => response.json())
-            .then(data => {
-                if (!Array.isArray(data) || data.length === 0) {
-                    document.getElementById('progressChart').style.display = 'none';
-                    document.getElementById('noDataMessage').style.display = 'block';
-                    return;
-                }
-
-                document.getElementById('progressChart').style.display = 'block';
-                document.getElementById('noDataMessage').style.display = 'none';
-
-                const labels = data.map(entry => new Date(entry.regDate).toLocaleDateString());
-                const weights = data.map(entry => entry.weight);
-                const bloodPressures = data.map(entry => entry.bloodPress);
-                const bloodSugars = data.map(entry => entry.bloodSugar);
-
-                const ctx = document.getElementById('progressChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: '몸무게 (kg)',
-                                data: weights,
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                borderWidth: 2,
-                                pointRadius: 5,
-                                pointHoverRadius: 8,
-                                tension: 0.4
-                            },
-                            {
-                                label: '혈압',
-                                data: bloodPressures,
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                borderWidth: 2,
-                                pointRadius: 5,
-                                pointHoverRadius: 8,
-                                tension: 0.4
-                            },
-                            {
-                                label: '혈당',
-                                data: bloodSugars,
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderWidth: 2,
-                                pointRadius: 5,
-                                pointHoverRadius: 8,
-                                tension: 0.4
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            x: { title: { display: true, text: '날짜' } },
-                            y: { title: { display: true, text: '수치' } }
-                        }
-                    }
-                });
-            })
-            .catch(error => console.error('Error fetching graph data:', error));
-    }
-
-
-</script>
-
-
-<script>
-    $(function () {
-        // 모든 탭 콘텐츠 숨기기
-        $('.tabcontent > div').removeClass('active');
-
-        // 탭 클릭 이벤트 처리
-        $('.tab-bar a').click(function (e) {
-            e.preventDefault(); // 기본 동작 방지
-
-            // 모든 콘텐츠 숨기고 선택된 콘텐츠만 표시
-            $('.tabcontent > div').removeClass('active');
-            $($(this).attr('href')).addClass('active');
-
-            // 활성화 클래스 처리
-            $('.tab-bar a').removeClass('active');
-            $(this).addClass('active');
-        });
-
-        // 첫 번째 탭 자동 활성화
-        $('.tab-bar a').first().click();
-    });
-
-
-</script>
-<script>
-    // 모달 열기/닫기 기능
-    document.addEventListener("DOMContentLoaded", function () {
-
-        // 버튼과 모달 요소 가져오기
-        const openModalBtn = document.getElementById("openModal");
-        const modal = document.getElementById("modal");
-
-        const closeModalBtn = document.querySelector(".close");
-
-        // 모달 열기
-        openModalBtn.addEventListener("click", function () {
-            modal.style.display = "block";
-        });
-
-        // 모달 닫기 (X 버튼)
-        closeModalBtn.addEventListener("click", function () {
-            modal.style.display = "none";
-        });
-
-        // 모달 닫기 (배경 클릭)
-        window.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        });
-    });
-
-
-</script>
 
 
 </html>

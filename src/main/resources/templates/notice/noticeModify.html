@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 글 수정</title>
+    <link href="/css/free/write.css" type="text/css" rel="stylesheet">
+    <script>
+        function validateForm() {
+            let title = document.getElementById("title");
+            let content = document.getElementById("content");
+
+            if (title.value.trim() === "") {
+                alert("제목을 입력해주세요.");
+                title.focus();
+                return false;
+            }
+            if (content.value.trim() === "") {
+                alert("내용을 입력해주세요.");
+                content.focus();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div th:insert="/common/header.html"></div>
+<section class="main">
+    <h2>공지사항 수정</h2>
+    <div class="edit-container">
+        <form name="noticeForm" action="/notice/noticeModifyAction" method="POST" enctype="multipart/form-data" onsubmit="return validateForm();">
+            <input type="hidden" name="articlePk" th:value="${notice.articlePk}" />
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" th:value="${notice.title}">
+            </div>
+
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea id="content" name="content" th:text="${notice.content}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="attachfile">📁첨부파일</label>
+                <input type="file" id="attachfile" name="attachfile">
+                <br>
+                <small class="form-text">수정 시 파일을 다시 첨부해주세요.</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="buttons">저장</button>
+                <button type="button" class="buttons" onclick="history.back();">취소</button>
+            </div>
+        </form>
+    </div>
+</section>
+<div th:insert="/common/footer.html"></div>
+</body>
+</html>

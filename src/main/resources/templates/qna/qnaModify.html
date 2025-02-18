@@ -26,11 +26,12 @@
     </script>
 </head>
 <body>
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 <section class="main">
   <h2>문의글 수정</h2>
   <div class="edit-container">
-    <form name="frm" action="/qna/qnaModifyAction" method="post" onsubmit="return validataForm()">
+    <form name="frm" action="/qna/qnaModifyAction" method="post" enctype="multipart/form-data" onsubmit="return validataForm()">
       <input type="hidden" name="articlePk" th:value="${qna.articlePk}" />
       <input type="hidden" name="userPk" th:value="${qna.userPk}" />
       <input type="hidden" name="boardPk" th:value="${qna.boardPk}" />
@@ -47,7 +48,7 @@
 
       <div class="form-group">
         <label>📁첨부파일</label>
-        <input type="file" id="attachfile" name="attachfile">
+        <input type="file" id="attachfile" name="attachfile" accept="image/*">
       </div>
 
       <div class="form-actions">
@@ -57,6 +58,7 @@
     </form>
   </div>
 </section>
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 </body>
 </html>

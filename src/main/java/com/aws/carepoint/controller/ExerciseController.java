@@ -1,20 +1,28 @@
 package com.aws.carepoint.controller;
 
+import com.aws.carepoint.dto.ExerciseApiDto;
 import com.aws.carepoint.dto.ExerciseDto;
+import com.aws.carepoint.dto.GraphDto;
+import com.aws.carepoint.dto.TargetDto;
 import com.aws.carepoint.service.ExerciseService;
+import jakarta.servlet.http.HttpSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/exercise")
@@ -27,11 +35,94 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
+    // 운동 메인페이지
     @GetMapping("/exerciseMain")
-    public String exerciseMain() {
+    public String exerciseMain(Model model, HttpSession session, RedirectAttributes rttr) {
 
+        Integer userPk = (Integer) session.getAttribute("userPk");
+
+        if (userPk == null || userPk < 1) {
+            rttr.addFlashAttribute("msg", "로그인 후 이용 가능합니다.");
+            return "redirect:/user/signIn";
+        }
+
+        model.addAttribute("userPk", userPk);
         return "exercise/exerciseMain";
     }
+
+    // 운동 목록 불러오기 API
+    @ResponseBody
+    @GetMapping("/apiList")
+    public List<ExerciseApiDto> apiList() {
+        return exerciseService.getExerciseApiList();
+    }
+
+    // 운동 정보 저장하기
+    @ResponseBody
+    @PostMapping("/saveExercise")
+    public ResponseEntity<Map<String, String>> saveExercise(@RequestBody ExerciseDto exerciseDto, HttpSession session) {
+
+        int userPk = (Integer) session.getAttribute("userPk");
+        exerciseDto.setUserPk(userPk);
+        exerciseService.saveExercise(exerciseDto);
+
+        // JSON 응답으로 변경
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "운동 기록이 저장되었습니다!");
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 📌 저장된 운동 기록 가져오기 (캘린더에 반영)
+    @ResponseBody
+    @GetMapping("/getExerciseEvents")
+    public List<ExerciseDto> getExerciseEvents(HttpSession session) {
+        int userPk = (int) session.getAttribute("userPk");
+        List<ExerciseDto> exercises = exerciseService.getAllExercises(userPk);
+        return exercises;
+    }
+
+    // 해당 회원이 운동 기록한 횟수 가져오기
+    @ResponseBody
+    @GetMapping("/count")
+    public int getExerciseCount(@RequestParam("userPk") int userPk) {
+        return exerciseService.getExerciseCount(userPk);
+    }
+
+    // ✅ 오늘 운동 데이터가 있는지 확인
+    @ResponseBody
+    @GetMapping("/has-today-exercise")
+    public ResponseEntity<Boolean> hasTodayExerciseData(@RequestParam("userPk") int userPk) {
+        boolean hasData = exerciseService.hasTodayExerciseData(userPk);
+        return ResponseEntity.ok(hasData);
+    }
+
+    // 해당 회원이 운동 기록한 횟수 가져오기
+    @ResponseBody
+    @GetMapping("/deleteExercise")
+    public ResponseEntity<Map<String, String>> deleteExercise(@RequestParam("exercisePk") int exercisePk) {
+        exerciseService.deleteExercise(exercisePk);
+        // JSON 응답으로 변경
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "운동 기록이 삭제되었습니다.");
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @ResponseBody
@@ -63,13 +154,13 @@ public class ExerciseController {
                 String exerciseName = object.optString("운동명", "Unknown");
                 String metValue = object.optString("MET 계수", "0.0");
 
-                ExerciseDto exerciseDto = new ExerciseDto();
-                exerciseDto.setExerciseName(exerciseName);
-                exerciseDto.setMetValue(metValue);
+                ExerciseApiDto exerciseApiDto = new ExerciseApiDto();
+                exerciseApiDto.setExerciseName(exerciseName);
+                exerciseApiDto.setMetValue(metValue);
 
-                exerciseService.save(exerciseDto);
+                exerciseService.save(exerciseApiDto);
             }
-            return "✅ 데이터가 성공적으로 저장되었습니다.";
+            return "✅ 데이터가 저장되었습니다.";
         } catch (Exception e) {
             e.printStackTrace();
             return "에러: " + e.getMessage();

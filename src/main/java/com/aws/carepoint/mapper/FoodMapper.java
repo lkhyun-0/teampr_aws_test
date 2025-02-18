@@ -4,6 +4,7 @@ import com.aws.carepoint.domain.Food;
 import com.aws.carepoint.domain.FoodList;
 import com.aws.carepoint.dto.FoodDto;
 import com.aws.carepoint.dto.FoodListDto;
+import com.aws.carepoint.dto.WeeklyFoodStatsDto;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -17,13 +18,15 @@ public interface FoodMapper {
     public int insertFood(Food food);
 
     // 개별 음식(foodlist) 기록 추가
-    @Insert("INSERT INTO foodlist (menu, protein, carbohydrate, fat, kcal, food_pk) " +
-            "VALUES (#{menu}, #{protein}, #{carbohydrate}, #{fat}, #{kcal}, #{foodPk})")
-    public void insertFoodList(FoodList foodList);
+    @Insert("INSERT INTO foodlist (menu, protein, carbohydrate, fat, kcal, amount, food_pk) " +
+            "VALUES (#{menu}, #{protein}, #{carbohydrate}, #{fat}, #{kcal}, #{amount}, #{foodPk})")
+    void insertFoodList(FoodList foodList);
+
 
 
     // 특정 날짜의 식단 기록 조회
-    @Select("SELECT * FROM food f JOIN foodlist fl ON f.food_pk = fl.food_pk WHERE f.user_pk = #{userPk} AND f.select_date = #{selectDate}")
+    @Select("SELECT * FROM food f JOIN foodlist fl ON f.food_pk = fl.food_pk " +
+            "WHERE f.user_pk = #{userPk} AND f.select_date = #{selectDate}")
     @Results({
             @Result(property = "foodPk", column = "food_pk"),
             @Result(property = "selectDate", column = "select_date"),
@@ -34,9 +37,11 @@ public interface FoodMapper {
             @Result(property = "kcal", column = "kcal"),
             @Result(property = "protein", column = "protein"),
             @Result(property = "carbohydrate", column = "carbohydrate"),
-            @Result(property = "fat", column = "fat")
+            @Result(property = "fat", column = "fat"),
+            @Result(property = "amount", column = "amount")  //
     })
     List<FoodList> getFoodByDate(@Param("userPk") int userPk, @Param("selectDate") String selectDate);
+
 
     // 개별 음식 삭제 (foodlist 테이블에서 삭제)
     @Delete("DELETE FROM foodlist WHERE foodlist_pk = #{foodListPk}")
@@ -68,15 +73,18 @@ public interface FoodMapper {
             @Result(property = "kcal", column = "kcal"),
             @Result(property = "protein", column = "protein"),
             @Result(property = "carbohydrate", column = "carbohydrate"),
-            @Result(property = "fat", column = "fat")
+            @Result(property = "fat", column = "fat"),
+            @Result(property = "amount", column = "amount")  // 🔥 `amount` 추가
     })
     List<FoodList> getFoodByDateAndType(@Param("userPk") int userPk, @Param("selectDate") String selectDate, @Param("foodType") String foodType);
 
 
+
     // 기존 음식 수정 (칼로리, 영양소 변경)
     @Update("UPDATE foodlist SET menu = #{menu}, kcal = #{kcal}, protein = #{protein}, " +
-            "carbohydrate = #{carbohydrate}, fat = #{fat} WHERE foodlist_pk = #{foodListPk}")
+            "carbohydrate = #{carbohydrate}, fat = #{fat}, amount = #{amount} WHERE foodlist_pk = #{foodListPk}")
     void updateFood(FoodList foodList);
+
 
 
     @Select("SELECT DISTINCT select_date, " +
@@ -95,6 +103,31 @@ public interface FoodMapper {
     })
     List<FoodListDto> getFoodList(@Param("userPk") int userPk);
 
+
+    @Select("""
+        SELECT f.select_date,
+               COALESCE(SUM(fl.kcal), 0) AS total_calories,
+               COALESCE(SUM(fl.protein), 0) AS total_protein,
+               COALESCE(SUM(fl.carbohydrate), 0) AS total_carbohydrates,
+               COALESCE(SUM(fl.fat), 0) AS total_fat
+        FROM (SELECT DISTINCT select_date
+              FROM food
+              WHERE user_pk = #{userPk} 
+              AND select_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+             ) f
+        LEFT JOIN food fd ON f.select_date = fd.select_date AND fd.user_pk = #{userPk}
+        LEFT JOIN foodlist fl ON fd.food_pk = fl.food_pk
+        GROUP BY f.select_date
+        ORDER BY f.select_date ASC
+        """)
+    @Results({
+            @Result(property = "selectDate", column = "select_date"),
+            @Result(property = "totalCalories", column = "total_calories"),
+            @Result(property = "totalProtein", column = "total_protein"),
+            @Result(property = "totalCarbohydrates", column = "total_carbohydrates"),
+            @Result(property = "totalFat", column = "total_fat")
+    })
+    List<WeeklyFoodStatsDto> getWeeklyFoodStats(@Param("userPk") int userPk);
 
 
 

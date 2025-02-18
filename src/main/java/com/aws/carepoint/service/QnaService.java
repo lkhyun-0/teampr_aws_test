@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,19 +53,22 @@ public class QnaService {
     }
 
     // 게시글 작성
-    public void createQna(QnaDto qna) {
-        qnaMapper.insertArticle(qna);
+    public int createQna(QnaDto qna) {
+        int value = qnaMapper.insertArticle(qna);
         qnaMapper.updateOriginNum(qna.getArticlePk());
+        return value;
     }
 
+    // 게시글 삭제
     public int deleteQna(QnaDto qna) {
         int value = qnaMapper.updateDelStatus(qna);
         return value;
     }
 
     // 게시글 수정
-    public void updateQna(QnaDto qna) {
-        qnaMapper.updateQna(qna);
+    public int updateQna(QnaDto qna) {
+        int value = qnaMapper.updateQna(qna);
+        return value;
     }
 
     // 답변글 존재 여부
@@ -76,7 +81,12 @@ public class QnaService {
     }
 
     // 답변글 작성
-    public void createQnaReply(QnaDto qna) {
-        qnaMapper.insertQnaReply(qna);
+    public int createQnaReply(QnaDto qna) {
+        int value = qnaMapper.insertQnaReply(qna);
+        return value;
+    }
+
+    public List<Integer> getUserOriginNums(int userPk) {
+        return qnaMapper.getUserOriginNums(userPk);
     }
 }

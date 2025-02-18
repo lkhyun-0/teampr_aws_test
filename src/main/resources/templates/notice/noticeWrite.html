@@ -2,20 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="/css/notice/noticeWrite.css" type="text/css" rel="stylesheet">
+    <link href="/css/free/write.css" type="text/css" rel="stylesheet">
     <title>공지사항 작성</title>
 </head>
 <body>
+
+<script th:if="${msg != null}" th:inline="javascript">
+    alert('[[${msg}]]'); // 작은따옴표로 문자열로 처리
+</script>
+
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
 <section class="main">
     <h2>글 작성</h2>
     <div class="edit-container">
-        <form name="frm" action="/notice/noticeWriteAction" method="post" onsubmit="return validataForm()">
+        <form name="noticeForm" action="/notice/noticeWriteAction" method="POST" enctype="multipart/form-data" onsubmit="return validateForm();">
             <div class="form-group">
-                <label for="subject">제목</label>
-                <input type="text" id="subject" name="title" placeholder="제목을 입력해주세요">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" placeholder="제목을 입력해주세요">
             </div>
             <div class="form-group">
                 <label for="content">내용</label>
@@ -23,10 +28,10 @@
             </div>
             <div class="form-group">
                 <label for="attachfile">📁첨부파일</label>
-                <input type="file" id="attachfile" name="attachfile">
+                <input type="file" id="attachfile" name="attachfile" accept="image/*">
             </div>
             <div class="form-actions">
-                <button type="submit" class="save-button">저장</button>
+                <button type="submit" class="buttons">저장</button>
                 <button type="button" class="buttons" onclick="history.back();">취소</button>
             </div>
         </form>
@@ -38,23 +43,21 @@
 
 
 <script>
-    function validataForm() {
-        let subject = document.getElementById("subject").value.trim();
-        let content = document.getElementById("content").value.trim();
+    function validateForm() {
+        let title = document.getElementById("title");
+        let content = document.getElementById("content");
 
-        if (subject === "") {
+        if (title.value.trim() === "") {
             alert("제목을 입력해주세요.");
-            document.getElementById("subject").focus();
+            title.focus();
             return false;
         }
-
-        if (content === "") {
+        if (content.value.trim() === "") {
             alert("내용을 입력해주세요.");
-            document.getElementById("content").focus();
+            content.focus();
             return false;
         }
-
-        return confirm("저장하시겠습니까?");
+        return true;
     }
 </script>
 </body>

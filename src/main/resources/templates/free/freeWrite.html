@@ -6,16 +6,20 @@
     <title>자유게시판 작성</title>
 </head>
 <body>
+<script th:if="${msg != null}" th:inline="javascript">
+    alert('[[${msg}]]'); // 작은따옴표로 문자열로 처리
+</script>
+
 <!--header-->
 <div th:insert="~{/common/header.html}"></div>
 
 <section class="main">
     <h2>글 작성</h2>
     <div class="edit-container">
-        <form name="frm">
+        <form name="freeForm" action="/free/freeWriteAction" method="POST" enctype="multipart/form-data" onsubmit="return validateForm();">
             <div class="form-group">
-                <label for="subject">제목</label>
-                <input type="text" id="subject" name="subject" placeholder="제목을 입력해주세요">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" placeholder="제목을 입력해주세요">
             </div>
             <div class="form-group">
                 <label for="content">내용</label>
@@ -23,10 +27,10 @@
             </div>
             <div class="form-group">
                 <label for="attachfile">📁첨부파일</label>
-                <input type="file" id="attachfile" name="attachfile">
+                <input type="file" id="attachfile" name="attachfile" accept="image/*">
             </div>
             <div class="form-actions">
-                <button type="button" class="buttons" onclick="check();">저장</button>
+                <button type="submit" class="buttons">저장</button>
                 <button type="button" class="buttons" onclick="history.back();">취소</button>
             </div>
         </form>
@@ -35,5 +39,8 @@
 
 <!--footer-->
 <div th:insert="~{/common/footer.html}"></div>
+
+<script src="/js/validateForm.js"></script>
+
 </body>
 </html>

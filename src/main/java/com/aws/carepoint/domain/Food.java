@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 @Data
-@Getter
-@Setter
-public class Food {
+public class Food { // 공공데이터 api용 domain
     private int foodPk;
     private LocalDate selectDate;
     private String foodType;

@@ -15,7 +15,8 @@
     </script>
 </head>
 <body>
-<div th:insert="/common/header.html"></div>
+<!--header-->
+<div th:insert="~{/common/header.html}"></div>
 <div class="article-container">
   <div class="article-title" th:text="${qna.title}"></div>
 
@@ -26,7 +27,11 @@
     </div>
   </div>
 
-  <div class="article-content" th:text="${qna.content}">
+  <div class="article-content">
+      <div class="uploaded-image" th:if="${not #strings.isEmpty(qna.filename) and qna.filename != 'null'}">
+          <img th:src="@{/uploads/{filename}(filename=${qna.filename})}" alt="첨부된 이미지">
+      </div>
+      <span th:text="${qna.content}"></span>
   </div>
 
   <div class="actions">
@@ -45,7 +50,8 @@
     </div>
   </div>
 </div>
-<div th:insert="/common/footer.html"></div>
+<!--footer-->
+<div th:insert="~{/common/footer.html}"></div>
 
 
 </body>

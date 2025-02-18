@@ -1,64 +1,77 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOM 로드 완료");
-
-    // 헤더 메뉴 업데이트
     function updateHeaderMenu() {
         fetch("/user/session", { method: "GET", credentials: "include" })
             .then(response => response.json())
             .then(data => {
-                console.log("📌 로그인 상태 확인:", data);
-
                 let signupMenu = document.getElementById("signup-menu");
                 let loginMenu = document.getElementById("login-menu");
                 let myPageMenu = document.getElementById("mypage-menu");
                 let logoutMenu = document.getElementById("logout-menu");
 
-                let loginLink = document.getElementById("category-login");
-                let signupLink = document.getElementById("category-signup");
+                let categoryLogin = document.getElementById("category-login");  // 로그인 링크
+                let categorySignup = document.getElementById("category-signup"); // 회원가입 링크
 
                 if (data.loggedIn) {
                     console.log("✅ 로그인 상태 감지됨! 메뉴 변경");
-                    console.log(`✅ 로그인된 사용자 Pk: ${data.userPk}`);
 
-                    // 헤더 변경
-                    if (signupMenu) signupMenu.style.display = "none";
-                    if (loginMenu) loginMenu.style.display = "none";
-                    if (myPageMenu) myPageMenu.style.display = "block";
-                    if (logoutMenu) logoutMenu.style.display = "block";
+                    if (signupMenu) {
+                        signupMenu.style.display = "none";
 
-                    // 카테고리 메뉴 변경 (로그인 상태)
-                    loginLink.textContent = "마이페이지";
-                    loginLink.href = "/user/myPage";
+                    }
+                    if (loginMenu) {
+                        loginMenu.style.display = "none";
 
-                    signupLink.textContent = "로그아웃";
-                    signupLink.href = "#";
-                    signupLink.id = "category-logout"; // ID 변경
+                    }
+                    if (myPageMenu) {
+                        myPageMenu.style.display = "block";
+                        console.log("✅ myPageMenu 표시");
+                    }
+                    if (logoutMenu) {
+                        logoutMenu.style.display = "block";
+                        console.log("✅ logoutMenu 표시");
+                    }
 
-                    // 로그아웃 버튼 이벤트 등록
-                    signupLink.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        handleLogout();
-                    });
+                    // 로그인/회원가입 -> 마이페이지/로그아웃으로 변경
+                    if (categoryLogin) {
+                        categoryLogin.href = "/user/myPage";
+                        categoryLogin.innerText = "마이페이지";
+                    }
+                    if (categorySignup) {
+                        categorySignup.href = "/user/logout";
+                        categorySignup.innerText = "로그아웃";
+                    }
                 } else {
-                    console.log("❌ 로그아웃 상태 감지됨! 회원가입/로그인 표시");
+                    console.log("❌ 로그아웃 상태 감지됨!");
 
-                    // 헤더 변경
-                    if (signupMenu) signupMenu.style.display = "block";
-                    if (loginMenu) loginMenu.style.display = "block";
-                    if (myPageMenu) myPageMenu.style.display = "none";
-                    if (logoutMenu) logoutMenu.style.display = "none";
+                    if (signupMenu) {
+                        signupMenu.style.display = "block";
+                        console.log("✅ signupMenu 표시");
+                    }
+                    if (loginMenu) {
+                        loginMenu.style.display = "block";
+                        console.log("✅ loginMenu 표시");
+                    }
+                    if (myPageMenu) {
+                        myPageMenu.style.display = "none";
+                    }
+                    if (logoutMenu) {
+                        logoutMenu.style.display = "none";
+                    }
 
-                    // 카테고리 메뉴 변경 (로그아웃 상태)
-                    loginLink.textContent = "로그인";
-                    loginLink.href = "/user/signIn";
-
-                    signupLink.textContent = "회원가입";
-                    signupLink.href = "/user/signUp";
-                    signupLink.id = "category-signup"; // 원래 ID로 복구
+                    // 마이페이지/로그아웃 -> 로그인/회원가입으로 변경
+                    if (categoryLogin) {
+                        categoryLogin.href = "/user/signIn";
+                        categoryLogin.innerText = "로그인";
+                    }
+                    if (categorySignup) {
+                        categorySignup.href = "/user/signUp";
+                        categorySignup.innerText = "회원가입";
+                    }
                 }
             })
             .catch(error => console.error("🚨 로그인 상태 확인 중 오류 발생:", error));
     }
+
 
     // 로그아웃 처리 함수
     function handleLogout() {

@@ -26,8 +26,10 @@
                 <li id="login-menu"><a href="/user/signIn">로그인</a></li>
 
                 <!-- 로그인한 경우에만 마이페이지 & 로그아웃 버튼 표시 -->
-                <li id="mypage-menu" style="display: none;"><a href="/user/myPage">마이페이지</a></li>
-                <li id="logout-menu" style="display: none;">
+                <li id="mypage-menu" style="display: none; margin-right: 20px;">
+                    <a href="/user/myPage">마이페이지</a>
+                </li>
+                <li id="logout-menu" style="display: none; margin-right: 20px;">
                     <a href="#" id="logout-btn">로그아웃</a>
                 </li>
 
@@ -54,14 +56,15 @@
         </div>
         <div class="popup__body">
             <ul>
-                <li><a href="#">운동</a></li>
-                <li><a href="#">식단</a></li>
-                <li><a href="#">병원/약 일정 관리</a></li>
-                <li><a href="user/selfCheckList">질병 자가진단</a></li>
-                <li><a href="#">가까운 병원 찾기</a></li>
-                <li><a href="#">자유게시판</a></li>
-                <li><a href="#">Q&A</a></li>
-                <li><a href="#">공지사항</a></li>
+                <li><a href="/exercise/exerciseMain">운동</a></li>
+                <li><a href="/food/foodRecord">식단</a></li>
+                <li><a href="/food/recom">식단추천</a></li>
+                <li><a href="/plan/plan">병원/약 일정 관리</a></li>
+                <li><a href="/user/selfCheckList">질병 자가진단</a></li>
+                <li><a href="/plan/hospital">가까운 병원 찾기</a></li>
+                <li><a href="/free/freeList">자유게시판</a></li>
+                <li><a href="/qna/qnaList">Q&A</a></li>
+                <li><a href="/notice/noticeList">공지사항</a></li>
             </ul>
         </div>
         <div class="popup__foot">
@@ -94,6 +97,8 @@
     });
 
 </script>
-<script src="/js/header-footer.js"></script>
+<script th:src="@{/js/header-footer.js}"></script>
+
+
 </body>
 </html>

@@ -1,5 +1,5 @@
 function signUp() {
-    let signUpfm = document.forms["signUpfm"]; // ✅ 폼 요소 정확히 가져오기
+    let signUpfm = document.forms["signUpfm"];
 
     if (document.getElementById("nick-btn").value === "N") {
         alert("닉네임 중복 확인을 해주세요.");
@@ -63,7 +63,8 @@ function checkUserId() {
         return;
     }
 
-    fetch(`/user/checkUserId?userid=${encodeURIComponent(userId)}`)
+    fetch(`/user/checkUserId?userId=${encodeURIComponent(userId)}`)
+
         .then(response => response.json())
         .then(isDuplicate => {
             console.log(isDuplicate + "중복확인 값 확인");

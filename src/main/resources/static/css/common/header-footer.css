@@ -21,7 +21,7 @@ button {
     cursor: pointer;
 }
 
-img {
+.logo-img {
     display: block;
     max-width: 150px;
 }
