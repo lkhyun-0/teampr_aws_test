@@ -226,7 +226,6 @@ CREATE TABLE hospital_api
 
 
 
-
 INSERT INTO board (board_type)
 VALUES ('N');
 INSERT INTO board (board_type)
