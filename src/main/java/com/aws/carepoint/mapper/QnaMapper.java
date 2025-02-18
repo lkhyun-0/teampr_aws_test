@@ -99,7 +99,7 @@ public interface QnaMapper {
 
     @Select("SELECT * " +
             "FROM article " +
-            "WHERE board_pk = 1 " +
+            "WHERE board_pk = 3 " +
             "AND user_pk = #{userPk} " +
             "ORDER BY reg_date DESC " +
             "LIMIT 5")
