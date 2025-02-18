@@ -198,5 +198,10 @@ footer p {
 }
 
 
+/* 모든 a 태그에 마우스 오버 효과 추가 */
+a:hover {
+    color: #4169e1 !important;
+}
+
 
 
