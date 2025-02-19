@@ -31,13 +31,17 @@ public interface GraphMapper {
     void insertGraph(GraphDto graphDto);
 
     // 그래프 데이터 수정
-    @Update("UPDATE graph SET blood_sugar = #{bloodSugar}, blood_press = #{bloodPress}, " +
-            "weight = #{weight} WHERE user_pk = #{userPk}")
-    @Results(id = "graphResultMap", value = {
-            @Result(property = "bloodSugar", column = "blood_sugar"),
-            @Result(property = "bloodPress", column = "blood_press"),
-            @Result(property = "userPk", column = "user_pk")
-    })
+    @Update("UPDATE graph " +
+            "SET blood_sugar = CASE " +
+            "    WHEN #{bloodSugar} != 0 OR (#{bloodSugar} = 0 AND blood_sugar = 0) THEN #{bloodSugar} " +
+            "    ELSE blood_sugar END, " +
+            "blood_press = CASE " +
+            "    WHEN #{bloodPress} != 0 OR (#{bloodPress} = 0 AND blood_press = 0) THEN #{bloodPress} " +
+            "    ELSE blood_press END, " +
+            "weight = CASE " +
+            "    WHEN #{weight} != 0 OR (#{weight} = 0 AND weight = 0) THEN #{weight} " +
+            "    ELSE weight END " +
+            "WHERE user_pk = #{userPk} AND DATE(reg_date) = CURDATE()")
     void updateGraph(GraphDto graphDto);
 
     // 목표 테이블의 value_count 증가
