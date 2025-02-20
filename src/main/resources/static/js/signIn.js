@@ -24,14 +24,13 @@ function doSignIn() {
         .then(data => {
             //console.log("서버 응답 데이터:", data);
             if (data.success) {
-                console.log("login success 를 맻번 들어오냐잉???????????????????????????????");
                 alert(data.message);
                 window.location.href = data.redirect;
             }
         })
         .catch(error => {
             //console.error("로그인 요청 실패:", error);
-            alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+            alert("아이디 또는 비밀번호를 확인 해주세요.");
         });
 }       // 일반로그인
 
