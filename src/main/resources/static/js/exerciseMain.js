@@ -330,56 +330,66 @@ function setupExerciseRecording(userPk) {
 function setupGraphSaving(userPk) {
     const saveForm = document.getElementById("graph-form");
     if (!saveForm) return;
-    let hasTodayData = false;
+
     fetch(`/graph/has-today-graph?userPk=${userPk}`)
         .then(response => response.json())
-        .then(hasData => {
-            hasTodayData = hasData;
-            console.log("Has Today Graph Data:", hasData);
+        .then(hasTodayData => {
+            console.log("Has Today Graph Data:", hasTodayData);
+
+            saveForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+                const bloodSugarInput = document.getElementById("blood_sugar");
+                const bloodPressInput = document.getElementById("blood_press");
+                const weightInput = document.getElementById("weight");
+                const bloodSugar = bloodSugarInput.value.trim();
+                const bloodPress = bloodPressInput.value.trim();
+                const weight = weightInput.value.trim();
+
+                if (!bloodSugar && !bloodPress && !weight) {
+                    alert("수치를 한 개 이상 입력해주세요.");
+                    if (!bloodSugar) bloodSugarInput.focus();
+                    return;
+                }
+
+                const data = {
+                    userPk: userPk,
+                    bloodSugar: bloodSugar || null,
+                    bloodPress: bloodPress || null,
+                    weight: weight || null
+                };
+                const url = hasTodayData ? '/graph/updateGraph' : '/graph/saveGraph';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        console.log("서버 응답 코드:", response.status);
+                        // 응답의 Content-Type을 확인하여 JSON 또는 텍스트로 파싱합니다.
+                        const contentType = response.headers.get("content-type");
+                        if (contentType && contentType.includes("application/json")) {
+                            return response.json();
+                        } else {
+                            return response.text();
+                        }
+                    })
+                    .then(result => {
+                        // result가 문자열이고 "redirect:"로 시작한다면 해당 URL로 이동합니다.
+                        if (typeof result === "string" && result.startsWith("redirect:")) {
+                            alert(hasTodayData ? "오늘의 수치가 업데이트되었습니다." : "오늘의 수치가 저장되었습니다.");
+                            window.location.href = result.replace("redirect:", "");
+                            return;
+                        }
+                        bloodSugarInput.value = "";
+                        bloodPressInput.value = "";
+                        weightInput.value = "";
+                        window.location.reload();
+                    })
+                    .catch(error => console.error("Error saving graph:", error));
+            });
         })
         .catch(error => console.error("Error checking today's graph data:", error));
-
-    saveForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const bloodSugarInput = document.getElementById("blood_sugar");
-        const bloodPressInput = document.getElementById("blood_press");
-        const weightInput = document.getElementById("weight");
-        const bloodSugar = bloodSugarInput.value.trim();
-        const bloodPress = bloodPressInput.value.trim();
-        const weight = weightInput.value.trim();
-
-        if (!bloodSugar && !bloodPress && !weight) {
-            alert("수치를 한 개 이상 입력해주세요.");
-            if (!bloodSugar) bloodSugarInput.focus();
-            return;
-        }
-
-        const data = {
-            userPk: userPk,
-            bloodSugar: bloodSugar || null,
-            bloodPress: bloodPress || null,
-            weight: weight || null
-        };
-        const url = hasTodayData ? '/graph/updateGraph' : '/graph/saveGraph';
-
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then(response => {
-                console.log("서버 응답 코드:", response.status);
-                return response.json();
-            })
-            .then(result => {
-                alert(hasTodayData ? "오늘의 수치가 업데이트되었습니다." : "오늘의 수치가 저장되었습니다.");
-                bloodSugarInput.value = "";
-                bloodPressInput.value = "";
-                weightInput.value = "";
-                window.location.reload();
-            })
-            .catch(error => console.error("Error saving graph:", error));
-    });
 }
 
 /* =========================================================
