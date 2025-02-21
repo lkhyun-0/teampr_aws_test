@@ -1,18 +1,16 @@
-## 🩺 만성질환 환자를 위한 서비스, 케어포인트
+# 🩺 만성질환 환자를 위한 서비스, 케어포인트
 
 ----
 
 ![img.png](src/main/resources/static/images/img.png)
 
-
-
-## 👋 프로젝트 소개 
+# 👋 프로젝트 소개 
 
 ----
 - 케어포인트는 만성질환 환자들이 건강을 보다 편하고 효율적으로 관리 할 수 있도록 서비스를 제공합니다. 
 - 사용자는 식단 관리부터 추천, 운동 목표를 설정하여 동기부여를 가질 수 있고, 병원 일정과 약 복용 관리, 알림 서비스 등을 제공 받을 수 있습니다. 
 
-## 🎯 타겟 사용자 
+# 🎯 타겟 사용자 
 
 ----
 
@@ -24,13 +22,24 @@
 
 
 
-## 📅 개발 기간 
+# 📅 개발 기간 
 
 -----
 
 - 2025.01.20 ~ 2024.02. 25
 
-## 💻 기술스택
+# 팀원 구성 
+
+------
+
+| 이경현                                                                          | 김이슬 | 이인아 | 김인서 |
+|------------------------------------------------------------------------------|-|-|-|
+| <img src="src/main/resources/static/images/경현.png" width="200" height="200"> | <img src="src/main/resources/static/images/이슬.png" width="200" height="200"> | <img src="src/main/resources/static/images/인아.png" width="200" height="200"> | <img src="src/main/resources/static/images/인서.png" width="200" height="200"> |
+| [a01024705367@gmail.com](mailto:a01024705367@gmail.com)                      | [dltmf1045@gmail.com](mailto:dltmf1045@gmail.com) | [22na7592@gmail.com](mailto:22na7592@gmail.com) | [jjj99062633@gmail.com](mailto:jjj99062633@gmail.com) |
+
+
+
+# 💻 기술 스택
 
 ----
 
@@ -41,14 +50,14 @@
 - API : GOOGLE MAP API, Coolsms 문자 서비스 API, 카카오 로그인 API, Fast API , 영양정보db API, openAi API, 운동정보
 
 
-## ERD 구조
+# ERD 구조
 
 ----
 
 
 ![img_1.png](src/main/resources/static/images/img_1.png)
 
-## 🎨 figma
+# 🎨 figma
 
 ---
 
@@ -57,9 +66,9 @@
 <a href="https://www.figma.com/design/4Bwl2rMe00dvbafNZrW7QL/carepoint?node-id=0-1&p=f&t=OUwakinTflCVbA5T-0" target= "_blank">피그마 링크</a>
 
 
-## 🙋‍♂️역할 분담
+# 🙋‍♂️역할 분담
 
-### 🐈 팀장 이경현
+## 🐈 팀장 이경현
 
 ◆ 피그마 디자인
 
@@ -99,7 +108,7 @@
 - 자가진단체크리스트 결과 출력
 
 
-### 🦧 팀원 이인아 
+## 🦧 팀원 이인아 
 
 ◆ 피그마 디자인
 - 운동 페이지 및 목표 작성 모달팝업 & 운동 종목 모달팝업
@@ -131,7 +140,7 @@
 - 운동 페이지 저장된 운동 정보 가져와서 FullCalendar에 운동 이벤트 추가
 - 운동 페이지 FullCalendar 운동 이벤트 클릭시 운동 정보 상세 모달 띄우고 모달에 있는 기록 삭제 버튼 클릭 시 운동 정보 삭제
 
-### 🌿 팀원 김인서
+## 🌿 팀원 김인서
 
 ◆ 프론트엔드
 
@@ -159,7 +168,7 @@
 ◆ ERD
 - ERD 17섹션 전체 담당 
 
-### 🐹 팀원 김이슬
+## 🐹 팀원 김이슬
 
 ◆ 피그마 디자인
 - 식단 기록
@@ -192,11 +201,11 @@
 - OpenAI API 활용한 식단 추천
 - 공지사항 게시판(목록, 상세, 작성)
 
-## ✅ 페이지별 기능
+# ✅ 페이지별 기능
 
 ----
 
-### 1. 메인 화면 
+## 1. 메인 화면 
 
 ![img_3.png](src/main/resources/static/images/img_3.png)
 
@@ -207,7 +216,7 @@
 
 - 오른쪽 상단에서도 카테고리로 서비스를 한 눈에 볼 수 있습니다. 
 
-### 2. 회원가입 
+## 2. 회원가입 
 
 ![img_4.png](src/main/resources/static/images/img_4.png)
 - 회원가입 진행 전, 개인정보 수집과 이메일 수신 등의 약관 동의를 받습니다.
@@ -219,7 +228,7 @@
 
 - 회원가입 후 상세정보를 입력합니다.
 
-### 3. 로그인 
+## 3. 로그인 
 ![img_6.png](src/main/resources/static/images/img_6.png)
 
 - 아이디와 비밀번호로 로그인을 합니다.
@@ -228,12 +237,12 @@
 
 - 카카오 계정으로도 로그인을 할 수 있습니다.
 
-### 4. 비밀번호 찾기 
+## 4. 비밀번호 찾기 
 ![img_23.png](src/main/resources/static/images/img_23.png)
 - 가입 당시 작성했던 이름과 아이디, 전화번호로 비밀번호를 찾을 수 있습니다. 
  <br>임시 비밀번호는 등록한 전화번호로 sms 발송합니다.
 
-### 5. 마이페이지
+## 5. 마이페이지
 
 ![img_8.png](src/main/resources/static/images/img_8.png)
 - 마이페이지에서는 회원가입 당시에 작성했던 정보가 나타납니다. 
@@ -241,13 +250,13 @@
 
 - 내가 작성한 최신글 5개와 운동 페이지에서 입력한 수치가 그래프로 나타납니다.
 
-### 6. 회원정보 수정
+## 6. 회원정보 수정
 
 ![img_24.png](src/main/resources/static/images/img_24.png)
 
 - 마이페이지에서 회원정보를 수정할 수 있습니다. 
 
-### 7. 운동 메인페이지 
+## 7. 운동 메인페이지 
 
 ![img_26.png](src/main/resources/static/images/img_26.png)
 
@@ -268,7 +277,7 @@
 
 - 운동 기록 횟수나 달성한 주간 목표 수를 통해 사용자에게 성취감과 동기부여를 제공합니다.
 
-### 8. 식단 기록 
+## 8. 식단 기록 
 
 ![img_12.png](src/main/resources/static/images/img_12.png)
 
@@ -278,7 +287,7 @@
 
 - 공공데이터 영양정보 api를 통해 음식을 검색하고 기록할 수 있습니다.
 
-### 9. 식단 목록 & 상세
+## 9. 식단 목록 & 상세
 
 ![img_14.png](src/main/resources/static/images/img_14.png)
 
@@ -288,14 +297,14 @@
 
 - 상세 내용에서 하루 식단 총 칼로리를 볼 수 있고 수정, 삭제가 가능합니다.
 
-### 10. 내 식단 분석
+## 10. 내 식단 분석
 
 ![img_16.png](src/main/resources/static/images/img_16.png)
 
 - 회원의 식단 데이터를 주간 단위로 분석하여 칼로리, 탄수화물, 단백질, 지방 섭취량을 그래프로 시각화하여 나타냅니다.
 - 성별 & 연령별 적정 섭취량을 반영하여 피드백을 제공합니다. 
 
-### 11. 식단 추천
+## 11. 식단 추천
 
 ![img_17.png](src/main/resources/static/images/img_17.png)
 
@@ -306,7 +315,7 @@
 - 아침, 점심, 저녁 1,900 kcal 기준으로 식단과 영양정보를 제공합니다. (다이어트 1,300 kcal)
 - 식단 추가를 눌러 더 다양한 식단을 추천 받을 수 있습니다. 
 
-### 10. 병원/약 일정관리 
+## 12. 병원/약 일정관리 
 
 ![img_20.png](src/main/resources/static/images/img_20.png)
 
@@ -323,7 +332,7 @@
 
 - 캘린더 해당 날짜를 클릭하면 병원일정과 약 복용 일정을 상세하게 볼 수 있습니다.
 
-### 11. 질병 자가진단
+## 13. 질병 자가진단
 ![img_29.png](src/main/resources/static/images/img_29.png)
 ![img_31.png](src/main/resources/static/images/img_31.png)
 
@@ -333,14 +342,20 @@
 
 - 비만은 몸무게와 체중을 입력하면 결과를 바로 확인할 수 있습니다. 
 
-### 12. 가까운 병원 찾기
+## 14. 가까운 병원 찾기
 
 ![img_34.png](src/main/resources/static/images/img_34.png)
 
 - 구글 맵 API를 이용하여 검색한 장소에 3km이내에 있는 병원들을 리스트로 보여줍니다. 
 - 병원 마커를 클릭하면 해당 병원의 정보를 볼 수 있습니다. 
 
-### 15. 자유게시판
+## 15. 데일리 문자 알림
+
+![img.png](img.png)
+
+- 매일 오후 7시 30분에 회원들에게 문자 알림을 보내서 회원의 꾸준한 서비스 이용을 유도합니다.  
+
+## 16. 자유게시판
 
 ![img_37.png](src/main/resources/static/images/img_37.png)
 
@@ -350,20 +365,16 @@
 
 - 상세내용에서는 댓글 기능과 추천기능을 제공합니다.
 
-### 13. Q&A 게시판
+## 17. Q&A 게시판
 
 ![img_47.png](src/main/resources/static/images/img_47.png)
 
 - 궁금한 점이 있을 때 Q&A 게시판에서 질문할 수 있습니다. 
 - 내용은 작성자와 관리자만 볼 수 있습니다.
 
-### 14. 공지사항 게시판
+## 18. 공지사항 게시판
 
 ![img_43.png](src/main/resources/static/images/img_43.png)
 
 - 운영자가 작성한 공지사항의 내용을 확인할 수 있습니다.
-
-
-
-
 
