@@ -45,9 +45,9 @@
 
 - 개발환경 : Windows10, Linux, JDK 21, Spring Boot 3.3.4
 - 개발도구 : GitHub, XAMPP, DBeaver, IntelliJ IDEA, SQLyog, VScode
-- 개발언어 및 프레임워크 : Java, HTML, CSS, JavaScript, ThymeLeaf, Python, Spring Boot 3.3.4, Tailwind, jQuery, AJAX
+- 개발언어 및 프레임워크 : Java, HTML, CSS, JavaScript, ThymeLeaf, Python, Spring Boot 3.3.4, Tailwind, jQuery, AJAX, Fast API
 - DB : MySQL
-- API : GOOGLE MAP API, Coolsms 문자 서비스 API, 카카오 로그인 API, Fast API , 영양정보db API, openAi API, 운동정보
+- API : GOOGLE MAP API, Coolsms 문자 서비스 API, 카카오 로그인 API, 영양정보db API, openAi API, 운동정보
 
 
 # ERD 구조
@@ -351,7 +351,7 @@
 
 ## 15. 데일리 문자 알림
 
-![img.png](img.png)
+![img.png](src/main/resources/static/images/문자알림.png)
 
 - 매일 오후 7시 30분에 회원들에게 문자 알림을 보내서 회원의 꾸준한 서비스 이용을 유도합니다.  
 
